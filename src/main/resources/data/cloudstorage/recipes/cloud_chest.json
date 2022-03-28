@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CIC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "cloudstorage:cloud"
+    },
+    "I": {
+      "tag": "forge:chests/wooden"
+    }
+  },
+  "result": {
+    "item": "cloudstorage:cloud_chest",
+    "count": 1
+  }
+}

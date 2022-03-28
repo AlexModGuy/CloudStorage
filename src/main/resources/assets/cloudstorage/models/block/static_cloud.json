@@ -1,0 +1,8 @@
+{
+    "parent": "cloudstorage:block/static_cloud_base",
+    "textures": {
+        "cloud": "cloudstorage:block/static_cloud",
+        "particle": "cloudstorage:block/static_cloud",
+        "static": "cloudstorage:block/static_cloud_overlay"
+    }
+}

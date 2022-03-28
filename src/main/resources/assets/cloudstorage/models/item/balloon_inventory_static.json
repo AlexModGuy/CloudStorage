@@ -1,0 +1,9 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "cloudstorage:item/balloon_string",
+        "layer1": "cloudstorage:item/balloon_color",
+        "layer2": "cloudstorage:item/balloon_sheen",
+        "layer3": "cloudstorage:item/balloon_static"
+    }
+}

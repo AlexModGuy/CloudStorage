@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " B ",
+    "B B",
+    "SB "
+  ],
+  "key": {
+    "B": {
+      "item": "cloudstorage:balloon_bit"
+    },
+    "S": {
+      "tag": "forge:string"
+    }
+  },
+  "result": {
+    "item": "cloudstorage:balloon",
+    "count": 1
+  }
+}
