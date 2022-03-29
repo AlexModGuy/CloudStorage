@@ -1,0 +1,31 @@
+{
+  "pools": [
+    {
+      "name": "bloviator_small_thunder",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "cloudstorage:static_cloud",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            },
+            {
+              "function": "looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

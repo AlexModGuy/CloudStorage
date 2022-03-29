@@ -86,7 +86,7 @@ public class CloudBlock extends Block {
             Direction direction = Direction.getRandom(rng);
             BlockPos blockpos = pos.relative(direction);
             BlockState blockstate = level.getBlockState(blockpos);
-            if (!state.canOcclude() || !blockstate.isFaceSturdy(level, blockpos, direction.getOpposite())) {
+            if ((!state.canOcclude() || !blockstate.isFaceSturdy(level, blockpos, direction.getOpposite())) && !(blockstate.getBlock() instanceof CloudBlock)) {
                 double d0 = direction.getStepX() == 0 ? rng.nextDouble() - 0.5D : (double)direction.getStepX() * 0.4D;
                 double d1 = direction.getStepY() == 0 ? rng.nextDouble() - 0.5D : (double)direction.getStepY() * 0.4D;
                 double d2 = direction.getStepZ() == 0 ? rng.nextDouble() - 0.5D : (double)direction.getStepZ() * 0.4D;

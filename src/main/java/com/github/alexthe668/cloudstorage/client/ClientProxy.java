@@ -8,10 +8,7 @@ import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.client.gui.CloudChestScreen;
 import com.github.alexthe668.cloudstorage.client.model.PropellerHatModel;
 import com.github.alexthe668.cloudstorage.client.model.baked.BakedModelFinalLayerFullbright;
-import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
-import com.github.alexthe668.cloudstorage.client.particle.ParticleBalloonShard;
-import com.github.alexthe668.cloudstorage.client.particle.ParticleCloudChest;
-import com.github.alexthe668.cloudstorage.client.particle.ParticleStaticLightning;
+import com.github.alexthe668.cloudstorage.client.particle.*;
 import com.github.alexthe668.cloudstorage.client.render.*;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CSMenuRegistry;
@@ -161,6 +158,7 @@ public class ClientProxy extends CommonProxy {
         Minecraft.getInstance().particleEngine.register(CSParticleRegistry.BALLOON_SHARD, ParticleBalloonShard.Factory::new);
         Minecraft.getInstance().particleEngine.register(CSParticleRegistry.CLOUD_CHEST, ParticleCloudChest.Factory::new);
         Minecraft.getInstance().particleEngine.register(CSParticleRegistry.STATIC_LIGHTNING, new ParticleStaticLightning.Factory());
+        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.BLOVIATOR_BREATH, ParticleBloviatorBreath.Factory::new);
     }
 
     private void bakeModels(final ModelBakeEvent e) {

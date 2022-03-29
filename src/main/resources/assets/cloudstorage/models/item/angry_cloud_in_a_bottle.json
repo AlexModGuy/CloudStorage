@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "cloudstorage:item/angry_cloud_in_a_bottle"
+    }
+}

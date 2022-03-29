@@ -15,6 +15,7 @@ public class CSParticleRegistry {
     public static final SimpleParticleType BALLOON_SHARD = (SimpleParticleType) new SimpleParticleType(false).setRegistryName(CloudStorage.MODID + ":balloon_shard");
     public static final SimpleParticleType CLOUD_CHEST = (SimpleParticleType) new SimpleParticleType(false).setRegistryName(CloudStorage.MODID + ":cloud_chest");
     public static final SimpleParticleType STATIC_LIGHTNING = (SimpleParticleType) new SimpleParticleType(false).setRegistryName(CloudStorage.MODID + ":static_lightning");
+    public static final SimpleParticleType BLOVIATOR_BREATH = (SimpleParticleType) new SimpleParticleType(false).setRegistryName(CloudStorage.MODID + ":bloviator_breath");
 
     @SubscribeEvent
     public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {

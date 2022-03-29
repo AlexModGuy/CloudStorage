@@ -23,6 +23,8 @@ public class CSItemRegistry {
     public static final RegistryObject<Item> BALLOON_INVENTORY = DEF_REG.register("balloon_inventory", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BALLOON = DEF_REG.register("balloon", () -> new BalloonItem());
     public static final RegistryObject<Item> PROPELLER_HAT = DEF_REG.register("propeller_hat", () -> new PropellerHatItem());
+    public static final RegistryObject<Item> ANGRY_CLOUD_IN_A_BOTTLE = DEF_REG.register("angry_cloud_in_a_bottle", () -> new CloudBottleItem(false));
+    public static final RegistryObject<Item> HAPPY_CLOUD_IN_A_BOTTLE = DEF_REG.register("happy_cloud_in_a_bottle", () -> new CloudBottleItem(true));
 
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {

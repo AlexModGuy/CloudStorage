@@ -19,7 +19,7 @@ public class CSEntityRegistry {
     public static final RegistryObject<EntityType<BalloonEntity>> BALLOON = DEF_REG.register("balloon", () -> (EntityType)EntityType.Builder.of(BalloonEntity::new, MobCategory.MISC).sized(0.7F, 0.9F).setCustomClientFactory(BalloonEntity::new).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).updateInterval(10).clientTrackingRange(20).build("balloon"));
     public static final RegistryObject<EntityType<BalloonTieEntity>> BALLOON_TIE = DEF_REG.register("balloon_tie", () -> (EntityType)EntityType.Builder.of(BalloonTieEntity::new, MobCategory.MISC).sized(0.4F, 0.55F).setCustomClientFactory(BalloonTieEntity::new).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).updateInterval(10).clientTrackingRange(20).build("balloon_tie"));
     public static final RegistryObject<EntityType<BalloonCargoEntity>> BALLOON_CARGO = DEF_REG.register("balloon_cargo", () -> (EntityType)EntityType.Builder.of(BalloonCargoEntity::new, MobCategory.MISC).sized(0.99F, 0.99F).setCustomClientFactory(BalloonCargoEntity::new).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).updateInterval(10).clientTrackingRange(20).build("balloon_cargo"));
-    public static final RegistryObject<EntityType<BloviatorEntity>> BLOVIATOR = DEF_REG.register("bloviator", () -> EntityType.Builder.of(BloviatorEntity::new, MobCategory.MONSTER).sized(1.75F, 1.2F).build("bloviator"));
+    public static final RegistryObject<EntityType<BloviatorEntity>> BLOVIATOR = DEF_REG.register("bloviator", () -> EntityType.Builder.of(BloviatorEntity::new, MobCategory.MONSTER).sized(2F, 1.3F).build("bloviator"));
 
     @SubscribeEvent
     public static void initializeAttributes(EntityAttributeCreationEvent event) {

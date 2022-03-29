@@ -59,7 +59,7 @@ public class ParticleStaticLightning extends Particle {
         posestack.pushPose();
         posestack.translate(f, f1, f2);
         posestack.scale(scale, scale, scale);
-        LightningBoltData.BoltRenderInfo lightningBoltData = new LightningBoltData.BoltRenderInfo(0.5F, 0.1F, 0.5F, 0.85F, new Vector4f(0.1F, 0.3F, 0.3F, 1.0F - ageProgress), 0.1F);
+        LightningBoltData.BoltRenderInfo lightningBoltData = new LightningBoltData.BoltRenderInfo(0.5F, 0.1F, 0.5F, 0.85F, new Vector4f(0.3F, 0.45F, 0.6F, (1.0F - ageProgress) * 0.8F), 0.1F);
         LightningBoltData bolt = new LightningBoltData(lightningBoltData, Vec3.ZERO, new Vec3(toX, toY, toZ), 4)
                 .size(0.05F)
                 .lifespan(this.lifetime)
