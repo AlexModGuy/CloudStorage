@@ -1,13 +1,17 @@
 package com.github.alexthe668.cloudstorage.block;
 
+import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
+import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSWorldData;
 import com.github.alexthe668.cloudstorage.misc.CloudIndex;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,7 +35,7 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
     public int tickCount;
     public Player lastValidPlayer = null;
     private static Random random = new Random();
-
+    private int lastSoundTimestamp = 0;
 
     public AbstractCloudChestBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -43,7 +47,7 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
         e.tickCount++;
         boolean open = false;
         boolean emergedBalloon = false;
-        Player player = e.level.getNearestPlayer((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 6.0D, false);
+        Player player = e.level.getNearestPlayer((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, CloudStorage.CONFIG.cloudChestOpenDistance.get(), false);
         if(player != null && e.hasClearance()){
             if(e.hasBalloonFor(player)){
                 emergedBalloon = true;
@@ -52,6 +56,13 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
             }else if(!e.getValidBalloonStack(player).isEmpty()){
                 open = true;
             }
+        }
+
+        if(open && e.openProgress == 0){
+            e.playSound(true);
+        }
+        if(!open && e.openProgress == 1.0F){
+            e.playSound(false);
         }
         if(open && e.openProgress < 1.0F){
             e.openProgress = Math.min(e.openProgress + 0.1F, 1.0F);
@@ -78,6 +89,14 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
         }
     }
 
+    private void playSound(boolean open){
+        if(this.tickCount == 0 || this.lastSoundTimestamp < this.tickCount - 10){
+            this.lastSoundTimestamp = this.tickCount;
+            float pitch = 0.75F + random.nextFloat() * 0.35F;
+            this.level.playSound((Player)null, this.getBlockPos(), open ? CSSoundRegistry.CLOUD_CHEST_OPEN : CSSoundRegistry.CLOUD_CHEST_CLOSE, SoundSource.BLOCKS, 1.0F, pitch);
+        }
+    }
+
     public AABB getRenderBoundingBox() {
         BlockPos pos = this.getBlockPos();
         return new AABB(pos.offset(-1, -1, -1), pos.offset(1, 3, 1));
@@ -85,7 +104,7 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
 
     public boolean hasClearance(){
         BlockPos pos = this.getBlockPos();
-        return level.canSeeSky(pos) && level.isEmptyBlock(pos.above()) && level.isEmptyBlock(pos.above(2));
+        return (level.canSeeSky(pos) || !CloudStorage.CONFIG.cloudChestNeedsSkyAccess.get()) && level.isEmptyBlock(pos.above()) && level.isEmptyBlock(pos.above(2));
     }
 
     public float getOpenProgress(float partialTick) {

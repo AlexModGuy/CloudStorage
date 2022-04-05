@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:angry_cloud_in_a_bottle"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.angry_cloud_in_a_bottle.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.angry_cloud_in_a_bottle.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/bloviator",
+    "criteria": {
+        "acacia_blossom": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["cloudstorage:angry_cloud_in_a_bottle"]
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -60,4 +60,7 @@ public class FlightMoveController extends MoveControl {
         }
     }
 
+    public void stop() {
+        this.operation = MoveControl.Operation.WAIT;
+    }
 }

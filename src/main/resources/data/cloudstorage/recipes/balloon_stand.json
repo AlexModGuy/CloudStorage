@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " B ",
+    "CSC",
+    "CFC"
+  ],
+  "key": {
+    "B": {
+      "item": "cloudstorage:balloon"
+    },
+    "S": {
+      "tag": "forge:string"
+    },
+    "C": {
+      "tag": "forge:ingots/copper"
+    },
+    "F": {
+      "tag": "forge:fences/wooden"
+    }
+  },
+  "result": {
+    "item": "cloudstorage:balloon_stand",
+    "count": 1
+  }
+}

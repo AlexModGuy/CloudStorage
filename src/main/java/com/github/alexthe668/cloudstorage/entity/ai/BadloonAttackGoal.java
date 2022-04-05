@@ -58,8 +58,9 @@ public class BadloonAttackGoal extends Goal {
     }
 
     public void tick(){
+        badloon.setNoActionTime(0);
         boolean moveTowardsTarget = true;
-        float extraY = 2.0F;
+        float extraY = 1.3F;
         Entity hand = this.badloon.getChild();
         if(hand == null){
             return;
@@ -78,7 +79,7 @@ public class BadloonAttackGoal extends Goal {
                     pickupMonster = null;
                 }else{
                     this.badloon.getMoveControl().setWantedPosition(pickupMonster.getX(), pickupMonster.getEyeY() + 1.2F, pickupMonster.getZ(), 1.0F);
-                    if(hand.distanceTo(pickupMonster) < 2){
+                    if(hand.distanceTo(pickupMonster) < 3){
                         pickupMonster.startRiding(hand, true);
                     }
                     moveTowardsTarget = false;
@@ -102,7 +103,15 @@ public class BadloonAttackGoal extends Goal {
                 }
             }
         }else if(moveTowardsTarget){
-            this.badloon.getMoveControl().setWantedPosition(badloon.getTarget().getX(), badloon.getTarget().getEyeY() + extraY, badloon.getTarget().getZ(), 1.0F);
+            double targetX = badloon.getTarget().getX();
+            double targetZ = badloon.getTarget().getZ();
+
+            if (badloon.verticalCollision && !badloon.isOnGround() && !badloon.hasLineOfSight(badloon.getTarget())) {
+                Vec3 lookRotated = new Vec3(0F, 0F, 2F).yRot(-badloon.getYRot() * (float)(Math.PI / 180F));
+                targetX = badloon.getX() + lookRotated.x;
+                targetZ = badloon.getZ() + lookRotated.z;
+            }
+            this.badloon.getMoveControl().setWantedPosition(targetX, badloon.getTarget().getEyeY() + extraY, targetZ, 1.0F);
         }
         if(pickupMonster == null && this.punchCooldown == 0 && (hand.distanceTo(this.badloon.getTarget()) < this.badloon.getTarget().getBbWidth() + 0.5F || hand.getBoundingBox().intersects(this.badloon.getTarget().getBoundingBox()))){
             punchTicks++;

@@ -15,9 +15,10 @@ import java.awt.*;
 public class CSMenuRegistry {
 
     public static final MenuType<CloudChestMenu> CLOUD_CHEST_MENU = (MenuType<CloudChestMenu>) new MenuType<CloudChestMenu>(CloudChestMenu::new).setRegistryName("cloudstorage:cloud_chest_menu");
+    public static final MenuType<BalloonStandMenu> BALLOON_STAND_MENU = (MenuType<BalloonStandMenu>) new MenuType<BalloonStandMenu>(BalloonStandMenu::new).setRegistryName("cloudstorage:balloon_stand_menu");
 
     @SubscribeEvent
     public static void registerMenuTypes(RegistryEvent.Register<MenuType<?>> event) {
-        event.getRegistry().register(CLOUD_CHEST_MENU);
+        event.getRegistry().registerAll(CLOUD_CHEST_MENU, BALLOON_STAND_MENU);
     }
 }

@@ -4,12 +4,14 @@ import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
 import com.github.alexthe668.cloudstorage.client.model.BalloonModel;
 import com.github.alexthe668.cloudstorage.entity.BadloonEntity;
 import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
+import com.github.alexthe668.cloudstorage.entity.BloviatorEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -17,6 +19,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
@@ -27,7 +30,16 @@ public class RenderBadloon extends MobRenderer<BadloonEntity, BalloonModel<Badlo
 
     public RenderBadloon(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new BalloonModel(), 0.3F);
-        this.addLayer(new LayerFace(this));
+        this.addLayer(new BalloonFaceLayer<>(this));
+    }
+
+    public boolean shouldRender(BadloonEntity entity, Frustum frustum, double x, double y, double z) {
+        if (super.shouldRender(entity, frustum, x, y, z)) {
+            return true;
+        } else {
+            Entity hand = entity.getHandForRendering();
+            return hand != null && frustum.isVisible(hand.getBoundingBox());
+        }
     }
 
     protected float getFlipDegrees(BadloonEntity entity) {
@@ -95,37 +107,4 @@ public class RenderBadloon extends MobRenderer<BadloonEntity, BalloonModel<Badlo
         return entity.isAlive() ? BalloonTextures.BALLOON : BalloonTextures.POPPED;
     }
 
-    class LayerFace extends RenderLayer<BadloonEntity, BalloonModel<BadloonEntity>> {
-
-        public LayerFace(RenderBadloon render) {
-            super(render);
-        }
-
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, BadloonEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            this.getParentModel().setColor(1.0F, 1.0F, 1.0F);
-            VertexConsumer stringBuilder = bufferIn.getBuffer(RenderType.entityCutout(BalloonTextures.STRING_TIE));
-            this.getParentModel().renderToBuffer(matrixStackIn, stringBuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1.0F, 1.0F, 1.0F, 1);
-            VertexConsumer sheenBuilder = bufferIn.getBuffer(RenderType.entityTranslucent(BalloonTextures.BALLOON_SHEEN));
-            this.getParentModel().renderToBuffer(matrixStackIn, sheenBuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1.0F, 1.0F, 1.0F, 0.75F);
-            ResourceLocation face;
-            switch (entity.getFace()) {
-                case ANGRY:
-                    face = BalloonTextures.FACE_ANGRY;
-                    break;
-                case SCARED:
-                    face = BalloonTextures.FACE_SCARED;
-                    break;
-                default:
-                    face = BalloonTextures.FACE_NEUTRAL;
-                    break;
-            }
-            int color = entity.getBalloonColor();
-            float r = (float) (color >> 16 & 255) / 255.0F;
-            float g = (float) (color >> 8 & 255) / 255.0F;
-            float b = (float) (color & 255) / 255.0F;
-            this.getParentModel().setColor(r, g, b);
-            VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(face));
-            this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1, 1, 1, 1);
-        }
-    }
 }

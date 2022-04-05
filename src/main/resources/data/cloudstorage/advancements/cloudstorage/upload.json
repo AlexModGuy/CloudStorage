@@ -1,0 +1,21 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:balloon",
+            "nbt": "{3DRender:1}"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.upload.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.upload.desc"
+        },
+        "frame": "goal"
+    },
+    "parent": "cloudstorage:cloudstorage/balloon",
+    "criteria": {
+        "ex": {
+            "trigger": "cloudstorage:upload"
+        }
+    }
+}

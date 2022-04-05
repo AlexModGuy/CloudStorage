@@ -1,7 +1,9 @@
 package com.github.alexthe668.cloudstorage.client.render;
 
+import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.client.model.BadloonHandModel;
 import com.github.alexthe668.cloudstorage.client.model.BalloonModel;
+import com.github.alexthe668.cloudstorage.entity.BadloonEntity;
 import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -10,11 +12,14 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public class RenderBalloon extends EntityRenderer<BalloonEntity> {
@@ -27,6 +32,15 @@ public class RenderBalloon extends EntityRenderer<BalloonEntity> {
     @Override
     public ResourceLocation getTextureLocation(BalloonEntity balloon) {
         return balloon.isPopped() ? BalloonTextures.POPPED : BalloonTextures.BALLOON;
+    }
+
+    public boolean shouldRender(BalloonEntity entity, Frustum frustum, double x, double y, double z) {
+        if (super.shouldRender(entity, frustum, x, y, z)) {
+            return true;
+        } else {
+            Entity tie = entity.getTieForRendering();
+            return tie != null && frustum.isVisible(tie.getBoundingBox());
+        }
     }
 
     public void render(BalloonEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
@@ -74,6 +88,17 @@ public class RenderBalloon extends EntityRenderer<BalloonEntity> {
         Vec3 from = new Vec3(0, 0.2F, 0).xRot(xRot * ((float) Math.PI / 180F)).yRot(-yRot * ((float) Math.PI / 180F));
         StringRenderHelper.renderSting(entityIn, to, partialTicks, matrixStackIn, bufferIn, position.add(from));
         matrixStackIn.popPose();
+        float uploadProgress = entityIn.getUploadProgress(partialTicks);
+        if(uploadProgress > 0.0F){
+            uploadProgress = Math.min(uploadProgress * 2.0F, 1.0F);
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(0.0F, uploadProgress * -entityIn.getStringLength() - 1.0F, 0.0F);
+            matrixStackIn.scale(1.1F, 1.1F, 1.1F);
+            matrixStackIn.translate(-0.5D, 0.0F, -0.5D);
+            BlockState blockstate = entityIn.isCharged() ? CSBlockRegistry.STATIC_CLOUD.get().defaultBlockState() : CSBlockRegistry.CLOUD.get().defaultBlockState();
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
+            matrixStackIn.popPose();
+        }
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 

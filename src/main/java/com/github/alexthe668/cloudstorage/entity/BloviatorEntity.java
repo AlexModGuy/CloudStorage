@@ -5,6 +5,7 @@ import com.github.alexthe668.cloudstorage.entity.ai.BloviatorAttackGoal;
 import com.github.alexthe668.cloudstorage.entity.ai.FlightMoveController;
 import com.github.alexthe668.cloudstorage.entity.ai.FlyAroundGoal;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
+import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -27,12 +30,11 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,9 +42,9 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.function.Predicate;
+import java.util.Random;
 
-public class BloviatorEntity extends Monster {
+public class BloviatorEntity extends Monster implements BalloonFlyer {
 
     private static final EntityDataAccessor<Float> CLOUD_SCALE = SynchedEntityData.defineId(BloviatorEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> PUSH_ENTITY = SynchedEntityData.defineId(BloviatorEntity.class, EntityDataSerializers.INT);
@@ -59,6 +61,7 @@ public class BloviatorEntity extends Monster {
     private float prevTransformProgress;
     private int prevShockTime;
     private int prevChargeTime;
+    private int blowingSoundTime = 0;
 
     protected BloviatorEntity(EntityType type, Level level) {
         super(type, level);
@@ -66,7 +69,7 @@ public class BloviatorEntity extends Monster {
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
-        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.ATTACK_DAMAGE, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.15F).add(Attributes.FLYING_SPEED, 0.15F).add(Attributes.FOLLOW_RANGE, 64D);
+        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.ATTACK_DAMAGE, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.15F).add(Attributes.FLYING_SPEED, 0.15F).add(Attributes.FOLLOW_RANGE, 32D);
     }
 
     protected void defineSynchedData() {
@@ -77,6 +80,10 @@ public class BloviatorEntity extends Monster {
         this.entityData.define(THUNDERY, false);
         this.entityData.define(CHARGE, 1);
         this.entityData.define(SHOCKTIME, 0);
+    }
+
+    protected void updateNoActionTime() {
+        this.noActionTime += 1;
     }
 
     public boolean isPushing() {
@@ -170,6 +177,24 @@ public class BloviatorEntity extends Monster {
         super.onSyncedDataUpdated(p_33609_);
     }
 
+
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return CSSoundRegistry.BLOVIATOR_HURT;
+    }
+
+    protected SoundEvent getDeathSound() {
+        return CSSoundRegistry.BLOVIATOR_HURT;
+    }
+
+    protected SoundEvent getAmbientSound() {
+        return CSSoundRegistry.BLOVIATOR_IDLE;
+    }
+
+    public float getVoicePitch() {
+        float f = (1F / Mth.clamp(this.getCloudScale(), 0.25F, 2F));
+        return super.getVoicePitch() * Mth.sqrt(f);
+    }
+
     protected ResourceLocation getDefaultLootTable() {
         return this.isTiny() ? this.isThundery() ? THUNDERY_LOOT_TABLE : this.getType().getDefaultLootTable() : BuiltInLootTables.EMPTY;
     }
@@ -223,7 +248,7 @@ public class BloviatorEntity extends Monster {
         this.goalSelector.addGoal(1, new BloviatorAttackGoal(this));
         this.goalSelector.addGoal(2, new FlyAroundGoal(this, 15, 7, 20, 1.0F));
         this.targetSelector.addGoal(1, (new NearestAttackableTargetGoal<>(this, Player.class, 10, false, false, null)).setUnseenMemoryTicks(300));
-        this.targetSelector.addGoal(2, (new NearestAttackableTargetGoal<>(this, Sheep.class, 10, false, false, null)).setUnseenMemoryTicks(300));
+        this.targetSelector.addGoal(2, (new NearestAttackableTargetGoal<>(this, Sheep.class, 100, false, false, null)).setUnseenMemoryTicks(300));
         this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
     }
 
@@ -268,10 +293,15 @@ public class BloviatorEntity extends Monster {
             if (!level.isClientSide && canPush(this.getTarget())) {
                 this.entityData.set(PUSH_ENTITY, this.getTarget().getId());
             }
+            blowingSoundTime = 0;
         } else {
             if (this.pushProgress < 5.0F) {
                 this.pushProgress += 1.0F;
             }
+            if(blowingSoundTime % 60 == 0){
+                this.playSound(CSSoundRegistry.BLOVIATOR_BLOW, this.getSoundVolume(), this.getVoicePitch());
+            }
+            blowingSoundTime++;
             if (canPush(pushing)) {
                 Vec3 mouth = this.getMouthVec(1.0F);
                 Vec3 vec2 = pushing.position().subtract(this.position()).normalize().scale(0.1F * this.getCloudScale());
@@ -302,6 +332,7 @@ public class BloviatorEntity extends Monster {
 
 
                     } else {
+                        this.playSound(CSSoundRegistry.BLOVIATOR_LIGHTNING, this.getSoundVolume(), 0.65F * this.getVoicePitch());
                         if (this.getShockingEntity() != null) {
                             this.shock(this.getShockingEntity());
                         }
@@ -457,18 +488,26 @@ public class BloviatorEntity extends Monster {
 
 
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
-      ItemStack itemstack = player.getItemInHand(hand);
-        if(this.isTiny() && itemstack.is(Items.GLASS_BOTTLE)){
+        ItemStack itemstack = player.getItemInHand(hand);
+        if (this.isTiny() && itemstack.is(Items.GLASS_BOTTLE)) {
             if (!player.getAbilities().instabuild) {
                 itemstack.shrink(1);
             }
             ItemStack bottle = new ItemStack(CSItemRegistry.ANGRY_CLOUD_IN_A_BOTTLE.get());
-            if(!player.addItem(bottle)){
+            if (!player.addItem(bottle)) {
                 player.spawnAtLocation(bottle);
             }
             this.remove(RemovalReason.DISCARDED);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+        return true;
+    }
+
+    public static boolean canBloviatorSpawn(EntityType<BloviatorEntity> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, Random random) {
+        return reason == MobSpawnType.SPAWNER || random.nextFloat() < 0.2F && iServerWorld.canSeeSky(pos);
     }
 }

@@ -58,7 +58,6 @@ public class BalloonCargoEntity extends Entity {
     @Nullable
     public CompoundTag blockData;
     private BlockState blockState = Blocks.SAND.defaultBlockState();
-    private boolean cancelDrop;
     private boolean hurtEntities;
     private int fallDamageMax = 40;
     private float fallDamagePerDistance;

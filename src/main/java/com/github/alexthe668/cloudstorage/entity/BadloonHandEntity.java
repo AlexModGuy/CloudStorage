@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -34,7 +35,7 @@ public class BadloonHandEntity extends Entity {
         super(type, level);
     }
 
-    public BadloonHandEntity(BadloonEntity parent) {
+    public BadloonHandEntity(LivingEntity parent) {
         super(CSEntityRegistry.BADLOON_HAND.get(), parent.level);
         this.setParent(parent);
     }
@@ -56,8 +57,12 @@ public class BadloonHandEntity extends Entity {
         this.entityData.define(PREV_GESTURE, 0);
     }
 
+    public boolean shouldRender(double x, double y, double z) {
+        Entity parent = this.getParent();
+        return super.shouldRender(x, y, z) || parent != null && parent.shouldRender(parent.getX(), parent.getY(), parent.getZ());
+    }
+
     public void tick(){
-        super.tick();
         if (prevPrevGuesture != this.getPrevGesture()) {
             prevPrevGuesture = this.getPrevGesture();
             gestureProgress = 0.0F;
@@ -65,22 +70,35 @@ public class BadloonHandEntity extends Entity {
         prevGestureProgress = gestureProgress;
         if(!level.isClientSide){
             Entity parent = this.getParent();
-            if(parent == null){
+            if(parent == null || parent instanceof LivingBalloon && !((LivingBalloon) parent).getChildId().equals(this.getUUID())){
                 this.remove(RemovalReason.DISCARDED);
             }
             this.checkInsideBlocks();
-            if(!level.isClientSide && parent != null){
+            if(parent != null){
                 Vec3 vector3d = new Vec3(parent.getX() - this.getX(), 0, parent.getZ() - this.getZ());
                 float f = Mth.sqrt((float) (vector3d.x * vector3d.x + vector3d.z * vector3d.z));
                 this.faceTowardsX((float) (f * 1 * (double) (180F / (float) Math.PI)));
                 this.faceTowardsY(parent.getYRot());
                 Vec3 newMovement = this.getDeltaMovement().add(this.moveTowardsParent(0.02F)).scale(0.9F);
+                if(this.horizontalCollision && this.distanceTo(parent) > 2.0F){
+                    double yUp = parent.getY() - this.getY();
+                    newMovement = newMovement.add(0, yUp * 0.06F, 0);
+                }else if(parent instanceof BalloonBuddyEntity && ((BalloonBuddyEntity) parent).isInSittingPose()){
+                    if(parent.getY() - 1 < this.getY()){
+                        newMovement = newMovement.add(0, -0.05F, 0);
+                    }
+                }
                 if(newMovement.lengthSqr() > (double)1.0E-4F){
                     this.setDeltaMovement(newMovement);
                 }
             }
+            this.move(MoverType.SELF, this.getDeltaMovement());
+        }else{
+            double d0 = this.getX() + getDeltaMovement().x;
+            double d1 = this.getY() + getDeltaMovement().y;
+            double d2 = this.getZ() + getDeltaMovement().z;
+            this.setPosRaw(d0, d1, d2);
         }
-        this.move(MoverType.SELF, this.getDeltaMovement());
 
         if (this.getPrevGesture() != this.getGesture() && gestureProgress < 1.0F) {
             gestureProgress += 0.25F;
@@ -88,13 +106,8 @@ public class BadloonHandEntity extends Entity {
         if (this.getPrevGesture() == this.getGesture() && gestureProgress > 0F) {
             gestureProgress -= 0.25F;
         }
-        double d0 = this.getX() + getDeltaMovement().x;
-        double d1 = this.getY() + getDeltaMovement().y;
-        double d2 = this.getZ() + getDeltaMovement().z;
-        if(level.isClientSide){
-            this.setPosRaw(d0, d1, d2);
-        }else {
-            this.setPos(d0, d1, d2);
+        if(!this.level.isClientSide && this.isVehicle()){
+            setGesture(GloveGesture.GRAB);
         }
     }
 

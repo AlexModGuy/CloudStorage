@@ -1,10 +1,10 @@
 package com.github.alexthe668.cloudstorage.entity.ai;
 
+import com.github.alexthe668.cloudstorage.entity.BalloonFlyer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -12,15 +12,15 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Random;
 
-public class FlyAroundGoal extends Goal {
-    private final Mob flyer;
+public class FlyAroundGoal<T extends Mob & BalloonFlyer> extends Goal {
+    private final T flyer;
     private final int rangeXZ;
     private final int rangeY;
     private final int chance;
     private final float speed;
     private Vec3 moveToPoint = null;
 
-    public FlyAroundGoal(Mob fly, int rangeXZ, int rangeY, int chance, float speed) {
+    public FlyAroundGoal(T fly, int rangeXZ, int rangeY, int chance, float speed) {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE));
         this.flyer = fly;
         this.rangeXZ = rangeXZ;
@@ -30,7 +30,7 @@ public class FlyAroundGoal extends Goal {
     }
 
     public boolean canUse() {
-        return flyer.getRandom().nextInt(chance) == 0 && !flyer.getMoveControl().hasWanted();
+        return flyer.getRandom().nextInt(chance) == 0 && !flyer.getMoveControl().hasWanted() && !flyer.stopFlying();
     }
 
     public void stop() {
@@ -38,7 +38,7 @@ public class FlyAroundGoal extends Goal {
     }
 
     public boolean canContinueToUse() {
-        return flyer.getMoveControl().hasWanted() && flyer.distanceToSqr(moveToPoint) > 1F;
+        return flyer.getMoveControl().hasWanted() && flyer.distanceToSqr(moveToPoint) > 1F && !flyer.stopFlying();
     }
 
     public void start() {

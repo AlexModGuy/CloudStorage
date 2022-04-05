@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:static_cloud_chest"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.static_cloud_chest.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.static_cloud_chest.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/static_cloud",
+    "criteria": {
+        "acacia_blossom": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["cloudstorage:static_cloud_chest"]
+                    }
+                ]
+            }
+        }
+    }
+}

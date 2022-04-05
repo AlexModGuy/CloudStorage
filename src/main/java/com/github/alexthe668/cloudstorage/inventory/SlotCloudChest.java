@@ -4,7 +4,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class SlotCloudChest extends Slot {
+public abstract class SlotCloudChest extends Slot {
 
     public int slot = 0;
     private boolean isGray;
@@ -14,9 +14,7 @@ public class SlotCloudChest extends Slot {
         this.slot = i;
     }
 
-    public int getScrollIndex(){
-        return slot + 9 * Math.max(CloudChestMenu.scrollAmount, 0);
-    }
+    public abstract int getScrollIndex();
 
     public ItemStack getItem() {
         if(getScrollIndex() < container.getContainerSize()) {

@@ -9,6 +9,7 @@ import com.github.alexthe668.cloudstorage.entity.BalloonCargoEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonTieEntity;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
+import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,11 +42,15 @@ import java.util.List;
 
 public class BalloonItem extends Item implements DyeableLeatherItem {
 
-    private static final int DEFAULT_COLOR = 0XE72929;
+    public static final int DEFAULT_COLOR = 0XE72929;
     private static final int[] BALLOONCOLORS = new int[]{DEFAULT_COLOR};
 
+    public BalloonItem(Item.Properties props) {
+        super(props);
+    }
+
     public BalloonItem() {
-        super(new Item.Properties().stacksTo(8).tab(CloudStorage.TAB));
+        this(new Item.Properties().stacksTo(8).tab(CloudStorage.TAB));
     }
 
     public static int getBalloonColor(ItemStack stack) {
@@ -56,6 +61,12 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
     public static boolean isStatic(ItemStack stack) {
         CompoundTag compoundtag = stack.getTag();
         return compoundtag != null && compoundtag.getBoolean("static");
+    }
+
+    public static int get3DRender(ItemStack stack) {
+        CompoundTag compoundtag = stack.getTag();
+        return compoundtag != null ? compoundtag.getInt("3DRender") : 0;
+
     }
 
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flags) {
@@ -81,8 +92,10 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
             for (int i = 0; i < BALLOONCOLORS.length; i++) {
                 list.add(createBalloon(DEFAULT_COLOR, false));
             }
-            for (int i = 0; i < BALLOONCOLORS.length; i++) {
-                list.add(createBalloon(DEFAULT_COLOR, true));
+            if(this == CSItemRegistry.BALLOON.get()){
+                for (int i = 0; i < BALLOONCOLORS.length; i++) {
+                    list.add(createBalloon(DEFAULT_COLOR, true));
+                }
             }
         }
     }
@@ -105,22 +118,27 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         boolean leftHand = false;
         if (entity instanceof LivingEntity) {
             LivingEntity player = (LivingEntity) entity;
-            boolean flag = held || player.getItemInHand(InteractionHand.OFF_HAND).getItem() == CSItemRegistry.BALLOON.get();
+            boolean flag = held || player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof BalloonItem;
             if (flag) {
-                if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == CSItemRegistry.BALLOON.get()) {
+                if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BalloonItem) {
                     leftHand = leftHand || player.getMainArm() == HumanoidArm.LEFT;
                     rightHand = rightHand || player.getMainArm() == HumanoidArm.RIGHT;
-                    flag = true;
                 }
-                if (player.getItemInHand(InteractionHand.OFF_HAND).getItem() == CSItemRegistry.BALLOON.get()) {
+                if (player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof BalloonItem) {
                     leftHand = leftHand || player.getMainArm() != HumanoidArm.LEFT;
                     rightHand = rightHand || player.getMainArm() != HumanoidArm.RIGHT;
-                    flag = true;
                 }
-                if (flag) {
+                if (leftHand) {
                     if (entity.getDeltaMovement().y < 0) {
-                        entity.setDeltaMovement(entity.getDeltaMovement().multiply(1F, 0.8F, 1F));
+                        entity.setDeltaMovement(entity.getDeltaMovement().multiply(1F, 0.95F, 1F));
                     }
+                }
+                if (rightHand) {
+                    if (entity.getDeltaMovement().y < 0) {
+                        entity.setDeltaMovement(entity.getDeltaMovement().multiply(1F, 0.95F, 1F));
+                    }
+                }
+                if(rightHand || leftHand){
                     entity.fallDistance *= 0.9F;
                 }
             }
@@ -141,6 +159,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
             ItemStack copyOff = itemstack.copy();
             copyOff.setCount(1);
             copyOff.setTag(tag);
+            player.playSound(CSSoundRegistry.STATIC_SHOCK, 0.5F, player.getVoicePitch());
             if (!player.isCreative()) {
                 itemstack.shrink(1);
             }
@@ -188,7 +207,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         balloon.setCharged(isStatic(itemstack));
         balloon.setPos(blockpos1.getX() + 0.5F, blockpos1.getY() + 0.5F, blockpos1.getZ() + 0.5F);
         if (level.noCollision(balloon)) {
-            if (blockstate.is(BlockTags.FENCES)) {
+            if (blockstate.is(BlockTags.FENCES) || blockstate.getBlock() == CSBlockRegistry.BALLOON_STAND.get()) {
                 BalloonTieEntity tie = BalloonTieEntity.getOrCreateKnot(level, blockpos);
                 if (tie != null) {
                     tie.setBalloonCount(tie.getBalloonCount() + 1);

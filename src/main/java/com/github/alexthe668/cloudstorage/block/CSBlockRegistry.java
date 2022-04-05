@@ -17,5 +17,6 @@ public class CSBlockRegistry {
     public static final RegistryObject<Block> STATIC_CLOUD = DEF_REG.register("static_cloud", () -> new CloudBlock(true, BlockBehaviour.Properties.of(Material.CLAY, MaterialColor.WOOL).friction(0.87F).sound(SoundType.WOOL).noOcclusion().isViewBlocking((state, level, pos) -> false).isSuffocating((state, level, pos) -> false)));
     public static final RegistryObject<Block> CLOUD_CHEST = DEF_REG.register("cloud_chest", () -> new CloudChestBlock(false));
     public static final RegistryObject<Block> STATIC_CLOUD_CHEST = DEF_REG.register("static_cloud_chest", () -> new CloudChestBlock(true));
+    public static final RegistryObject<Block> BALLOON_STAND = DEF_REG.register("balloon_stand", () -> new BalloonStandBlock());
 
 }

@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:balloon"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.balloon.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.balloon.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/badloon",
+    "criteria": {
+        "acacia_blossom": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["cloudstorage:balloon"]
+                    }
+                ]
+            }
+        }
+    }
+}

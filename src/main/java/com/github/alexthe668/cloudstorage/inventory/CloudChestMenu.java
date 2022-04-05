@@ -1,6 +1,7 @@
 package com.github.alexthe668.cloudstorage.inventory;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
+import com.github.alexthe668.cloudstorage.network.MessageScrollCloudChest;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -12,6 +13,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,10 +23,12 @@ import java.util.*;
 
 public class CloudChestMenu extends AbstractContainerMenu {
     public static int size = -1;
-    public static int scrollAmount = -1;
-    public String currentSearch = "";
+    private final DataSlot scrollAmount = DataSlot.standalone();
     private final Container container;
-    private Map<ItemStack, Integer> restoreFromAfterSearch = new HashMap<>();
+    public String currentSearch = "";
+    private final int playerInvStart = 0;
+    private final int playerInvEnd = 0;
+    private final Map<ItemStack, Integer> restoreFromAfterSearch = new HashMap<>();
 
     public CloudChestMenu(int id, Inventory playerInv) {
         this(id, playerInv, new SimpleContainer(size == -1 ? 1 : size));
@@ -40,7 +44,12 @@ public class CloudChestMenu extends AbstractContainerMenu {
         int ySlots = clampedSize / 9;
         for (int k = 0; k < ySlots; ++k) {
             for (int l = 0; l < 9 && l + k * 9 < clampedSize; ++l) {
-                this.addSlot(new SlotCloudChest(this.container, l + k * 9, 8 + l * 18, 18 + k * 18));
+                this.addSlot(new SlotCloudChest(this.container, l + k * 9, 8 + l * 18, 18 + k * 18) {
+                    @Override
+                    public int getScrollIndex() {
+                        return slot + 9 * Math.max(getScrollAmount(), 0);
+                    }
+                });
             }
         }
         for (int i1 = 0; i1 < 3; ++i1) {
@@ -55,8 +64,9 @@ public class CloudChestMenu extends AbstractContainerMenu {
         if (size == -1) {
             CloudStorage.PROXY.setVisibleCloudSlots(containerIn.getContainerSize());
         }
+        this.addDataSlot(this.scrollAmount).set(0);
         size = containerIn.getContainerSize();
-        scrollTo(0.0F);
+        scrollTo(0.0F, false);
     }
 
     public static boolean matchesSearch(Player player, String search, ItemStack stack) {
@@ -73,9 +83,9 @@ public class CloudChestMenu extends AbstractContainerMenu {
         } else if (search.startsWith("#")) {
             String tagId = search.substring(1);
             List<TagKey<Item>> tags = stack.getTags().toList();
-            for(TagKey<Item> tag : tags){
+            for (TagKey<Item> tag : tags) {
                 ResourceLocation registryName = tag.location();
-                if(registryName.toString().contains(tagId)){
+                if (registryName.toString().contains(tagId)) {
                     matches = true;
                     break;
                 }
@@ -84,19 +94,21 @@ public class CloudChestMenu extends AbstractContainerMenu {
         return matches;
     }
 
-    public void scrollTo(float scrollProgress) {
-        int clampedSize = Math.min(container.getContainerSize(), 54);
-        for (int i = 0; i < clampedSize; i++) {
-            if (getSlot(i) instanceof SlotCloudChest slotCloudChest) {
-                int maxScrollDown = CloudStorage.PROXY.getVisibleCloudSlots() / 9 - 6;
-                if (maxScrollDown > 0) {
-                    int j = (int) ((double) (scrollProgress * (float) maxScrollDown));
-                    scrollAmount = j;
-                } else {
-                    scrollAmount = 0;
-                }
-            }
+    public void scrollTo(float scrollProgress, boolean sendPacket) {
+        int maxScrollDown = this.container.getContainerSize() / 9 - 6;
+        int i = Math.max((int)Math.floor(scrollProgress * maxScrollDown), 0);
+        if (sendPacket) {
+            CloudStorage.NETWORK_WRAPPER.sendToServer(new MessageScrollCloudChest(i));
         }
+        scrollAmount.set(i);
+    }
+
+    public int getScrollAmount() {
+        return scrollAmount.get();
+    }
+
+    public void setScrollAmount(int i) {
+        scrollAmount.set(i);
     }
 
     public boolean stillValid(Player player) {
@@ -106,11 +118,12 @@ public class CloudChestMenu extends AbstractContainerMenu {
     public ItemStack quickMoveStack(Player player, int slotIndex) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(slotIndex);
+        int clampedSize = Math.min(this.container.getContainerSize(), 54);
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (slotIndex < this.container.getContainerSize()) {
-                if (!this.moveItemStackTo(itemstack1, this.container.getContainerSize(), this.slots.size(), true)) {
+            if (slotIndex < clampedSize) {
+                if (!this.moveItemStackTo(itemstack1, clampedSize, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (!this.moveItemStackToScrollable(itemstack1, 0, this.container.getContainerSize(), false)) {
@@ -208,9 +221,9 @@ public class CloudChestMenu extends AbstractContainerMenu {
         return flag;
     }
 
-    public void updateGrays(Player player, String currentSearch){
-        for (Slot slot : this.slots){
-            if(slot instanceof SlotCloudChest cloudChest){
+    public void updateGrays(Player player, String currentSearch) {
+        for (Slot slot : this.slots) {
+            if (slot instanceof SlotCloudChest cloudChest) {
                 cloudChest.setGray(!currentSearch.isEmpty() && !matchesSearch(player, currentSearch, cloudChest.getItem()));
             }
         }
@@ -240,38 +253,38 @@ public class CloudChestMenu extends AbstractContainerMenu {
     }
 
     public void search(Player player, String search) {
-        if(search.isEmpty()){
-            if(!restoreFromAfterSearch.isEmpty()){
+        if (search.isEmpty()) {
+            if (!restoreFromAfterSearch.isEmpty()) {
                 List<ItemStack> extras = new ArrayList<>();
                 for (int i = 0; i < this.container.getContainerSize(); i++) {
                     ItemStack stack = container.getItem(i);
-                    if(restoreFromAfterSearch.get(stack) == null){ //new item
+                    if (restoreFromAfterSearch.get(stack) == null) { //new item
                         extras.add(stack);
                     }
                 }
                 this.container.clearContent();
-                for(Map.Entry<ItemStack, Integer> stackEntry : restoreFromAfterSearch.entrySet()){
+                for (Map.Entry<ItemStack, Integer> stackEntry : restoreFromAfterSearch.entrySet()) {
                     this.container.setItem(stackEntry.getValue(), stackEntry.getKey());
                 }
-                for(ItemStack newStack : extras){
+                for (ItemStack newStack : extras) {
                     ItemSorting.addItem(container, newStack);
                 }
                 restoreFromAfterSearch.clear();
             }
-        }else{
+        } else {
             NonNullList<ItemStack> matches = NonNullList.create();
             NonNullList<ItemStack> noMatches = NonNullList.create();
             boolean reset = restoreFromAfterSearch.isEmpty();
             for (int i = 0; i < this.container.getContainerSize(); i++) {
                 ItemStack stack = container.getItem(i);
                 if (!stack.isEmpty()) {
-                    if(matchesSearch(player, search, stack)){
+                    if (matchesSearch(player, search, stack)) {
                         matches.add(stack);
-                    }else{
+                    } else {
                         noMatches.add(stack);
                     }
                 }
-                if(reset){
+                if (reset) {
                     restoreFromAfterSearch.put(this.container.getItem(i), i);
                 }
             }
@@ -289,7 +302,7 @@ public class CloudChestMenu extends AbstractContainerMenu {
     }
 
     public boolean isSlotGray(int i) {
-        if(getSlot(i) instanceof SlotCloudChest slot){
+        if (getSlot(i) instanceof SlotCloudChest slot) {
             return slot.isGray();
         }
         return false;

@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:cotton_candy"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.cotton_candy.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.cotton_candy.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/bloviator",
+    "criteria": {
+        "acacia_blossom": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["cloudstorage:cotton_candy"]
+                    }
+                ]
+            }
+        }
+    }
+}

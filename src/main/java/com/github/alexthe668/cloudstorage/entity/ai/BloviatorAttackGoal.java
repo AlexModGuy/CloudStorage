@@ -4,6 +4,7 @@ import com.github.alexthe668.cloudstorage.entity.BadloonEntity;
 import com.github.alexthe668.cloudstorage.entity.BloviatorEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
@@ -30,16 +31,31 @@ public class BloviatorAttackGoal extends Goal {
     }
 
     public void tick() {
+        cloud.setNoActionTime(0);
         LivingEntity target = cloud.getTarget();
         if(target != null){
             double dist = cloud.distanceTo(target);
             double stayBackSize = 10 * cloud.getCloudScale();
             float cantSeeMod = cloud.hasLineOfSight(target) ? 0.0F : (float)Math.sin(cloud.tickCount * 0.05F) * 5F;
             if(cloud.isThundery()){
-                cloud.getMoveControl().setWantedPosition(target.getX(), target.getY(1.0) + 1.5F * cloud.getCloudScale() + cantSeeMod, target.getZ(), 1);
+                double targetX = cloud.getTarget().getX();
+                double targetZ = cloud.getTarget().getZ();
+                if (cloud.verticalCollision && !cloud.isOnGround() && !cloud.hasLineOfSight(target)) {
+                    Vec3 lookRotated = new Vec3(0F, 0F, 1F).yRot(-cloud.getYRot() * (float)(Math.PI / 180F));
+                    targetX = cloud.getX() + lookRotated.x;
+                    targetZ = cloud.getZ() + lookRotated.z;
+                }
+                this.cloud.getMoveControl().setWantedPosition(targetX, target.getY(1.0) + 1.5F * cloud.getCloudScale() + cantSeeMod, targetZ, 1.0F);
             }else{
                 if(dist > stayBackSize || !cloud.canPush(target)){
-                    cloud.getMoveControl().setWantedPosition(target.getX(), target.getY(1.0) + 1.0F + cantSeeMod, target.getZ(), 1);
+                    double targetX = cloud.getTarget().getX();
+                    double targetZ = cloud.getTarget().getZ();
+                    if (cloud.verticalCollision && !cloud.isOnGround() && !cloud.hasLineOfSight(target)) {
+                        Vec3 lookRotated = new Vec3(0F, 0F, 2F).yRot(-cloud.getYRot() * (float)(Math.PI / 180F));
+                        targetX = cloud.getX() + lookRotated.x;
+                        targetZ = cloud.getZ() + lookRotated.z;
+                    }
+                    this.cloud.getMoveControl().setWantedPosition(targetX, target.getY(1.0) + 1.0F + cantSeeMod, targetZ, 1.0F);
                 }else{
                     this.strafingTime++;
                     if (this.strafingTime % 20 == 0) {

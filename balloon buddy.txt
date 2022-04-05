@@ -1,0 +1,8 @@
+happy - lowers hostile spawns nearby
+smirk - attacks and dodges arrows
+scary - scares hostiles away occasinally
+eyepatch - lowers owner detection rate, does sneak attacks on foes
+crazy - attacks very fast
+troll - drops tnt on enemies
+charming - passive mobs enter love mode
+cool - mobs stop fighting for a bit, stunned by this balloons cool shades.

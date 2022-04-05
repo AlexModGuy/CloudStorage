@@ -6,6 +6,7 @@ import com.github.alexthe666.citadel.client.model.basic.BasicModelPart;
 import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
 import com.github.alexthe668.cloudstorage.entity.GloveGesture;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.entity.Entity;
 
 public class BadloonHandModel extends AdvancedEntityModel<BadloonHandEntity> {
@@ -139,5 +140,11 @@ public class BadloonHandModel extends AdvancedEntityModel<BadloonHandEntity> {
             this.flap(middlefinger, twiddleSpeed, twiddleDegree, false, 2, -0.3F, ageInTicks, progress);
             this.flap(ringfinger, twiddleSpeed, twiddleDegree, false, 3, -0.3F, ageInTicks, progress);
         }
+    }
+
+    public void applyTransformsToItem(PoseStack poseStack){
+        root.translateRotate(poseStack);
+        hand.translateRotate(poseStack);
+        palm.translateRotate(poseStack);
     }
 }

@@ -2,6 +2,7 @@ package com.github.alexthe668.cloudstorage.item;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -15,10 +16,9 @@ public class CloudBottleItem extends Item {
     private boolean happy;
 
     public CloudBottleItem(boolean happy) {
-        super(new Item.Properties().tab(CloudStorage.TAB).stacksTo(8));
+        super(new Item.Properties().tab(CloudStorage.TAB).stacksTo(8).craftRemainder(happy ? Items.GLASS_BOTTLE : null));
         this.happy = happy;
     }
-
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         player.getCooldowns().addCooldown(this, happy ? 25 : 40);

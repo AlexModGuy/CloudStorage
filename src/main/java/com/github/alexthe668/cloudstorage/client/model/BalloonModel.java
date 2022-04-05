@@ -6,6 +6,7 @@ import com.github.alexthe666.citadel.client.model.basic.BasicModelPart;
 import com.github.alexthe668.cloudstorage.entity.BadloonEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonFace;
+import com.github.alexthe668.cloudstorage.entity.LivingBalloon;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -21,6 +22,7 @@ public class BalloonModel<T extends Entity> extends AdvancedEntityModel<T> {
     private float r = 1.0F;
     private float g = 1.0F;
     private float b = 1.0F;
+    private float a = 1.0F;
 
     public BalloonModel() {
         texWidth = 64;
@@ -64,20 +66,26 @@ public class BalloonModel<T extends Entity> extends AdvancedEntityModel<T> {
     }
 
     @Override
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetToDefaultPose();
         float popProgress = 0F;
-        if(entity instanceof BadloonEntity badloon){
-            if(badloon.getFace() == BalloonFace.ANGRY){
+        if (entity instanceof LivingBalloon badloon) {
+            float ability = badloon.getAbilityProgress(ageInTicks - entity.tickCount);
+            if (badloon.getFace() == BalloonFace.ANGRY) {
                 this.face.rotationPointY += Math.cos(ageInTicks * 0.6F) * 0.7F;
-            }else if(badloon.getFace() == BalloonFace.SCARED){
+            } else if (badloon.getFace() == BalloonFace.SCARED) {
                 this.face.rotationPointX += Math.sin(ageInTicks) * 2F;
-            }else{
+            } else if (badloon.getFace() == BalloonFace.SCARY) {
+                this.face.rotationPointX += Math.sin(ageInTicks) * 2F * ability;
+            } else if (badloon.getFace() == BalloonFace.CRAZY) {
+                this.face.rotationPointX += Math.sin(ageInTicks) * 0.5F;
+                this.face.rotationPointY += Math.cos(ageInTicks) * 0.5F;
+            }  else {
                 this.face.rotationPointZ += Math.sin(ageInTicks * 0.3F) * 0.25F;
             }
             popProgress = badloon.getPopProgress(ageInTicks - entity.tickCount);
         }
-        if(entity instanceof BalloonEntity balloon){
+        if (entity instanceof BalloonEntity balloon) {
             popProgress = balloon.getPopProgress(ageInTicks - entity.tickCount);
         }
         float popScale = 1F + popProgress * 1.7F;
@@ -88,13 +96,20 @@ public class BalloonModel<T extends Entity> extends AdvancedEntityModel<T> {
         this.face.rotationPointY -= popProgress * 5F;
     }
 
-    public void setColor(float p_170502_, float p_170503_, float p_170504_) {
-        this.r = p_170502_;
-        this.g = p_170503_;
-        this.b = p_170504_;
+    public void setColor(float r, float g, float b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = 1.0F;
+    }
+
+    public void setAlpha(float a){
+        this.a = a;
     }
 
     public void renderToBuffer(PoseStack p_170506_, VertexConsumer p_170507_, int p_170508_, int p_170509_, float p_170510_, float p_170511_, float p_170512_, float p_170513_) {
-        super.renderToBuffer(p_170506_, p_170507_, p_170508_, p_170509_, this.r * p_170510_, this.g * p_170511_, this.b * p_170512_, p_170513_);
+        super.renderToBuffer(p_170506_, p_170507_, p_170508_, p_170509_, this.r * p_170510_, this.g * p_170511_, this.b * p_170512_, this.a * p_170513_);
     }
+
+
 }

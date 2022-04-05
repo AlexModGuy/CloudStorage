@@ -1,0 +1,10 @@
+{
+  "parent": "cloudstorage:block/balloon_stand",
+  "display": {
+    "gui": {
+      "rotation": [ 30, 225, 0 ],
+      "translation": [ 0, -1, 0],
+      "scale":[ 0.55, 0.55, 0.55 ]
+    }
+  }
+}

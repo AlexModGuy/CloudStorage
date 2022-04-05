@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "cloudstorage:balloon_bit"
+    },
+    {
+      "item": "cloudstorage:cloud"
+    }
+  ],
+  "result": {
+    "item": "cloudstorage:guide_book"
+  }
+}

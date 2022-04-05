@@ -1,5 +1,6 @@
 package com.github.alexthe668.cloudstorage.entity;
 
+import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import net.minecraft.core.BlockPos;
@@ -34,7 +35,7 @@ import java.util.UUID;
 
 public class BalloonTieEntity extends Entity {
 
-    private static final EntityDataAccessor<Integer> BALLOON_COUNT = SynchedEntityData.defineId(BalloonEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> BALLOON_COUNT = SynchedEntityData.defineId(BalloonTieEntity.class, EntityDataSerializers.INT);
     private float popTick = 0.0F;
     private Vec3 randomMoveOffset = null;
 
@@ -56,7 +57,7 @@ public class BalloonTieEntity extends Entity {
         this.xo = this.getX();
         this.yo = this.getY();
         this.zo = this.getZ();
-        if(!level.isClientSide && (this.getBalloonCount() <= 0 || !this.getBlockStateOn().is(BlockTags.FENCES))){
+        if(!level.isClientSide && tickCount > 5 && (this.getBalloonCount() <= 0 || !this.getBlockStateOn().is(BlockTags.FENCES) && !this.getBlockStateOn().is(CSBlockRegistry.BALLOON_STAND.get()))){
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -129,6 +130,9 @@ public class BalloonTieEntity extends Entity {
         }
 
         BalloonTieEntity leashfenceknotentity1 = new BalloonTieEntity(level, pos);
+        if(level.getBlockState(pos).getBlock() == CSBlockRegistry.BALLOON_STAND.get()){
+            leashfenceknotentity1.setPos(leashfenceknotentity1.getX(), leashfenceknotentity1.getY() + 0.3F, leashfenceknotentity1.getZ());
+        }
         level.addFreshEntity(leashfenceknotentity1);
         return leashfenceknotentity1;
     }

@@ -1,5 +1,7 @@
 package com.github.alexthe668.cloudstorage.misc;
 
+import com.github.alexthe668.cloudstorage.CloudStorage;
+import com.github.alexthe668.cloudstorage.inventory.CloudChestContainer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.Container;
@@ -12,20 +14,20 @@ public class CloudIndex {
     private UUID playerUUID;
     private int balloonColor;
     private int containerSize;
-    private SimpleContainer container;
+    private CloudChestContainer container;
 
     public CloudIndex(UUID playerUUID, int balloonColor, int size){
         this.playerUUID = playerUUID;
         this.balloonColor = balloonColor;
         this.containerSize = size;
-        this.container = new SimpleContainer(size);
+        this.container = new CloudChestContainer(size);
     }
 
     public CloudIndex(CompoundTag innerTag) {
         this.balloonColor = innerTag.getInt("BalloonColor");
         this.containerSize = innerTag.getInt("Size");
         this.playerUUID = innerTag.getUUID("PlayerUUID");
-        this.container = new SimpleContainer(this.containerSize);
+        this.container = new CloudChestContainer(this.containerSize);
         this.container.fromTag(innerTag.getList("ContainerTag", 10));
     }
 
@@ -43,7 +45,7 @@ public class CloudIndex {
                 tag = this.container.createTag();
             }
             this.containerSize = newSize;
-            this.container = new SimpleContainer(newSize);
+            this.container = new CloudChestContainer(newSize);
             this.container.fromTag(tag);
         }
     }
@@ -66,5 +68,15 @@ public class CloudIndex {
 
     public UUID getPlayerUUID(){
         return playerUUID;
+    }
+
+    public int calcUsedSlots() {
+        int slots = 0;
+        for(int i = 0; i < container.getContainerSize(); i++){
+            if(!container.getItem(i).isEmpty()){
+                slots++;
+            }
+        }
+        return slots;
     }
 }

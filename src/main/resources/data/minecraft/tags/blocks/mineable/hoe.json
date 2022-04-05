@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "cloudstorage:cloud",
+    "cloudstorage:static_cloud"
+    ]
+}

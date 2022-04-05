@@ -3,6 +3,7 @@ package com.github.alexthe668.cloudstorage.client.gui;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
 import com.github.alexthe668.cloudstorage.inventory.ItemSorting;
+import com.github.alexthe668.cloudstorage.network.MessageScrollCloudChest;
 import com.github.alexthe668.cloudstorage.network.MessageSearchCloudChest;
 import com.github.alexthe668.cloudstorage.network.MessageSortCloudChest;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -73,6 +74,7 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
         this.searchBox.setMaxLength(50);
         this.searchBox.setBordered(false);
         this.searchBox.setVisible(mode == 2);
+        this.searchBox.setFocus(mode == 2);
         this.searchBox.setTextColor(16777215);
         this.addWidget(this.searchBox);
         balloonButton.active = mode != 0;
@@ -137,11 +139,10 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
     }
 
     private void searchFor(String s) {
-        this.menu.scrollTo(0.0F);
+        this.menu.scrollTo(0.0F, true);
         CloudStorage.NETWORK_WRAPPER.sendToServer(new MessageSearchCloudChest(s));
         this.menu.updateGrays(minecraft.player, s);
     }
-
 
     protected void renderLabels(PoseStack stack, int x, int y) {
         if(mode == 2){
@@ -188,7 +189,7 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
             int i = (slots + 9 - 1) / 9 - 5;
             float f = (float) (p_98529_ / (double) i);
             this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
-            this.menu.scrollTo(this.scrollOffs);
+            this.menu.scrollTo(this.scrollOffs, true);
             return true;
         }
     }
@@ -199,7 +200,7 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
             int j = i + 112;
             this.scrollOffs = ((float) p_98536_ - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
             this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
-            this.menu.scrollTo(this.scrollOffs);
+            this.menu.scrollTo(this.scrollOffs, true);
             return true;
         } else {
             return super.mouseDragged(p_98535_, p_98536_, p_98537_, p_98538_, p_98539_);
@@ -267,7 +268,7 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
         this.prevScrollOffs = scrollOffs;
         if(this.mode == 1){ // sort
             this.mode = 0;
-            this.menu.scrollTo(0.0F);
+            this.menu.scrollTo(0.0F, true);
             CloudStorage.NETWORK_WRAPPER.sendToServer(new MessageSortCloudChest(0));
             this.resetButtons();
         }

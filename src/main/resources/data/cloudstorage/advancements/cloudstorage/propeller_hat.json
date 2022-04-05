@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:propeller_hat"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.propeller_hat.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.propeller_hat.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/balloon_stand",
+    "criteria": {
+        "acacia_blossom": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["cloudstorage:propeller_hat"]
+                    }
+                ]
+            }
+        }
+    }
+}

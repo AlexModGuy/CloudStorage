@@ -1,0 +1,128 @@
+{
+  "balloon_hurt": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "cloudstorage:balloon_hurt_0"
+      },
+      {
+        "name": "cloudstorage:balloon_hurt_1"
+      },
+      {
+        "name": "cloudstorage:balloon_hurt_2"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.balloon_hurt"
+  },
+  "balloon_pop": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "cloudstorage:balloon_pop_0"
+      },
+      {
+        "name": "cloudstorage:balloon_pop_1"
+      },
+      {
+        "name": "cloudstorage:balloon_pop_2"
+      },
+      {
+        "name": "cloudstorage:balloon_pop_3"
+      },
+      {
+        "name": "cloudstorage:balloon_pop_4"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.balloon_pop"
+  },
+  "bloviator_idle": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "cloudstorage:bloviator_idle_0"
+      },
+      {
+        "name": "cloudstorage:bloviator_idle_1"
+      },
+      {
+        "name": "cloudstorage:bloviator_idle_2"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.bloviator_idle"
+  },
+  "bloviator_hurt": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "cloudstorage:bloviator_hurt_0"
+      },
+      {
+        "name": "cloudstorage:bloviator_hurt_1"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.bloviator_hurt"
+  },
+  "bloviator_blow": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "cloudstorage:bloviator_blow_0"
+      },
+      {
+        "name": "cloudstorage:bloviator_blow_1"
+      },
+      {
+        "name": "cloudstorage:bloviator_blow_2"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.bloviator_blow"
+  },
+  "bloviator_lightning": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "cloudstorage:bloviator_lightning_0"
+      },
+      {
+        "name": "cloudstorage:bloviator_lightning_1"
+      },
+      {
+        "name": "cloudstorage:bloviator_lightning_2"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.bloviator_lightning"
+  },
+  "cloud_chest_open": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cloudstorage:cloud_chest_open"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.cloud_chest_open"
+  },
+  "cloud_chest_close": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cloudstorage:cloud_chest_close"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.cloud_chest_close"
+  },
+  "static_shock": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cloudstorage:static_shock_0"
+      },
+      {
+        "name": "cloudstorage:static_shock_1"
+      },
+      {
+        "name": "cloudstorage:static_shock_2"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.static_shock"
+  }
+}

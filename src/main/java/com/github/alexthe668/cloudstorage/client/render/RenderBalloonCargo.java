@@ -47,6 +47,7 @@ public class RenderBalloonCargo extends EntityRenderer<BalloonCargoEntity> {
                 stack.translate(-0.5D, -0.5D, -0.5D);
             }
             Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, stack, source, i, OverlayTexture.NO_OVERLAY);
+
             stack.popPose();
             super.render(cargo, f1, f2, stack, source, i);
         }

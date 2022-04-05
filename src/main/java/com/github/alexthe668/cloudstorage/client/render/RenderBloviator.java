@@ -124,8 +124,10 @@ public class RenderBloviator extends MobRenderer<BloviatorEntity, BloviatorModel
         public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, BloviatorEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer sheenBuilder = bufferIn.getBuffer(RenderType.entityTranslucent(THUNDER_TEXTURE));
             this.getParentModel().renderToBuffer(matrixStackIn, sheenBuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1.0F, 1.0F, 1.0F, entity.getTransformProgress(partialTicks));
-            VertexConsumer staticBuilder = bufferIn.getBuffer(RenderType.entityTranslucent(STATIC_TEXTURE));
-            this.getParentModel().renderToBuffer(matrixStackIn, staticBuilder, 240, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1.0F, 1.0F, 1.0F, entity.getChargeTimeLerp(partialTicks) / entity.getMaxChargeTime());
+            if(entity.isThundery()){
+                VertexConsumer staticBuilder = bufferIn.getBuffer(RenderType.entityTranslucent(STATIC_TEXTURE));
+                this.getParentModel().renderToBuffer(matrixStackIn, staticBuilder, 240, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1.0F, 1.0F, 1.0F, entity.getChargeTimeLerp(partialTicks) / entity.getMaxChargeTime());
+            }
         }
     }
 }

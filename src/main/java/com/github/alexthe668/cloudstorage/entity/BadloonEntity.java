@@ -5,16 +5,19 @@ import com.github.alexthe668.cloudstorage.entity.ai.BadloonAttackGoal;
 import com.github.alexthe668.cloudstorage.entity.ai.BadloonFearCactusGoal;
 import com.github.alexthe668.cloudstorage.entity.ai.FlightMoveController;
 import com.github.alexthe668.cloudstorage.entity.ai.FlyAroundGoal;
+import com.github.alexthe668.cloudstorage.item.BalloonItem;
+import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -23,13 +26,13 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,17 +41,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class BadloonEntity extends Monster {
+public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlyer {
 
     private static final EntityDataAccessor<Float> ROT_Z = SynchedEntityData.defineId(BadloonEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(BadloonEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> CHILD_ID = SynchedEntityData.defineId(BadloonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> FACE = SynchedEntityData.defineId(BadloonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> BALLOON_COLOR = SynchedEntityData.defineId(BadloonEntity.class, EntityDataSerializers.INT);
+    public boolean dropMusicDisk = false;
     private Vec3 randomMoveOffset = null;
     public float prevRotZ;
-    private float popProgress;
-    private float prevPopProgress;
     public int fearOfBeingPoppedCooldown = 0;
     private int droppedItems = 0;
 
@@ -67,6 +69,10 @@ public class BadloonEntity extends Monster {
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {}
+
+    protected void updateNoActionTime() {
+        this.noActionTime += 1;
+    }
 
     protected PathNavigation createNavigation(Level worldIn) {
         FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn) {
@@ -92,6 +98,10 @@ public class BadloonEntity extends Monster {
         return false;
     }
 
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
+
     protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
         fallDistance = 0;
     }
@@ -107,7 +117,7 @@ public class BadloonEntity extends Monster {
         this.entityData.define(CHILD_ID, -1);
         this.entityData.define(FACE, 0);
         this.entityData.define(ROT_Z, 0F);
-        this.entityData.define(BALLOON_COLOR, 0XE72929);
+        this.entityData.define(BALLOON_COLOR, BalloonItem.DEFAULT_COLOR);
     }
 
 
@@ -134,7 +144,6 @@ public class BadloonEntity extends Monster {
     public void tick(){
         super.tick();
         this.setDeltaMovement(this.getDeltaMovement().multiply(0.8F, 0.6F, 0.8F));
-        this.prevPopProgress = popProgress;
         this.prevRotZ = this.getRotZ();
         if (!level.isClientSide) {
             Entity child = getChild();
@@ -151,12 +160,12 @@ public class BadloonEntity extends Monster {
                     this.setDeltaMovement(this.getDeltaMovement().add(back.scale(0.1F)));
                 }
             }
-            if(randomMoveOffset == null || random.nextInt(5) == 0){
-                randomMoveOffset = new Vec3(random.nextFloat() - 0.5F, random.nextFloat() - 0.5F, random.nextFloat() - 0.5F);
-            }
             if(randomMoveOffset != null){
-                Vec3 add = randomMoveOffset.scale(0.05F);
+                Vec3 add = randomMoveOffset.normalize().scale(0.01F + random.nextFloat() * 0.01F);
                 this.setDeltaMovement(this.getDeltaMovement().add(add));
+            }
+            if(this.isOnGround()){
+                this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08, 0));
             }
             if(fearOfBeingPoppedCooldown > 0){
                 fearOfBeingPoppedCooldown--;
@@ -209,7 +218,7 @@ public class BadloonEntity extends Monster {
     }
 
     private void setFaceInt(int face) {
-        this.entityData.set(FACE, face % 3);
+        this.entityData.set(FACE, face % BalloonFace.values().length);
     }
 
     public void setFace(BalloonFace face) {
@@ -217,7 +226,7 @@ public class BadloonEntity extends Monster {
     }
 
     public BalloonFace getFace() {
-        return BalloonFace.values()[Mth.clamp(this.entityData.get(FACE), 0,  2)];
+        return BalloonFace.values()[Mth.clamp(this.entityData.get(FACE), 0,  BalloonFace.values().length - 1)];
     }
 
     public float getRotZ() {
@@ -242,9 +251,17 @@ public class BadloonEntity extends Monster {
         }
         return  ((float)deathTime + partialTick - 1.0F) / 3.0F;
     }
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return CSSoundRegistry.BALLOON_HURT;
+    }
 
     protected void tickDeath() {
         int max = 3;
+        if(this.deathTime == 0){
+            if(!this.isSilent()){
+                this.playSound(CSSoundRegistry.BALLOON_POP, this.getSoundVolume(), 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
+            }
+        }
         ++this.deathTime;
         if (this.deathTime == max && !this.level.isClientSide()) {
             this.level.broadcastEntityEvent(this, (byte) 67);
@@ -291,6 +308,10 @@ public class BadloonEntity extends Monster {
             this.dropFromLootTable(source, flag);
             this.dropCustomDeathLoot(source, i, flag);
         }
+        if(dropMusicDisk){
+            dropMusicDisk = false;
+            this.spawnAtLocation(Items.MUSIC_DISC_MALL);
+        }
 
         this.dropEquipment();
         this.dropExperience();
@@ -323,4 +344,18 @@ public class BadloonEntity extends Monster {
         level.addFreshEntity(e);
     }
 
+
+
+    @Nullable
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    }
+
+    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+        return true;
+    }
+
+    public static boolean canBadloonSpawn(EntityType<BadloonEntity> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, Random random) {
+        return reason == MobSpawnType.SPAWNER || random.nextFloat() < 0.2F && iServerWorld.canSeeSky(pos);
+    }
 }

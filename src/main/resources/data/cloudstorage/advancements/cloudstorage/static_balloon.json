@@ -1,0 +1,30 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:balloon",
+            "nbt": "{static:1}"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.static_balloon.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.static_balloon.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/balloon",
+    "criteria": {
+        "example": {
+            "trigger": "minecraft:item_used_on_block",
+            "conditions": {
+                "location": {
+                    "block": {
+                        "blocks": ["cloudstorage:cloud"]
+                    }
+                },
+                "item": {
+                    "items": ["cloudstorage:balloon"]
+                }
+            }
+        }
+    }
+}

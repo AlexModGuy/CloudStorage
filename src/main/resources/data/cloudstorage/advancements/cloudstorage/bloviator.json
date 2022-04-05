@@ -1,0 +1,30 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:cloud_chest",
+            "nbt": "{MobRender:1}"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.bloviator.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.bloviator.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/root",
+    "criteria": {
+        "kill": {
+            "trigger": "minecraft:player_killed_entity",
+            "conditions": {
+                "entity": {
+                    "type": "cloudstorage:bloviator"
+                }
+            }
+        }
+    },
+    "requirements": [
+        [
+            "kill"
+        ]
+    ]
+}

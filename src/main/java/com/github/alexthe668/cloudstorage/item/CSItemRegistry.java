@@ -3,6 +3,7 @@ package com.github.alexthe668.cloudstorage.item;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -20,11 +21,15 @@ import java.util.Objects;
 public class CSItemRegistry {
     public static final DeferredRegister<Item> DEF_REG = DeferredRegister.create(ForgeRegistries.ITEMS, CloudStorage.MODID);
     public static final RegistryObject<Item> BALLOON_BIT = DEF_REG.register("balloon_bit", () -> new Item(new Item.Properties().tab(CloudStorage.TAB)));
+    public static final RegistryObject<Item> GUIDE_BOOK = DEF_REG.register("guide_book", () -> new GuideBookItem(new Item.Properties().tab(CloudStorage.TAB).stacksTo(1)));
     public static final RegistryObject<Item> BALLOON_INVENTORY = DEF_REG.register("balloon_inventory", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BALLOON = DEF_REG.register("balloon", () -> new BalloonItem());
-    public static final RegistryObject<Item> PROPELLER_HAT = DEF_REG.register("propeller_hat", () -> new PropellerHatItem());
     public static final RegistryObject<Item> ANGRY_CLOUD_IN_A_BOTTLE = DEF_REG.register("angry_cloud_in_a_bottle", () -> new CloudBottleItem(false));
     public static final RegistryObject<Item> HAPPY_CLOUD_IN_A_BOTTLE = DEF_REG.register("happy_cloud_in_a_bottle", () -> new CloudBottleItem(true));
+    public static final RegistryObject<Item> BALLOON_BUDDY_INVENTORY = DEF_REG.register("balloon_buddy_inventory", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> BALLOON_BUDDY = DEF_REG.register("balloon_buddy", () -> new BalloonBuddyItem());
+    public static final RegistryObject<Item> PROPELLER_HAT = DEF_REG.register("propeller_hat", () -> new PropellerHatItem());
+    public static final RegistryObject<Item> COTTON_CANDY = DEF_REG.register("cotton_candy", () -> new Item(new Item.Properties().tab(CloudStorage.TAB).food((new FoodProperties.Builder()).nutrition(4).saturationMod(0.15F).fast().build())));
 
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {

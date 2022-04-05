@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:happy_cloud_in_a_bottle"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.happy_cloud_in_a_bottle.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.happy_cloud_in_a_bottle.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/angry_cloud_in_a_bottle",
+    "criteria": {
+        "acacia_blossom": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["cloudstorage:happy_cloud_in_a_bottle"]
+                    }
+                ]
+            }
+        }
+    }
+}
