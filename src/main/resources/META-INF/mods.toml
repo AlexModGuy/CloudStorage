@@ -4,7 +4,7 @@ license="GNU LESSER GENERAL PUBLIC LICENSE"
 issueTrackerURL="https://github.com/Alex-the-666/CloudStorage/issues" #optional
 [[mods]] #mandatory
 modId="cloudstorage" #mandatory
-version="BETA1" #mandatory
+version="1.0" #mandatory
 displayName="Cloud Storage" #mandatory
 displayURL="https://www.curseforge.com/minecraft/mc-mods/cloud-storage" #optional
 authors="Alexthe668, Yosh" #optional
