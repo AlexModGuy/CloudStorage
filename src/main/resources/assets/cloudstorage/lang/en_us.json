@@ -4,6 +4,7 @@
   "entity.cloudstorage.badloon_hand": "Badloon's Glove",
   "entity.cloudstorage.balloon": "Balloon",
   "entity.cloudstorage.balloon_tie": "Balloon Tie",
+  "entity.cloudstorage.balloon_cargo": "Balloon-lifted Block",
   "entity.cloudstorage.bloviator": "Bloviator",
   "entity.cloudstorage.balloon_buddy": "Balloon Buddy",
   "entity.cloudstorage.balloon_buddy.personality.happy": "Happy",
@@ -34,6 +35,8 @@
   "item.cloudstorage.balloon_buddy_inventory": "Balloon Buddy",
   "item.cloudstorage.balloon_buddy": "Balloon Buddy",
   "item.cloudstorage.cotton_candy": "Cotton Candy",
+  "item.cloudstorage.music_disc_drift": "Music Disc",
+  "item.cloudstorage.music_disc_drift.desc": "Drift - Shroomy",
   "block.cloudstorage.cloud": "Cloud Block",
   "block.cloudstorage.static_cloud": "Static Cloud Block",
   "block.cloudstorage.cloud_chest": "Cloud Chest",
@@ -99,5 +102,6 @@
   "cloudstorage.sound.subtitle.bloviator_lightning": "Bloviator shocks",
   "cloudstorage.sound.subtitle.cloud_chest_open": "Cloud Chest opens",
   "cloudstorage.sound.subtitle.cloud_chest_close": "Cloud Chest closes",
-  "cloudstorage.sound.subtitle.static_shock": "Static electricity buzzes"
+  "cloudstorage.sound.subtitle.static_shock": "Static electricity buzzes",
+  "cloudstorage.sound.subtitle.music_disc_drift": "Shroomy - Drift"
 }

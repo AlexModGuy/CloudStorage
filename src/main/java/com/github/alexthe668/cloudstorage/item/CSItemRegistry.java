@@ -3,10 +3,16 @@ package com.github.alexthe668.cloudstorage.item;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
+import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.RecordItem;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,6 +36,7 @@ public class CSItemRegistry {
     public static final RegistryObject<Item> BALLOON_BUDDY = DEF_REG.register("balloon_buddy", () -> new BalloonBuddyItem());
     public static final RegistryObject<Item> PROPELLER_HAT = DEF_REG.register("propeller_hat", () -> new PropellerHatItem());
     public static final RegistryObject<Item> COTTON_CANDY = DEF_REG.register("cotton_candy", () -> new Item(new Item.Properties().tab(CloudStorage.TAB).food((new FoodProperties.Builder()).nutrition(4).saturationMod(0.15F).fast().build())));
+    public static final RegistryObject<Item> MUSIC_DISC_DRIFT = DEF_REG.register("music_disc_drift", () -> new RecordItem(14, CSSoundRegistry.MUSIC_DISC_DRIFT, new Item.Properties().tab(CloudStorage.TAB).stacksTo(1).rarity(Rarity.RARE)));
 
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {
@@ -38,6 +45,13 @@ public class CSItemRegistry {
         CSBlockRegistry.DEF_REG.getEntries().stream()
                 .map(RegistryObject::get)
                 .forEach(block -> event.getRegistry().register(registerItemBlock(block)));
+        DispenserBlock.registerBehavior(CSItemRegistry.BALLOON.get(), (blockSource, itemStack) -> {
+            Direction direction = blockSource.getBlockState().getValue(DispenserBlock.FACING);
+            if(((BalloonItem)CSItemRegistry.BALLOON.get()).placeBalloon(blockSource.getLevel(), itemStack, blockSource.getPos(), direction, null, true)){
+                itemStack.shrink(1);
+            }
+            return itemStack;
+        });
     }
 
     private static Item registerItemBlock(Block block) {

@@ -6,6 +6,7 @@ import com.github.alexthe668.cloudstorage.entity.ai.BadloonFearCactusGoal;
 import com.github.alexthe668.cloudstorage.entity.ai.FlightMoveController;
 import com.github.alexthe668.cloudstorage.entity.ai.FlyAroundGoal;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
+import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -312,9 +313,8 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
         }
         if(dropMusicDisk){
             dropMusicDisk = false;
-            this.spawnAtLocation(Items.MUSIC_DISC_MALL);
+            this.spawnAtLocation(CSItemRegistry.MUSIC_DISC_DRIFT.get());
         }
-
         this.dropEquipment();
         this.dropExperience();
 

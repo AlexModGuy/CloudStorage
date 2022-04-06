@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
@@ -229,7 +230,7 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void onServerTick(TickEvent.WorldTickEvent tick) {
-        if (!tick.world.isClientSide && tick.world instanceof ServerLevel && CloudStorage.CONFIG.skyMobSpawning.get()) {
+        if (!tick.world.isClientSide && tick.world instanceof ServerLevel && CloudStorage.CONFIG.skyMobSpawning.get() && tick.world.getDifficulty() != Difficulty.PEACEFUL) {
             ServerLevel serverWorld = (ServerLevel) tick.world;
             if (SKY_MOB_SPAWNER_MAP.get(serverWorld) == null) {
                 SKY_MOB_SPAWNER_MAP.put(serverWorld, new SkyMobSpawner(serverWorld));

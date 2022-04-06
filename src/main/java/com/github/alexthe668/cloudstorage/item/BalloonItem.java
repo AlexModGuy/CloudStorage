@@ -18,6 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -33,6 +34,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BeehiveBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,6 +43,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 
 public class BalloonItem extends Item implements DyeableLeatherItem {
 
@@ -153,44 +157,52 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         }
     }
 
-    public InteractionResult useOn(UseOnContext context) {
-        BlockPos blockpos = context.getClickedPos();
-        Direction direction = context.getClickedFace();
-        Level level = context.getLevel();
+    public boolean placeBalloon(Level level, ItemStack itemstack, BlockPos blockpos, Direction direction, @Nullable Player player, boolean dispensed){
         BlockState blockstate = level.getBlockState(blockpos);
         BlockPos blockpos1 = blockpos.relative(direction);
-        Player player = context.getPlayer();
-        ItemStack itemstack = context.getItemInHand();
+        if(dispensed){
+            blockpos = blockpos1;
+            blockstate = level.getBlockState(blockpos1);
+        }
+        Random random = new Random();
         if (!isStatic(itemstack) && blockstate.is(CSBlockRegistry.STATIC_CLOUD.get())) {
             CompoundTag tag = itemstack.getOrCreateTag().copy();
             tag.putBoolean("static", true);
             ItemStack copyOff = itemstack.copy();
             copyOff.setCount(1);
             copyOff.setTag(tag);
-            player.playSound(CSSoundRegistry.STATIC_SHOCK, 0.5F, player.getVoicePitch());
-            if (!player.isCreative()) {
-                itemstack.shrink(1);
-            }
-            if (!player.addItem(copyOff)) {
-                player.drop(copyOff, true);
+            level.playSound(player, blockpos1, CSSoundRegistry.STATIC_SHOCK, SoundSource.BLOCKS, 0.5F, 0.75F + random.nextFloat() * 0.5F);
+            if(player != null && !dispensed){
+                if (!player.isCreative()) {
+                    itemstack.shrink(1);
+                }
+                if (!player.addItem(copyOff)) {
+                    player.drop(copyOff, true);
+                }
+            }else{
+                Block.popResource(level, blockpos, copyOff);
             }
             level.setBlockAndUpdate(blockpos, CSBlockRegistry.CLOUD.get().defaultBlockState());
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return true;
         } else if (isStatic(itemstack) && blockstate.is(CSBlockRegistry.CLOUD.get())) {
             CompoundTag tag = itemstack.getOrCreateTag().copy();
             tag.putBoolean("static", false);
             ItemStack copyOff = itemstack.copy();
             copyOff.setCount(1);
             copyOff.setTag(tag);
-            if (!player.isCreative()) {
-                itemstack.shrink(1);
-            }
-            if (!player.addItem(copyOff)) {
-                player.drop(copyOff, true);
+            if(player != null && !dispensed){
+                if (!player.isCreative()) {
+                    itemstack.shrink(1);
+                }
+                if (!player.addItem(copyOff)) {
+                    player.drop(copyOff, true);
+                }
+            }else{
+                Block.popResource(level, blockpos, copyOff);
             }
             level.setBlockAndUpdate(blockpos, CSBlockRegistry.STATIC_CLOUD.get().defaultBlockState());
-            return InteractionResult.sidedSuccess(level.isClientSide);
-        } else if (blockstate.is(CSBlockRegistry.CLOUD_CHEST.get()) || blockstate.is(CSBlockRegistry.STATIC_CLOUD_CHEST.get())) {
+            return true;
+        } else if (player != null && (blockstate.is(CSBlockRegistry.CLOUD_CHEST.get()) || blockstate.is(CSBlockRegistry.STATIC_CLOUD_CHEST.get()))) {
             BlockEntity te = level.getBlockEntity(blockpos);
             if (te instanceof AbstractCloudChestBlockEntity cloudChest) {
                 if (cloudChest.hasBalloonFor(player)) {
@@ -201,7 +213,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
                 }
                 cloudChest.setBalloonColorFor(player, this.getColor(itemstack));
                 itemstack.shrink(1);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return true;
             }
         }
         BalloonEntity balloon = CSEntityRegistry.BALLOON.get().create(level);
@@ -214,7 +226,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         balloon.setStringLength(BalloonEntity.DEFAULT_STRING_LENGTH);
         balloon.setCharged(isStatic(itemstack));
         balloon.setPos(blockpos1.getX() + 0.5F, blockpos1.getY() + 0.5F, blockpos1.getZ() + 0.5F);
-        if (level.noCollision(balloon)) {
+        if (level.noCollision(balloon) || dispensed) {
             if (blockstate.is(BlockTags.FENCES) || blockstate.getBlock() == CSBlockRegistry.BALLOON_STAND.get()) {
                 BalloonTieEntity tie = BalloonTieEntity.getOrCreateKnot(level, blockpos);
                 if (tie != null) {
@@ -240,9 +252,18 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
             }
 
             itemstack.shrink(1);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return true;
         } else {
-            return InteractionResult.CONSUME;
+            return false;
         }
+    }
+
+    public InteractionResult useOn(UseOnContext context) {
+        BlockPos blockpos = context.getClickedPos();
+        Direction direction = context.getClickedFace();
+        Level level = context.getLevel();
+        Player player = context.getPlayer();
+        ItemStack itemstack = context.getItemInHand();
+        return placeBalloon(level, itemstack, blockpos, direction, player, false) ? InteractionResult.sidedSuccess(level.isClientSide) : InteractionResult.CONSUME;
     }
 }

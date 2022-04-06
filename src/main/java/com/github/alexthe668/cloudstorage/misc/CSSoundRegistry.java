@@ -21,6 +21,7 @@ public class CSSoundRegistry {
     public static final SoundEvent CLOUD_CHEST_OPEN = createSoundEvent("cloud_chest_open");
     public static final SoundEvent CLOUD_CHEST_CLOSE = createSoundEvent("cloud_chest_close");
     public static final SoundEvent STATIC_SHOCK = createSoundEvent("static_shock");
+    public static final SoundEvent MUSIC_DISC_DRIFT = createSoundEvent("music_disc_drift");
 
     private static SoundEvent createSoundEvent(final String soundName) {
         final ResourceLocation soundID = new ResourceLocation(CloudStorage.MODID, soundName);

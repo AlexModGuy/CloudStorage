@@ -124,5 +124,16 @@
       }
     ],
     "subtitle": "cloudstorage.sound.subtitle.static_shock"
+  },
+  "music_disc_drift": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "cloudstorage:record_drift",
+        "stream": true
+      }
+    ],
+    "stream": true,
+    "subtitle": "cloudstorage.sound.subtitle.music_disc_drift"
   }
 }
