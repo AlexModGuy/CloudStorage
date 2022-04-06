@@ -545,8 +545,10 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
         this.addAdditionalSaveData(mobNBT);
         tag.put("MobNBT", mobNBT);
         tag.putInt("Personality", this.getPersonality().ordinal());
-        display.putInt("color", this.getBalloonColor());
-        tag.put("display", display);
+        if(this.getBalloonColor() != BalloonItem.DEFAULT_COLOR) {
+            display.putInt("color", this.getBalloonColor());
+            tag.put("display", display);
+        }
         tag.putFloat("Health", this.getHealth());
         stack.setTag(tag);
         if (this.hasCustomName()) {

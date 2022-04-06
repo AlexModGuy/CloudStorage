@@ -5,6 +5,7 @@ import com.github.alexthe668.cloudstorage.entity.*;
 import com.github.alexthe668.cloudstorage.entity.villager.CSVillagerRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
 import com.github.alexthe668.cloudstorage.inventory.ItemSorting;
+import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.*;
 import com.github.alexthe668.cloudstorage.network.MessageUpdateCloudInfo;
@@ -13,12 +14,14 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
@@ -33,12 +36,16 @@ import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.*;
 
@@ -46,6 +53,7 @@ import java.util.*;
 public class CommonProxy {
 
     public static CSAdvancementTrigger UPLOAD_TRIGGER = new CSAdvancementTrigger(new ResourceLocation("cloudstorage:upload"));
+    public static CSAdvancementTrigger LUFTBALLONS_TRIGGER = new CSAdvancementTrigger(new ResourceLocation("cloudstorage:luftballons"));
     private Random random = new Random();
     private static final Map<ServerLevel, SkyMobSpawner> SKY_MOB_SPAWNER_MAP = new HashMap<ServerLevel, SkyMobSpawner>();
 
@@ -54,6 +62,7 @@ public class CommonProxy {
 
     public void init() {
         CriteriaTriggers.register(UPLOAD_TRIGGER);
+        CriteriaTriggers.register(LUFTBALLONS_TRIGGER);
     }
 
     public void setupParticles() {
@@ -228,5 +237,36 @@ public class CommonProxy {
             SkyMobSpawner spawner = SKY_MOB_SPAWNER_MAP.get(serverWorld);
             spawner.tick();
         }
+    }
+
+    private static void checkForLuftballoons(Player player){
+        int redBalloons = 0;
+        Inventory inv = player.getInventory();
+        for(int i = 0; i < inv.getContainerSize(); i++){
+            if(inv.getItem(i).is(CSItemRegistry.BALLOON.get()) && BalloonItem.getBalloonColor(inv.getItem(i)) == BalloonItem.DEFAULT_COLOR){
+                redBalloons += inv.getItem(i).getCount();
+            }
+            if(redBalloons >= 99){
+                break;
+            }
+        }
+        if(redBalloons >= 99 && player instanceof ServerPlayer){
+            LUFTBALLONS_TRIGGER.trigger((ServerPlayer)player);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerCraft(PlayerEvent.ItemCraftedEvent event) {
+        checkForLuftballoons(event.getPlayer());
+    }
+
+    @SubscribeEvent
+    public void onPlayerPickup(PlayerEvent.ItemPickupEvent event) {
+        checkForLuftballoons(event.getPlayer());
+    }
+
+    @SubscribeEvent
+    public void onPlayerOpenContainer(PlayerContainerEvent event) {
+        checkForLuftballoons(event.getPlayer());
     }
 }

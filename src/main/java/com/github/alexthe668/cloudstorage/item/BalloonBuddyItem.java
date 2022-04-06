@@ -8,6 +8,7 @@ import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -16,10 +17,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -79,6 +77,24 @@ public class BalloonBuddyItem extends BalloonItem {
             components.add(new TranslatableComponent(getPersonality(stack).getPersonalityText()).withStyle(ChatFormatting.GRAY));
         }
         super.appendHoverText(stack, level, components, flags);
+    }
+
+    @Override
+    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list) {
+        if (this.allowdedIn(tab)) {
+            for (int i = BalloonFace.HAPPY.ordinal(); i < BalloonFace.values().length; i++) {
+                list.add(createBalloon(DEFAULT_COLOR, BalloonFace.values()[i]));
+            }
+        }
+    }
+
+    public ItemStack createBalloon(int color, BalloonFace face) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("color", color);
+        tag.putInt("Personality", face.ordinal());
+        ItemStack stack = new ItemStack(this);
+        stack.setTag(tag);
+        return stack;
     }
 
     public static BalloonFace getPersonality(ItemStack stack) {

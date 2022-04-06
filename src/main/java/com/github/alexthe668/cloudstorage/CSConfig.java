@@ -29,7 +29,7 @@ public class CSConfig {
         builder.pop();
         builder.push("village");
         balloonSalesmanVillager = builder.comment(" whether the balloon salesman villager is enabled or not").translation("balloon_salesman_villager").define("balloon_salesman_villager", true);
-        balloonStandSpawnWeight = builder.comment(" the weight of the balloon stand village structure spawning. set to zero to disable").translation("balloon_stand_spawn_weight").defineInRange("balloon_stand_spawn_weight", 7, 0, 100);
+        balloonStandSpawnWeight = builder.comment(" the weight of the balloon stand village structure spawning. set to zero to disable").translation("balloon_stand_spawn_weight").defineInRange("balloon_stand_spawn_weight", 4, 0, 100);
         builder.pop();
         builder.comment(" spawning of sky mobs is handled a bit differently than vanilla, since vanilla spawns are based on height map which would not work in this case.");
         builder.push("spawning");
@@ -39,8 +39,8 @@ public class CSConfig {
         skyMobSpawningChance = builder.comment("  for every interval (see above), the percent chance that a sky mob(s) should actually spawn. Default is 0.2, so only 20% of intervals will successfully spawn a badloon/bloviator.").translation("sky_mob_spawn_chance").defineInRange("sky_mob_spawn_chance", 0.2D, 0D, 1D);
         skyMobSpawnsAroundCloudedPlayers = builder.comment(" whether sky mobs should only spawn around players that are above the cloud height, or randomly select any player to spawn around.").translation("sky_mob_spawn_around_clouded_players").define("sky_mob_spawn_around_clouded_players", true);
         skyMobSpawnsOnlyInDarkness = builder.comment(" whether sky mobs should only spawn in darkness. If false, sky mobs will spawn irrespective of sky light, but will not spawn near block light sources (like torches)").translation("sky_mob_spawn_only_in_darkness").define("sky_mob_spawn_only_in_darkness", false);
-        skyMobMinSpawnDistance = builder.comment(" minimum distance away from the player sky mobs spawn at, in blocks").translation("sky_mob_min_spawn_distance").defineInRange("sky_mob_min_spawn_distance", 20, 1, 2048);
-        skyMobMaxSpawnDistance = builder.comment(" maximum distance away from the player sky mobs spawn at, in blocks").translation("sky_mob_max_spawn_distance").defineInRange("sky_mob_max_spawn_distance", 84, 1, 2048);
+        skyMobMinSpawnDistance = builder.comment(" minimum distance away from the player sky mobs spawn at, in blocks").translation("sky_mob_min_spawn_distance").defineInRange("sky_mob_min_spawn_distance", 24, 1, 2048);
+        skyMobMaxSpawnDistance = builder.comment(" maximum distance away from the player sky mobs spawn at, in blocks").translation("sky_mob_max_spawn_distance").defineInRange("sky_mob_max_spawn_distance", 48, 1, 2048);
         badloonToBloviatorRatio = builder.comment(" the percent chance that a sky mob spawn is a badloon rather than a bloviator").translation("badloon_to_bloviator_ratio").defineInRange("badloon_to_bloviator_ratio", 0.55D, 0D, 1D);
         builder.pop();
     }

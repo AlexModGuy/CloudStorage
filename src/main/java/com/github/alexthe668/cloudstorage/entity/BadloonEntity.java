@@ -71,7 +71,9 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
     protected void playStepSound(BlockPos pos, BlockState blockIn) {}
 
     protected void updateNoActionTime() {
-        this.noActionTime += 1;
+        if(random.nextBoolean()){
+            this.noActionTime += 1;
+        }
     }
 
     protected PathNavigation createNavigation(Level worldIn) {

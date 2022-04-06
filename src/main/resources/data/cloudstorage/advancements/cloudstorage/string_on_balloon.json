@@ -1,0 +1,29 @@
+{
+    "display": {
+        "icon": {
+            "item": "minecraft:string"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.string_on_balloon.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.string_on_balloon.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/balloon",
+    "criteria": {
+        "ballooninteract": {
+            "trigger": "minecraft:player_interacted_with_entity",
+            "conditions": {
+                "item": {
+                    "items": [
+                        "minecraft:string"
+                    ]
+                },
+                "entity": {
+                    "type": "cloudstorage:balloon"
+                }
+            }
+        }
+    }
+}

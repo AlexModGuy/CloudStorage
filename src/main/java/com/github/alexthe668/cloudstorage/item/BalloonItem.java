@@ -17,6 +17,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -100,7 +101,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         }
     }
 
-    private ItemStack createBalloon(int color, boolean lgihtning) {
+    public ItemStack createBalloon(int color, boolean lgihtning) {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("static", lgihtning);
         tag.putInt("color", color);
@@ -111,6 +112,13 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
 
     public int getColor(ItemStack stack) {
         return getBalloonColor(stack);
+    }
+
+    @Override
+    public void setColor(ItemStack stack, int colorHex) {
+        if(colorHex != DEFAULT_COLOR){
+            stack.getOrCreateTagElement("display").putInt("color", colorHex);
+        }
     }
 
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int i, boolean held) {

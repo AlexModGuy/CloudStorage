@@ -38,7 +38,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = 'BETA1'
+version = 'BETA4'
 group = 'com.github.alexthe668' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'cloudstorage'
 

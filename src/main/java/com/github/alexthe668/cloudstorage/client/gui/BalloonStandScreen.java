@@ -8,6 +8,7 @@ import com.github.alexthe668.cloudstorage.network.MessageRequestCloudInfo;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,7 @@ public class BalloonStandScreen extends AbstractContainerScreen<BalloonStandMenu
     private float cloudProgress;
     private float prevCloudProgress;
     private int lastBalloonColor = -1;
+    private int tickCount = 0;
 
     public BalloonStandScreen(BalloonStandMenu menu, Inventory inventory, Component name) {
         super(menu, inventory, name);
@@ -39,26 +41,30 @@ public class BalloonStandScreen extends AbstractContainerScreen<BalloonStandMenu
         this.renderTooltip(stack, x, y);
     }
 
-    protected void renderBg(PoseStack poseStack, float partialTick, int x, int y) {
+    protected void renderBg(PoseStack poseStack, float f, int x, int y) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
+        float partialTicks = Minecraft.getInstance().getFrameTime();
+        float cloud = (prevCloudProgress + (cloudProgress - prevCloudProgress) * partialTicks) / 10F;
+        int cloudTexture = tickCount / 7;
+        renderLittleCloud(poseStack, partialTicks, cloud * 0.8F, cloudTexture);
+    }
+
+    private void renderLittleCloud(PoseStack poseStack, float partialTick, float alpha, int cloudTexture){
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        float cloud = prevCloudProgress + (cloudProgress - prevCloudProgress) * partialTick;
         this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
-        RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, cloud / 10F);
-        this.blit(poseStack, i + 7, j + 15, 176, 0, 66, 66);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+        this.blit(poseStack, i + 7, j + 15, 176, 66, 66, 66);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
     }
 
     protected void containerTick() {
         prevCloudProgress = cloudProgress;
+        tickCount++;
         if (this.menu.getSlot(0).hasItem()) {
             int i = BalloonItem.getBalloonColor(this.menu.getSlot(0).getItem());
             if(i != lastBalloonColor){
@@ -86,7 +92,7 @@ public class BalloonStandScreen extends AbstractContainerScreen<BalloonStandMenu
             poseStack.scale(0.8F, 0.8F, 0.8F);
             String color = Integer.toHexString(lastBalloonColor).toUpperCase(Locale.ROOT) + " RGB";
             int textColor = FastColor.ARGB32.multiply(0X85A2B2, fade);
-            float textX = 17;
+            float textX = 20;
             float textY = 30;
             int r = (int) (lastBalloonColor >> 16 & 255);
             int g = (int) (lastBalloonColor >> 8 & 255);

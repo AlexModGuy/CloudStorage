@@ -3,6 +3,7 @@ package com.github.alexthe668.cloudstorage.entity;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.CommonProxy;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
+import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSAdvancementTrigger;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
@@ -429,7 +430,7 @@ public class BalloonEntity extends Entity {
 
     public ItemStack getPickResult() {
         ItemStack itemstack = new ItemStack(CSItemRegistry.BALLOON.get());
-        ((DyeableLeatherItem) itemstack.getItem()).setColor(itemstack, this.getBalloonColor());
+        ((BalloonItem) itemstack.getItem()).setColor(itemstack, this.getBalloonColor());
         return itemstack;
     }
 

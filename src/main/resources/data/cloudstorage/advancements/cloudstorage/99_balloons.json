@@ -1,80 +1,21 @@
 {
-    "display": {
-        "icon": {
-            "item": "cloudstorage:balloon_buddy",
-            "nbt": "{3DRender:1, Personality:10}"
-        },
-        "title": {
-            "translate": "advancements.cloudstorage.99_balloons.title"
-        },
-        "description": {
-            "translate": "advancements.cloudstorage.99_balloons.desc"
-        },
-        "frame": "challenge"
+  "display": {
+    "icon": {
+      "item": "cloudstorage:balloon_buddy",
+      "nbt": "{3DRender:1, Personality:10}"
     },
-    "parent": "cloudstorage:cloudstorage/balloon",
-    "criteria": {
-        "acacia_blossom": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": {
-                            "min": 3,
-                            "max": 8
-                        }
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    },
-                    {
-                        "items": ["cloudstorage:balloon"],
-                        "count": 8
-                    }
-                ]
-            }
-        }
+    "title": {
+      "translate": "advancements.cloudstorage.99_balloons.title"
+    },
+    "description": {
+      "translate": "advancements.cloudstorage.99_balloons.desc"
+    },
+    "frame": "challenge"
+  },
+  "parent": "cloudstorage:cloudstorage/balloon",
+  "criteria": {
+    "ex": {
+      "trigger": "cloudstorage:luftballons"
     }
+  }
 }

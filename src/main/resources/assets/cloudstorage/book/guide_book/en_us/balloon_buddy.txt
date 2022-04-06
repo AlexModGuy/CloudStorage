@@ -14,8 +14,6 @@ Happy - This balloon buddy will not engage in combat, but will lower nearby mons
 <NEWLINE>
 Cheeky - This balloon will engage in melee combat, but can dodge any arrows and other projectiles.
 <NEWLINE>
-Cheeky - This balloon will engage in melee combat, but can dodge any arrows and other projectiles.
-<NEWLINE>
 Scary - This balloon has a terrifying visage and can send nearby monsters running in fear - although it cannot attack.
 <NEWLINE>
 Punished - This eyepatch-toting balloon will enter "stealth mode" and will not aggro mobs with its attacks. It also reduces its owner's detection range when nearby.

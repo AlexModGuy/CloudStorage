@@ -83,7 +83,9 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
     }
 
     protected void updateNoActionTime() {
-        this.noActionTime += 1;
+        if(random.nextBoolean()){
+            this.noActionTime += 1;
+        }
     }
 
     public boolean isPushing() {
