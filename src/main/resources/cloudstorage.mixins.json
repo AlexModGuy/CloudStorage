@@ -5,8 +5,7 @@
   "target": "@env(DEFAULT)",
   "refmap": "cloudstorage.refmap.json",
   "mixins": [
-    "CelebrateVillagersSurvivedRaidMixin",
-    "PoolsMixin"
+    "CelebrateVillagersSurvivedRaidMixin"
   ],
   "client": [
   ],

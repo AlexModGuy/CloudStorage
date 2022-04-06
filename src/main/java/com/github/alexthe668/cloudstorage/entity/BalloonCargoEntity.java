@@ -126,7 +126,7 @@ public class BalloonCargoEntity extends Entity {
         Entity balloon = this.getBalloon();
         if (!level.isClientSide) {
             if(balloon == null || !balloon.isAlive()){
-                FallingBlockEntity fallingblockentity = FallingBlockEntity.fall(level, this.blockPosition(), this.blockState);
+                FallingBlockEntity fallingblockentity = new FallingBlockEntity(level, this.getX(), this.getY(), this.getZ(), this.blockState);
                 fallingblockentity.blockData = this.blockData;
                 this.remove(RemovalReason.DISCARDED);
             }else if(balloon instanceof BalloonEntity){

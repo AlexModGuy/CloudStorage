@@ -11,7 +11,6 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.npc.VillagerType;
@@ -22,13 +21,14 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.structures.LegacySinglePoolElement;
+import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElementType;
+import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.pools.LegacySinglePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class BalloonStandPoolElement extends LegacySinglePoolElement {
 
@@ -36,11 +36,11 @@ public class BalloonStandPoolElement extends LegacySinglePoolElement {
         return p_210357_.group(templateCodec(), processorsCodec(), projectionCodec()).apply(p_210357_, BalloonStandPoolElement::new);
     });
 
-    protected BalloonStandPoolElement(Either<ResourceLocation, StructureTemplate> either, Holder<StructureProcessorList> p_210349_, StructureTemplatePool.Projection p_210350_) {
+    protected BalloonStandPoolElement(Either<ResourceLocation, StructureTemplate> either, Supplier<StructureProcessorList> p_210349_, StructureTemplatePool.Projection p_210350_) {
         super(either, p_210349_, p_210350_);
     }
 
-    public BalloonStandPoolElement(ResourceLocation resourceLocation, Holder<StructureProcessorList> processors) {
+    public BalloonStandPoolElement(ResourceLocation resourceLocation, Supplier<StructureProcessorList> processors) {
         super(Either.left(resourceLocation), processors, StructureTemplatePool.Projection.RIGID);
     }
 
@@ -117,7 +117,7 @@ public class BalloonStandPoolElement extends LegacySinglePoolElement {
         if (!p_210423_) {
             structureplacesettings.addProcessor(JigsawReplacementProcessor.INSTANCE);
         }
-        this.processors.value().list().forEach(structureplacesettings::addProcessor);
+        this.processors.get().list().forEach(structureplacesettings::addProcessor);
         this.getProjection().getProcessors().forEach(structureplacesettings::addProcessor);
         return structureplacesettings;
     }

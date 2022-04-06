@@ -1,7 +1,6 @@
 package com.github.alexthe668.cloudstorage.entity.villager;
 
 
-import com.github.alexthe666.citadel.server.generation.VillageHouseManager;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.block.CSPOIRegistry;
@@ -16,8 +15,10 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -31,9 +32,10 @@ import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElement;
+import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElementType;
+import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -79,20 +81,35 @@ public class CSVillagerRegistry {
         level5.add(new SellingRandomlyDyedItem(CSItemRegistry.BALLOON.get(), 6, 2, 13, 5));
     }
 
-    public static void registerHouses() {
-        registeredHouses = true;
-        int weight = CloudStorage.CONFIG.balloonStandSpawnWeight.get();
-        StructurePoolElement plains = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_plains"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/plains/houses", (pool) -> VillageHouseManager.addToPool(pool, plains, weight));
-        StructurePoolElement desert = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_desert"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/desert/houses", (pool) -> VillageHouseManager.addToPool(pool, desert, weight));
-        StructurePoolElement savanna = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_savanna"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/savanna/houses", (pool) -> VillageHouseManager.addToPool(pool, savanna, weight));
-        StructurePoolElement snowy = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_snowy"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/snowy/houses", (pool) -> VillageHouseManager.addToPool(pool, snowy, weight));
-        StructurePoolElement taiga = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_taiga"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/taiga/houses", (pool) -> VillageHouseManager.addToPool(pool, taiga, weight));
+    public static void registerHouses(MinecraftServer server) {
+        registerJigsawPiece(server, new ResourceLocation("minecraft:village/plains/houses"), new ResourceLocation(CloudStorage.MODID, "balloon_stand_plains"));
+        registerJigsawPiece(server, new ResourceLocation("minecraft:village/desert/houses"), new ResourceLocation(CloudStorage.MODID, "balloon_stand_desert"));
+        registerJigsawPiece(server, new ResourceLocation("minecraft:village/savanna/houses"), new ResourceLocation(CloudStorage.MODID, "balloon_stand_savanna"));
+        registerJigsawPiece(server, new ResourceLocation("minecraft:village/snowy/houses"), new ResourceLocation(CloudStorage.MODID, "balloon_stand_snowy"));
+        registerJigsawPiece(server, new ResourceLocation("minecraft:village/taiga/houses"), new ResourceLocation(CloudStorage.MODID, "balloon_stand_taiga"));
     }
+
+    private static void registerJigsawPiece(MinecraftServer server, ResourceLocation poolLocation, ResourceLocation resourceLocation) {
+        RegistryAccess manager = server.registryAccess();
+        Registry<StructureTemplatePool> registry = manager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY);
+        StructureTemplatePool pool = registry.get(poolLocation);
+        int weight = CloudStorage.CONFIG.balloonStandSpawnWeight.get();
+        if (weight > 0) {
+            StructureProcessorList processorList = manager.registryOrThrow(Registry.PROCESSOR_LIST_REGISTRY).getOptional(poolLocation).orElse(ProcessorLists.EMPTY);
+            StructurePoolElement element = new BalloonStandPoolElement(resourceLocation, () -> processorList);
+            if (pool != null) {
+                List<StructurePoolElement> templates = pool.templates;
+                for (int i = 0; i < weight; i++) {
+                    templates.add(element);
+                }
+                List<Pair<StructurePoolElement, Integer>> rawTemplates = new ArrayList(pool.rawTemplates);
+                rawTemplates.addAll(pool.rawTemplates);
+                pool.templates = templates;
+                pool.rawTemplates = rawTemplates;
+            }
+        }
+    }
+
 
     public static void onBalloonCelebrate(ServerLevel level, Villager villager) {
         Random random = villager.getRandom();

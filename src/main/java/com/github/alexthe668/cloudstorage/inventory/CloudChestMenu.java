@@ -6,7 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -82,9 +83,7 @@ public class CloudChestMenu extends AbstractContainerMenu {
             matches = stack.getItem().getRegistryName().getNamespace().contains(modid);
         } else if (search.startsWith("#")) {
             String tagId = search.substring(1);
-            List<TagKey<Item>> tags = stack.getTags().toList();
-            for (TagKey<Item> tag : tags) {
-                ResourceLocation registryName = tag.location();
+            for (ResourceLocation registryName : stack.getItem().getTags()) {
                 if (registryName.toString().contains(tagId)) {
                     matches = true;
                     break;
