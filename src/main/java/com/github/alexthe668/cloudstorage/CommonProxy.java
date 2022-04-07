@@ -137,11 +137,9 @@ public class CommonProxy {
                 }
             }
             if(!flag && (entity instanceof LivingBalloon || entity instanceof BalloonEntity)){
-                event.setCanceled(true);
                 if(event.getProjectile().getOwner() instanceof AbstractSkeleton && entity instanceof BadloonEntity badloon){
                     badloon.dropMusicDisk = true;
                 }
-                entity.hurt(DamageSource.indirectMobAttack(event.getProjectile(), event.getProjectile().getOwner() instanceof LivingEntity ? (LivingEntity) event.getProjectile().getOwner() : null), 100);
             }
         }
     }
