@@ -128,6 +128,7 @@ public class BalloonCargoEntity extends Entity {
             if(balloon == null || !balloon.isAlive()){
                 FallingBlockEntity fallingblockentity = new FallingBlockEntity(level, this.getX(), this.getY(), this.getZ(), this.blockState);
                 fallingblockentity.blockData = this.blockData;
+                level.addFreshEntity(fallingblockentity);
                 this.remove(RemovalReason.DISCARDED);
             }else if(balloon instanceof BalloonEntity){
                 float length = ((BalloonEntity)balloon).getStringLength();
