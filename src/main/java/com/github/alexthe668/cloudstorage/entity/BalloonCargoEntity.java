@@ -133,7 +133,7 @@ public class BalloonCargoEntity extends Entity {
             }else if(balloon instanceof BalloonEntity){
                 float length = ((BalloonEntity)balloon).getStringLength();
                 if (this.distanceTo(balloon) > length) {
-                    Vec3 back = balloon.position().add(0, -length - 1F, 0).subtract(this.position());
+                    Vec3 back = balloon.position().add(0, -  length - 1F, 0).subtract(this.position());
                     this.setDeltaMovement(this.getDeltaMovement().add(back.scale(0.08F)));
                 }
             }
