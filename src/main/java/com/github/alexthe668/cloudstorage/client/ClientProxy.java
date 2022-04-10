@@ -7,6 +7,7 @@ import com.github.alexthe668.cloudstorage.block.CSBlockEntityRegistry;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.client.gui.BalloonStandScreen;
 import com.github.alexthe668.cloudstorage.client.gui.CloudChestScreen;
+import com.github.alexthe668.cloudstorage.client.gui.GuideBookScreen;
 import com.github.alexthe668.cloudstorage.client.model.PropellerHatModel;
 import com.github.alexthe668.cloudstorage.client.model.baked.BakedModelFinalLayerFullbright;
 import com.github.alexthe668.cloudstorage.client.particle.*;
@@ -36,6 +37,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -238,5 +240,9 @@ public class ClientProxy extends CommonProxy {
         if(Minecraft.getInstance().player == player){
             CLIENT_CLOUD_INFO.put(balloonColor, cloudInfo);
         }
+    }
+
+    public void openBookScreen(ItemStack itemStackIn) {
+        Minecraft.getInstance().setScreen(new GuideBookScreen(itemStackIn));
     }
 }
