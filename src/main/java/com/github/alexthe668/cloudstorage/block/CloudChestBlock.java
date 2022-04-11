@@ -1,6 +1,9 @@
 package com.github.alexthe668.cloudstorage.block;
 
+import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
+import com.github.alexthe668.cloudstorage.network.MessageOpenCloudChest;
+import com.github.alexthe668.cloudstorage.network.MessageUpdateCloudInfo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,6 +84,7 @@ public class CloudChestBlock extends BaseEntityBlock {
             if (worldIn.isClientSide) {
                 return InteractionResult.SUCCESS;
             } else {
+                CloudStorage.sendMSGToAll(new MessageOpenCloudChest(chest.getContainerSize(player)));
                 MenuProvider menuprovider = chest.getMenuProvider();
                 if(chest.hasNoInvSpace(player)){
                     player.displayClientMessage(new TranslatableComponent("message.cloudstorage.no_inventory_space").withStyle(ChatFormatting.RED), true);

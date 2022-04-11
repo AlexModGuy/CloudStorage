@@ -58,7 +58,7 @@ public class StringRenderHelper {
         float f1 = (float) (to.y - d4);
         float f2 = (float) (to.z - d5);
         float f3 = 0.025F;
-        VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.leash());
+        VertexConsumer vertexconsumer = bufferSource.getBuffer(CSRenderTypes.BALLOON_STRING);
         Matrix4f matrix4f = poseStack.last().pose();
         float width = 0.025F;
         BlockPos blockpos = new BlockPos(fromVec);

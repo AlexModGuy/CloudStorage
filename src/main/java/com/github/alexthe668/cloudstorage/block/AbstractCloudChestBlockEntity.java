@@ -158,4 +158,6 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
     public abstract boolean hasNoInvSpace(Player player);
 
     public abstract void releaseBalloons();
+
+    public abstract int getContainerSize(Player player);
 }
