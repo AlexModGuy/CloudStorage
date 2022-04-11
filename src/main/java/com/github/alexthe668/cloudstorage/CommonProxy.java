@@ -29,6 +29,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -259,5 +260,12 @@ public class CommonProxy {
     @SubscribeEvent
     public void onPlayerOpenContainer(PlayerContainerEvent event) {
         checkForLuftballoons(event.getPlayer());
+    }
+
+    @SubscribeEvent
+    public void onEntitySetTarget(LivingSetAttackTargetEvent event) {
+        if(event.getEntityLiving() instanceof Mob && event.getTarget() instanceof BalloonBuddyEntity && ((BalloonBuddyEntity)event.getTarget()).getPersonality() == BalloonFace.EYEPATCH){
+            ((Mob) event.getEntityLiving()).setTarget(null);
+        }
     }
 }

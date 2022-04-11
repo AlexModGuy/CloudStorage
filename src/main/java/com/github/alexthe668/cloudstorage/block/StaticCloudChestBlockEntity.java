@@ -129,4 +129,14 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
             level.addFreshEntity(balloon);
         }
     }
+
+    @Override
+    public int getContainerSize(Player player) {
+        CSWorldData data = CSWorldData.get(getLevel());
+        if (data != null && this.hasBalloonFor(player)) {
+            CloudIndex cloudIndex = data.getPublicCloud(this.getBalloonFor(player));
+            return cloudIndex != null ? cloudIndex.getContainerSize() : 0;
+        }
+        return 0;
+    }
 }

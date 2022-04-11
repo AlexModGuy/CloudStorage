@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,17 +21,15 @@ import net.minecraft.world.item.TooltipFlag;
 import java.util.*;
 
 public class CloudChestMenu extends AbstractContainerMenu {
-    public static int size = -1;
     private final DataSlot scrollAmount = DataSlot.standalone();
     private final Container container;
-    public String currentSearch = "";
     private final int playerInvStart = 0;
     private final int playerInvEnd = 0;
     private final Map<ItemStack, Integer> restoreFromAfterSearch = new HashMap<>();
+    public String currentSearch = "";
 
     public CloudChestMenu(int id, Inventory playerInv) {
-        this(id, playerInv, new SimpleContainer(size == -1 ? 1 : size));
-        size = -1;
+        this(id, playerInv, new SimpleContainer(CloudStorage.PROXY.getVisibleCloudSlots()));
     }
 
     public CloudChestMenu(int id, Inventory playerInv, Container containerIn) {
@@ -61,11 +58,8 @@ public class CloudChestMenu extends AbstractContainerMenu {
         for (int j1 = 0; j1 < 9; ++j1) {
             this.addSlot(new Slot(playerInv, j1, 8 + j1 * 18, 198));
         }
-        if (size == -1) {
-            CloudStorage.PROXY.setVisibleCloudSlots(containerIn.getContainerSize());
-        }
+        CloudStorage.PROXY.setVisibleCloudSlots(containerIn.getContainerSize());
         this.addDataSlot(this.scrollAmount).set(0);
-        size = containerIn.getContainerSize();
         scrollTo(0.0F, false);
     }
 
@@ -96,7 +90,7 @@ public class CloudChestMenu extends AbstractContainerMenu {
 
     public void scrollTo(float scrollProgress, boolean sendPacket) {
         int maxScrollDown = this.container.getContainerSize() / 9 - 6;
-        int i = Math.max((int)Math.floor(scrollProgress * maxScrollDown), 0);
+        int i = Math.max((int) Math.floor(scrollProgress * maxScrollDown), 0);
         if (sendPacket) {
             CloudStorage.NETWORK_WRAPPER.sendToServer(new MessageScrollCloudChest(i));
         }

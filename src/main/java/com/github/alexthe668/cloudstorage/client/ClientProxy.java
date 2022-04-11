@@ -245,4 +245,5 @@ public class ClientProxy extends CommonProxy {
     public void openBookScreen(ItemStack itemStackIn) {
         Minecraft.getInstance().setScreen(new GuideBookScreen(itemStackIn));
     }
+
 }
