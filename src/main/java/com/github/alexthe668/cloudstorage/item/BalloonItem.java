@@ -206,7 +206,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
             }
             level.setBlockAndUpdate(blockpos, CSBlockRegistry.STATIC_CLOUD.get().defaultBlockState());
             return true;
-        } else if (player != null && (blockstate.is(CSBlockRegistry.CLOUD_CHEST.get()) || blockstate.is(CSBlockRegistry.STATIC_CLOUD_CHEST.get()))) {
+        } else if (player != null && ((!isStatic(itemstack) && blockstate.is(CSBlockRegistry.CLOUD_CHEST.get())) || (isStatic(itemstack) && blockstate.is(CSBlockRegistry.STATIC_CLOUD_CHEST.get())))) {
             BlockEntity te = level.getBlockEntity(blockpos);
             if (te instanceof AbstractCloudChestBlockEntity cloudChest) {
                 if (cloudChest.hasBalloonFor(player)) {
