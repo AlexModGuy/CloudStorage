@@ -34,6 +34,7 @@ public class CSItemRegistry {
     public static final RegistryObject<Item> HAPPY_CLOUD_IN_A_BOTTLE = DEF_REG.register("happy_cloud_in_a_bottle", () -> new CloudBottleItem(true));
     public static final RegistryObject<Item> BALLOON_BUDDY_INVENTORY = DEF_REG.register("balloon_buddy_inventory", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BALLOON_BUDDY = DEF_REG.register("balloon_buddy", () -> new BalloonBuddyItem());
+    public static final RegistryObject<Item> BALLOON_ARROW = DEF_REG.register("balloon_arrow", () -> new BalloonArrowItem());
     public static final RegistryObject<Item> PROPELLER_HAT = DEF_REG.register("propeller_hat", () -> new PropellerHatItem());
     public static final RegistryObject<Item> COTTON_CANDY = DEF_REG.register("cotton_candy", () -> new Item(new Item.Properties().tab(CloudStorage.TAB).food((new FoodProperties.Builder()).nutrition(4).saturationMod(0.15F).fast().build())));
     public static final RegistryObject<Item> MUSIC_DISC_DRIFT = DEF_REG.register("music_disc_drift", () -> new RecordItem(14, CSSoundRegistry.MUSIC_DISC_DRIFT, new Item.Properties().tab(CloudStorage.TAB).stacksTo(1).rarity(Rarity.RARE)));

@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -76,7 +77,11 @@ public class RenderBalloon extends EntityRenderer<BalloonEntity> {
             double d3 = Mth.lerp(partialTicks, entityIn.getTieForRendering().xOld, entityIn.getTieForRendering().getX());
             double d4 = Mth.lerp(partialTicks, entityIn.getTieForRendering().yOld, entityIn.getTieForRendering().getY());
             double d5 = Mth.lerp(partialTicks, entityIn.getTieForRendering().zOld, entityIn.getTieForRendering().getZ());
-            to = new Vec3(d3, d4, d5).add(0.0F, entityIn.getTieForRendering().getBbHeight() * 0.5F, 0);
+            double height = entityIn.getTieForRendering().getBbHeight() * 0.5F;
+            if(entityIn.getTieForRendering() instanceof AbstractArrow){
+                height = 0;
+            }
+            to = new Vec3(d3, d4, d5).add(0.0F, height, 0);
         }else {
             float ageInTicks = entityIn.tickCount + partialTicks;
             Vec3 swingVec = new Vec3(Math.sin(ageInTicks * 0.1F) * 0.2F, 0, Math.cos(ageInTicks * 0.1F) * 0.2F);

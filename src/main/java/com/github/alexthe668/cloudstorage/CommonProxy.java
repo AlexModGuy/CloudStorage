@@ -1,5 +1,6 @@
 package com.github.alexthe668.cloudstorage;
 
+import com.github.alexthe666.citadel.server.item.CitadelRecipes;
 import com.github.alexthe668.cloudstorage.entity.*;
 import com.github.alexthe668.cloudstorage.entity.villager.CSVillagerRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
@@ -21,10 +22,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -42,6 +46,7 @@ import java.util.*;
 
 @Mod.EventBusSubscriber(modid = CloudStorage.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonProxy {
+
 
     public static CSAdvancementTrigger UPLOAD_TRIGGER = new CSAdvancementTrigger(new ResourceLocation("cloudstorage:upload"));
     public static CSAdvancementTrigger LUFTBALLONS_TRIGGER = new CSAdvancementTrigger(new ResourceLocation("cloudstorage:luftballons"));
@@ -129,6 +134,21 @@ public class CommonProxy {
             if(!flag && (entity instanceof LivingBalloon || entity instanceof BalloonEntity)){
                 if(event.getProjectile().getOwner() instanceof AbstractSkeleton && entity instanceof BadloonEntity badloon){
                     badloon.dropMusicDisk = true;
+                }
+            }else if(!flag && event.getProjectile() instanceof AbstractArrow arrow){
+                AABB aabb = arrow.getBoundingBox().inflate(15);
+                BalloonEntity tied = null;
+                List<BalloonEntity> balloons = arrow.level.getEntitiesOfClass(BalloonEntity.class, aabb);
+                for(BalloonEntity balloon : balloons){
+                    if(balloon.isArrow() && balloon.getChildId() != null && balloon.getChildId().equals(arrow.getUUID())){
+                        tied = balloon;
+                        break;
+                    }
+                }
+                if(tied != null){
+                    tied.setChildId(entity.getUUID());
+                    tied.setStringLength(BalloonEntity.DEFAULT_STRING_LENGTH);
+                    tied.setArrowTime(random.nextInt(80) + 80);
                 }
             }
         }

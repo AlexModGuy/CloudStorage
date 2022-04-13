@@ -14,6 +14,8 @@ import com.github.alexthe668.cloudstorage.client.particle.*;
 import com.github.alexthe668.cloudstorage.client.render.*;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CSMenuRegistry;
+import com.github.alexthe668.cloudstorage.item.BalloonArrowItem;
+import com.github.alexthe668.cloudstorage.item.BalloonBuddyItem;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CloudInfo;
@@ -127,8 +129,9 @@ public class ClientProxy extends CommonProxy {
         CloudStorage.LOGGER.info("loaded in item colorizer");
         event.getItemColors().register((stack, colorIn) -> colorIn != 1 ? -1 : BalloonItem.getBalloonColor(stack), CSItemRegistry.BALLOON_INVENTORY.get());
         event.getItemColors().register((stack, colorIn) -> colorIn != 1 ? -1 : BalloonItem.getBalloonColor(stack), CSItemRegistry.BALLOON.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1 && colorIn != 3 ? -1 : BalloonItem.getBalloonColor(stack), CSItemRegistry.BALLOON_BUDDY_INVENTORY.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1  && colorIn != 3 ? -1 : BalloonItem.getBalloonColor(stack), CSItemRegistry.BALLOON_BUDDY.get());
+        event.getItemColors().register((stack, colorIn) -> colorIn != 1 && colorIn != 3 ? -1 : BalloonBuddyItem.getBalloonColor(stack), CSItemRegistry.BALLOON_BUDDY_INVENTORY.get());
+        event.getItemColors().register((stack, colorIn) -> colorIn != 1  && colorIn != 3 ? -1 : BalloonBuddyItem.getBalloonColor(stack), CSItemRegistry.BALLOON_BUDDY.get());
+        event.getItemColors().register((stack, colorIn) -> colorIn != 2 ? -1 : BalloonArrowItem.getBalloonColor(stack), CSItemRegistry.BALLOON_ARROW.get());
     }
 
 
