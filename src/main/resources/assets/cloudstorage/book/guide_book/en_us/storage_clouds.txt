@@ -15,3 +15,5 @@ This Cloud Chest's inventory is linked exclusively to you, and cannot be accesse
 To upload inventory space to a Static Cloud Chest, you must use a static Balloon, which can be obtained by using a Balloon on a Static Cloud Block. Any chest uploaded with a normal Balloon will simply be added to your private cloud storage!
 <NEWLINE>
 All Cloud Chests can be scrolled through(if large enough) and can be sorted or searched by using the helpful buttons on the left. If your Cloud Storage is too full, simply upload additional chests by tying them to a Balloon of the same color. Yes. It's that easy.
+<NEWLINE>
+If you still have some extra balloons left, you can combine one with eight arrows to create balloon arrows, which will fly straight, unhindered by gravity. If they hit a mob, that mob will float upwards for a short period of time.

@@ -25,6 +25,7 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,10 +51,12 @@ public class BalloonEntity extends Entity {
     private static final EntityDataAccessor<Integer> STRING_LENGTH = SynchedEntityData.defineId(BalloonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> CHARGED = SynchedEntityData.defineId(BalloonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> UPLOADING = SynchedEntityData.defineId(BalloonEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ARROW = SynchedEntityData.defineId(BalloonEntity.class, EntityDataSerializers.BOOLEAN);
     private float popTick = 0.0F;
     private float prevUploadProgress;
     private float uploadProgress;
     private Vec3 randomMoveOffset = null;
+    private int arrowTime = 0;
 
     public BalloonEntity(EntityType<?> type, Level level) {
         super(type, level);
@@ -79,9 +82,17 @@ public class BalloonEntity extends Entity {
             this.setDeltaMovement(this.getDeltaMovement().add(0, 0.05F, 0));
             if (child != null) {
                 this.entityData.set(CHILD_ID, child.getId());
+                float f = 0.08F;
+                if(child instanceof AbstractArrow) {
+                    f = 0.1F;
+                }
                 if (this.distanceTo(child) > this.getStringLength()) {
                     Vec3 back = child.position().add(0, this.getStringLength(), 0).subtract(this.position());
-                    this.setDeltaMovement(this.getDeltaMovement().add(back.scale(0.08F)));
+                    this.setDeltaMovement(this.getDeltaMovement().add(back.scale(f)));
+                }
+                if(this.isArrow() && !(child instanceof AbstractArrow)){
+                    this.setDeltaMovement(this.getDeltaMovement().add(0, 0.1F, 0));
+                    child.setDeltaMovement(child.getDeltaMovement().add(0, 0.1F, 0).multiply(0.7F, 0.7F, 0.7F));
                 }
                 if (child instanceof BalloonCargoEntity) {
                     this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08F, 0));
@@ -154,6 +165,9 @@ public class BalloonEntity extends Entity {
                     if (this.getStringLength() > DEFAULT_STRING_LENGTH) {
                         this.spawnAtLocation(new ItemStack(Items.STRING, this.getStringLength() - DEFAULT_STRING_LENGTH));
                     }
+                    if (child instanceof AbstractArrow arrow) {
+                        arrow.setNoGravity(false);
+                    }
                 } else {
                     int color = this.getBalloonColor();
                     float r = (float) (color >> 16 & 255) / 255.0F;
@@ -168,6 +182,25 @@ public class BalloonEntity extends Entity {
                 }
                 this.remove(RemovalReason.KILLED);
             }
+        } else if (isArrow() && child instanceof AbstractArrow arrow) {
+            boolean fast = arrow.getDeltaMovement().lengthSqr() > 0.08F;
+            if (fast) {
+                arrow.setDeltaMovement(arrow.getDeltaMovement().multiply(0.98F, 0.98F, 0.98F));
+                arrow.setNoGravity(true);
+            } else if(arrow.tickCount > 10){
+                arrow.setNoGravity(false);
+                this.setStringLength(1);
+                this.setChildId(null);
+                this.entityData.set(CHILD_ID, -1);
+            }
+        }else if(isArrow() && child != null){
+            if(this.arrowTime > 0){
+                this.arrowTime--;
+            }else{
+                this.setPopped(true);
+            }
+        } if (child == null && this.getStringLength() < 1){
+            this.setStringLength(1);
         }
     }
 
@@ -281,6 +314,7 @@ public class BalloonEntity extends Entity {
         this.entityData.define(STRING_LENGTH, DEFAULT_STRING_LENGTH);
         this.entityData.define(CHARGED, false);
         this.entityData.define(UPLOADING, false);
+        this.entityData.define(ARROW, false);
     }
 
     public int getBalloonColor() {
@@ -297,6 +331,14 @@ public class BalloonEntity extends Entity {
 
     public void setPopped(boolean popped) {
         this.entityData.set(POPPED, popped);
+    }
+
+    public boolean isArrow() {
+        return this.entityData.get(ARROW);
+    }
+
+    public void setArrow(boolean arrow) {
+        this.entityData.set(ARROW, arrow);
     }
 
     public boolean isCharged() {
@@ -350,17 +392,21 @@ public class BalloonEntity extends Entity {
     }
 
     public boolean isPickable() {
+        if(this.getChild() instanceof AbstractArrow){
+            return false;
+        }
         return true;
     }
 
     public boolean hurt(DamageSource source, float f) {
         if (this.isInvulnerableTo(source)) {
             return false;
-        } else {
+        } else if (!(source.isProjectile() && source.getDirectEntity() != null && this.getChildId() != null && source.getDirectEntity().getUUID().equals(this.getChildId()))) {
             this.markHurt();
             this.setPopped(true);
             return true;
         }
+        return false;
     }
 
     public InteractionResult interact(Player player, InteractionHand hand) {
@@ -406,6 +452,8 @@ public class BalloonEntity extends Entity {
         this.setStringLength(compound.getInt("StringLength"));
         this.setCharged(compound.getBoolean("Charged"));
         this.setUploading(compound.getBoolean("Uploading"));
+        this.setArrow(compound.getBoolean("Arrow"));
+        this.arrowTime = compound.getInt("ArrowTime");
     }
 
     @Override
@@ -417,6 +465,8 @@ public class BalloonEntity extends Entity {
         compound.putInt("StringLength", this.getStringLength());
         compound.putBoolean("Charged", this.isCharged());
         compound.putBoolean("Uploading", this.isUploading());
+        compound.putBoolean("Arrow", this.isArrow());
+        compound.putInt("ArrowTime", this.arrowTime);
     }
 
     public boolean skipAttackInteraction(Entity entity) {
@@ -436,5 +486,9 @@ public class BalloonEntity extends Entity {
 
     public float getUploadProgress(float partialTicks) {
         return (prevUploadProgress + (uploadProgress - prevUploadProgress) * partialTicks) / 10F;
+    }
+
+    public void setArrowTime(int timeIn) {
+        this.arrowTime = timeIn;
     }
 }
