@@ -137,7 +137,11 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
 
     public abstract int getBalloonFor(Player player);
 
+    public abstract boolean getBalloonStaticFor(Player player);
+
     public abstract void setBalloonColorFor(Player player, int color);
+
+    public abstract void setBalloonStaticFor(Player player, boolean isStatic);
 
     private ItemStack getValidBalloonStack(Player player) {
         ItemStack itemStack1 = player.getMainHandItem();

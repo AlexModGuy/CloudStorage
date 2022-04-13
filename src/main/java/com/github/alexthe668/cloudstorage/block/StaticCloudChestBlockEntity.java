@@ -30,6 +30,7 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
 
     private static final Component CONTAINER_TITLE = new TranslatableComponent("cloudstorage.container.static_cloud_chest");
     private int balloonColor = -1;
+    private boolean balloonStatic = false;
     private net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler> input = LazyOptional.empty();
 
     public StaticCloudChestBlockEntity(BlockPos pos, BlockState state) {
@@ -47,8 +48,17 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
     }
 
     @Override
+    public boolean getBalloonStaticFor(Player player) { return balloonStatic; }
+
+    @Override
     public void setBalloonColorFor(Player player, int color) {
         balloonColor = color;
+        this.setChanged();
+    }
+
+    @Override
+    public void setBalloonStaticFor(Player player, boolean isStatic) {
+        balloonStatic = isStatic;
         this.setChanged();
     }
 
@@ -84,11 +94,13 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
     public void load(CompoundTag tag) {
         super.load(tag);
         balloonColor = tag.getInt("BalloonColor");
+        balloonStatic = tag.getBoolean("BalloonStatic");
     }
 
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putInt("BalloonColor", balloonColor);
+        tag.putBoolean("BalloonStatic", balloonStatic);
     }
 
     @Override
@@ -124,6 +136,7 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
             Vec3 releasePosition = Vec3.atBottomCenterOf(this.getBlockPos()).add(0, getEmergence(1.0F) * 2F, 0);
             BalloonEntity balloon = CSEntityRegistry.BALLOON.get().create(level);
             balloon.setBalloonColor(this.balloonColor);
+            balloon.setCharged(this.balloonStatic);
             balloon.setStringLength(BalloonEntity.DEFAULT_STRING_LENGTH);
             balloon.setPos(releasePosition);
             level.addFreshEntity(balloon);
