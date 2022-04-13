@@ -6,6 +6,7 @@
   "refmap": "cloudstorage.refmap.json",
   "mixins": [
     "CelebrateVillagersSurvivedRaidMixin",
+    "LightningBoltMixin",
     "PoolsMixin"
   ],
   "client": [
