@@ -68,7 +68,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
     public void renderByItem(ItemStack itemStackIn, ItemTransforms.TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         float partialTick = Minecraft.getInstance().getFrameTime();
         float ageInTicks;
-        if (Minecraft.getInstance().isPaused() || Minecraft.getInstance().player == null) {
+        if (!Minecraft.getInstance().isPaused() && Minecraft.getInstance().player != null) {
             ageInTicks = tickForRender + partialTick;
         } else {
             tickForRender = Minecraft.getInstance().player.tickCount;
