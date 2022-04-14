@@ -87,12 +87,7 @@ public class ClientProxy extends CommonProxy {
     public void clientInit() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::bakeModels);
-        ItemProperties.register(CSItemRegistry.BALLOON.get(), new ResourceLocation("static"), (stack, lvl, holder, i) -> {
-            return BalloonItem.isStatic(stack) ? 1 : 0;
-        });
-        ItemProperties.register(CSItemRegistry.BALLOON_INVENTORY.get(), new ResourceLocation("static"), (stack, lvl, holder, i) -> {
-            return BalloonItem.isStatic(stack) ? 1 : 0;
-        });
+
         EntityRenderers.register(CSEntityRegistry.BADLOON.get(),  RenderBadloon::new);
         EntityRenderers.register(CSEntityRegistry.BADLOON_HAND.get(),  RenderBadloonHand::new);
         EntityRenderers.register(CSEntityRegistry.BALLOON.get(),  RenderBalloon::new);
@@ -213,6 +208,12 @@ public class ClientProxy extends CommonProxy {
                 e.getModelRegistry().put(id, new BakedModelFinalLayerFullbright(e.getModelRegistry().get(id)));
             }
         }
+        ItemProperties.register(CSItemRegistry.BALLOON.get(), new ResourceLocation("static"), (stack, lvl, holder, i) -> {
+            return BalloonItem.isStatic(stack) ? 1 : 0;
+        });
+        ItemProperties.register(CSItemRegistry.BALLOON_INVENTORY.get(), new ResourceLocation("static"), (stack, lvl, holder, i) -> {
+            return BalloonItem.isStatic(stack) ? 1 : 0;
+        });
     }
 
     public void bakeEntityModels(final EntityRenderersEvent.RegisterLayerDefinitions event) {
