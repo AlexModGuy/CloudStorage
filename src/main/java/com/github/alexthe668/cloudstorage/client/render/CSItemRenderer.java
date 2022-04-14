@@ -42,6 +42,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
     private static Vec3 lightningZapPos = Vec3.ZERO;
     private static final Random random = new Random();
     private static int tickForRender = 0;
+    private static float ageInTicks = 0;
     private static int changeFaceTime = 0;
     private static BalloonFace cyclingBalloonFace = BalloonFace.HAPPY;
     private final LightningRender lightningRender = new LightningRender();
@@ -67,10 +68,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
     @Override
     public void renderByItem(ItemStack itemStackIn, ItemTransforms.TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         float partialTick = Minecraft.getInstance().getFrameTime();
-        float ageInTicks;
         if (!Minecraft.getInstance().isPaused() && Minecraft.getInstance().player != null) {
-            ageInTicks = tickForRender + partialTick;
-        } else {
             tickForRender = Minecraft.getInstance().player.tickCount;
             ageInTicks = tickForRender + partialTick;
         }
