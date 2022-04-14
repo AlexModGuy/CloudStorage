@@ -24,6 +24,7 @@ public class CloudChestBlockEntity extends AbstractCloudChestBlockEntity {
 
     private static final Component CONTAINER_TITLE = new TranslatableComponent("cloudstorage.container.cloud_chest");
     public Map<UUID, Integer> playerToBalloonColor = new HashMap<>();
+    public Map<UUID, Boolean> playerToBalloonStatic = new HashMap<>();
     public int tickCount;
     public Player lastValidPlayer = null;
 
@@ -42,8 +43,17 @@ public class CloudChestBlockEntity extends AbstractCloudChestBlockEntity {
     }
 
     @Override
+    public boolean getBalloonStaticFor(Player player) { return playerToBalloonStatic.get(player.getUUID()); }
+
+    @Override
     public void setBalloonColorFor(Player player, int color) {
         playerToBalloonColor.put(player.getUUID(), color);
+        this.setChanged();
+    }
+
+    @Override
+    public void setBalloonStaticFor(Player player, boolean isStatic) {
+        playerToBalloonStatic.put(player.getUUID(), isStatic);
         this.setChanged();
     }
 
@@ -56,6 +66,7 @@ public class CloudChestBlockEntity extends AbstractCloudChestBlockEntity {
                 UUID uuid = compoundtag.getUUID("UUID");
                 if(uuid != null){
                     playerToBalloonColor.put(uuid, compoundtag.getInt("BalloonColor"));
+                    playerToBalloonStatic.put(uuid, compoundtag.getBoolean("BalloonStatic"));
                 }
             }
         }
@@ -68,6 +79,7 @@ public class CloudChestBlockEntity extends AbstractCloudChestBlockEntity {
             CompoundTag balloonData = new CompoundTag();
             balloonData.putUUID("UUID", entry.getKey());
             balloonData.putInt("BalloonColor", entry.getValue());
+            balloonData.putBoolean("BalloonStatic", playerToBalloonStatic.get(entry.getKey()));
             list.add(balloonData);
         }
         tag.put("PlayerBalloons", list);
@@ -104,9 +116,10 @@ public class CloudChestBlockEntity extends AbstractCloudChestBlockEntity {
     @Override
     public void releaseBalloons() {
         Vec3 releasePosition = Vec3.atBottomCenterOf(this.getBlockPos()).add(0, getEmergence(1.0F) * 2F, 0);
-        for(Integer color : playerToBalloonColor.values()){
+        for(Map.Entry<UUID, Integer> entry : playerToBalloonColor.entrySet()){
             BalloonEntity balloon = CSEntityRegistry.BALLOON.get().create(level);
-            balloon.setBalloonColor(color);
+            balloon.setBalloonColor(entry.getValue());
+            balloon.setCharged(playerToBalloonStatic.get(entry.getKey()));
             balloon.setStringLength(BalloonEntity.DEFAULT_STRING_LENGTH);
             balloon.setPos(releasePosition);
             level.addFreshEntity(balloon);

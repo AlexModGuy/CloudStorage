@@ -105,12 +105,10 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         }
     }
 
-    public ItemStack createBalloon(int color, boolean lgihtning) {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean("static", lgihtning);
-        tag.putInt("color", color);
+    public ItemStack createBalloon(int color, boolean lightning) {
         ItemStack stack = new ItemStack(this);
-        stack.setTag(tag);
+        this.setColor(stack, color);
+        this.setStatic(stack, lightning);
         return stack;
     }
 
@@ -120,8 +118,14 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
 
     @Override
     public void setColor(ItemStack stack, int colorHex) {
-        if(colorHex != DEFAULT_COLOR){
+        if (colorHex != DEFAULT_COLOR) {
             stack.getOrCreateTagElement("display").putInt("color", colorHex);
+        }
+    }
+
+    public void setStatic(ItemStack stack, boolean isStatic) {
+        if (isStatic) {
+            stack.getOrCreateTag().putBoolean("static", true);
         }
     }
 
@@ -202,16 +206,21 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
             }
             level.setBlockAndUpdate(blockpos, CSBlockRegistry.STATIC_CLOUD.get().defaultBlockState());
             return true;
-        } else if (player != null && (blockstate.is(CSBlockRegistry.CLOUD_CHEST.get()) || blockstate.is(CSBlockRegistry.STATIC_CLOUD_CHEST.get()))) {
+        } else if (player != null && ((!isStatic(itemstack) && blockstate.is(CSBlockRegistry.CLOUD_CHEST.get())) || (isStatic(itemstack) && blockstate.is(CSBlockRegistry.STATIC_CLOUD_CHEST.get())))) {
             BlockEntity te = level.getBlockEntity(blockpos);
             if (te instanceof AbstractCloudChestBlockEntity cloudChest) {
                 if (cloudChest.hasBalloonFor(player)) {
-                    this.setColor(itemstack, cloudChest.getBalloonFor(player));
-                    ItemEntity itemEntity = new ItemEntity(level, blockpos.getX() + 0.5F, blockpos.getY() + 0.75F, blockpos.getZ() + 0.5F, itemstack);
+                    ItemStack newBalloon = new ItemStack(CSItemRegistry.BALLOON.get());
+                    newBalloon.setCount(1);
+                    BalloonItem newBalloonItem = (BalloonItem) newBalloon.getItem();
+                    newBalloonItem.setColor(newBalloon, cloudChest.getBalloonFor(player));
+                    newBalloonItem.setStatic(newBalloon, cloudChest.getBalloonStaticFor(player));
+                    ItemEntity itemEntity = new ItemEntity(level, blockpos.getX() + 0.5F, blockpos.getY() + 0.75F, blockpos.getZ() + 0.5F, newBalloon);
                     itemEntity.setDefaultPickUpDelay();
                     level.addFreshEntity(itemEntity);
                 }
                 cloudChest.setBalloonColorFor(player, this.getColor(itemstack));
+                cloudChest.setBalloonStaticFor(player, isStatic(itemstack));
                 itemstack.shrink(1);
                 return true;
             }
