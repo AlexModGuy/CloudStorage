@@ -1,5 +1,6 @@
-package com.github.alexthe668.cloudstorage.misc;
+package com.github.alexthe668.cloudstorage.world;
 
+import com.github.alexthe668.cloudstorage.misc.CloudIndex;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
@@ -16,6 +17,7 @@ public class CSWorldData extends SavedData {
     private static final String IDENTIFIER = "cloudstorage_world_data";
     private List<CloudIndex> privateClouds = new ArrayList<>();
     private List<CloudIndex> publicClouds = new ArrayList<>();
+    private List<CloudIndex> lootClouds = new ArrayList<>();
 
     private CSWorldData() {
         super();
@@ -50,6 +52,13 @@ public class CSWorldData extends SavedData {
                 data.publicClouds.add(new CloudIndex(innerTag));
             }
         }
+        if (nbt.contains("LootClouds")) {
+            ListTag listtag = nbt.getList("LootClouds", 10);
+            for (int i = 0; i < listtag.size(); ++i) {
+                CompoundTag innerTag = listtag.getCompound(i);
+                data.lootClouds.add(new CloudIndex(innerTag));
+            }
+        }
         return data;
     }
 
@@ -72,6 +81,15 @@ public class CSWorldData extends SavedData {
                 listTag.add(tag);
             }
             compound.put("PublicClouds", listTag);
+        }
+        if (!this.lootClouds.isEmpty()) {
+            ListTag listTag = new ListTag();
+            for(CloudIndex cloud : lootClouds){
+                CompoundTag tag = new CompoundTag();
+                cloud.writeToNBT(tag);
+                listTag.add(tag);
+            }
+            compound.put("LootClouds", listTag);
         }
         return compound;
     }
@@ -101,4 +119,18 @@ public class CSWorldData extends SavedData {
     public void addPublicCloud(CloudIndex cloud){
         this.publicClouds.add(cloud);
     }
+
+    public CloudIndex getLootCloud(UUID player, int color){
+        for(CloudIndex cloud : lootClouds){
+            if(cloud.getBalloonColor() == color && cloud.getPlayerUUID().equals(player)){
+                return cloud;
+            }
+        }
+        return null;
+    }
+
+    public void addLootCloud(CloudIndex cloud){
+        this.lootClouds.add(cloud);
+    }
+
 }

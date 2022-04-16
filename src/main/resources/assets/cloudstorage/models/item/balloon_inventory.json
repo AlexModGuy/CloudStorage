@@ -8,9 +8,15 @@
     "overrides": [
         {
             "predicate": {
-                "static": 1
+                "loot_or_static": 0.5
             },
             "model": "cloudstorage:item/balloon_inventory_static"
+        },
+        {
+            "predicate": {
+                "loot_or_static": 1
+            },
+            "model": "cloudstorage:item/balloon_inventory_loot"
         }
     ]
 }

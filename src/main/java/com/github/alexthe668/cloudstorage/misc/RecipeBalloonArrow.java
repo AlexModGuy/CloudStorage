@@ -26,7 +26,7 @@ public class RecipeBalloonArrow extends CustomRecipe {
 
     public boolean matches(CraftingContainer container, Level level) {
         ItemStack balloon = getBalloon(container);
-        if(balloon.is(CSItemRegistry.BALLOON.get())){
+        if(isProperBalloon(balloon)){
             int arrows = 0;
             for(int i = 0; i < container.getContainerSize(); ++i) {
                 ItemStack itemstack = container.getItem(i);
@@ -51,11 +51,15 @@ public class RecipeBalloonArrow extends CustomRecipe {
 
     private ItemStack getBalloon(CraftingContainer container) {
         for(int i = 0; i < container.getContainerSize(); ++i) {
-            if(container.getItem(i).is(CSItemRegistry.BALLOON.get())){
+            if(isProperBalloon(container.getItem(i))){
                 return container.getItem(i);
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    private boolean isProperBalloon(ItemStack stack){
+        return stack.is(CSItemRegistry.BALLOON.get()) && !BalloonItem.isStatic(stack) && !BalloonItem.isLoot(stack);
     }
 
     public ItemStack getResultItem() {

@@ -13,6 +13,7 @@ public class BalloonTextures {
     public static final ResourceLocation BALLOON_SHEEN = new ResourceLocation("cloudstorage:textures/entity/balloon/balloon_sheen.png");
     public static final ResourceLocation POPPED = new ResourceLocation("cloudstorage:textures/entity/balloon/balloon_popped.png");
     public static final ResourceLocation LIGHTNING = new ResourceLocation("cloudstorage:textures/entity/balloon/balloon_lightning.png");
+    public static final ResourceLocation LOOT = new ResourceLocation("cloudstorage:textures/entity/balloon/loot_balloon.png");
     private static final Map<BalloonFace, ResourceLocation> FACE_TEXTURES = new HashMap<>();
 
     public static ResourceLocation getTextureForFace(BalloonFace face) {

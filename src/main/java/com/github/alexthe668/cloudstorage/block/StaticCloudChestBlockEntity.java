@@ -3,28 +3,23 @@ package com.github.alexthe668.cloudstorage.block;
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
-import com.github.alexthe668.cloudstorage.misc.CSWorldData;
+import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import com.github.alexthe668.cloudstorage.misc.CloudIndex;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.UUID;
 
 public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
 
@@ -51,6 +46,7 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
         balloonColor = color;
         this.setChanged();
     }
+
 
     @Override
     public AbstractContainerMenu getMenu(int i, Inventory playerInventory) {
@@ -124,6 +120,7 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
             Vec3 releasePosition = Vec3.atBottomCenterOf(this.getBlockPos()).add(0, getEmergence(1.0F) * 2F, 0);
             BalloonEntity balloon = CSEntityRegistry.BALLOON.get().create(level);
             balloon.setBalloonColor(this.balloonColor);
+            balloon.setCharged(true);
             balloon.setStringLength(BalloonEntity.DEFAULT_STRING_LENGTH);
             balloon.setPos(releasePosition);
             level.addFreshEntity(balloon);

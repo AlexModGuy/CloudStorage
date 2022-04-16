@@ -1,4 +1,4 @@
-package com.github.alexthe668.cloudstorage.misc;
+package com.github.alexthe668.cloudstorage.world;
 
 import com.github.alexthe668.cloudstorage.CSConfig;
 import com.github.alexthe668.cloudstorage.CloudStorage;

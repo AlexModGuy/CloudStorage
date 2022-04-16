@@ -19,6 +19,12 @@ public class CSConfig {
     public final ForgeConfigSpec.IntValue skyMobMinSpawnDistance;
     public final ForgeConfigSpec.IntValue skyMobMaxSpawnDistance;
     public final ForgeConfigSpec.DoubleValue badloonToBloviatorRatio;
+    public final ForgeConfigSpec.BooleanValue generateSkyTemples;
+    public final ForgeConfigSpec.BooleanValue generateBigBalloons;
+    public final ForgeConfigSpec.IntValue skyTempleMinSeperation;
+    public final ForgeConfigSpec.IntValue skyTempleMaxSeperation;
+    public final ForgeConfigSpec.IntValue bigBalloonMinSeperation;
+    public final ForgeConfigSpec.IntValue bigBalloonMaxSeperation;
 
     public CSConfig(final ForgeConfigSpec.Builder builder) {
         builder.push("storage");
@@ -43,6 +49,15 @@ public class CSConfig {
         skyMobMaxSpawnDistance = builder.comment(" maximum distance away from the player sky mobs spawn at, in blocks").translation("sky_mob_max_spawn_distance").defineInRange("sky_mob_max_spawn_distance", 48, 1, 2048);
         badloonToBloviatorRatio = builder.comment(" the percent chance that a sky mob spawn is a badloon rather than a bloviator").translation("badloon_to_bloviator_ratio").defineInRange("badloon_to_bloviator_ratio", 0.55D, 0D, 1D);
         builder.pop();
+        builder.push("generation");
+        generateSkyTemples = builder.comment(" can sky temples spawn in the world").translation("generate_sky_temples").define("generate_sky_temples", true);
+        generateBigBalloons = builder.comment(" can big balloons spawn in the world").translation("generate_big_balloons").define("generate_big_balloons", true);
+        skyTempleMinSeperation = builder.comment(" minimum distance, in chunks, that sky temples spawn from eachother.").translation("sky_temple_min_seperation").defineInRange("sky_temple_min_seperation", 15, 1, 4095);
+        skyTempleMaxSeperation = builder.comment(" maximum distance, in chunks, that sky temples spawn from eachother.").translation("sky_temple_max_seperation").defineInRange("sky_temple_max_seperation", 24, 2, 4096);
+        bigBalloonMinSeperation = builder.comment(" minimum distance, in chunks, that big balloons spawn from eachother.").translation("big_balloon_min_seperation").defineInRange("big_balloon_min_seperation", 16, 1, 4095);
+        bigBalloonMaxSeperation = builder.comment(" maximum distance, in chunks, that big balloons spawn from eachother.").translation("big_balloon_max_seperation").defineInRange("big_balloon_max_seperation", 21, 2, 4096);
+        builder.pop();
+
     }
 
 }

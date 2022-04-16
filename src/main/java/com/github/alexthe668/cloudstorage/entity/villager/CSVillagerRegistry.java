@@ -8,7 +8,7 @@ import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
-import com.github.alexthe668.cloudstorage.misc.BalloonStandPoolElement;
+import com.github.alexthe668.cloudstorage.world.BalloonStandPoolElement;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -36,6 +36,7 @@ import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElemen
 import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElementType;
 import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -73,6 +74,8 @@ public class CSVillagerRegistry {
         level3.add(new SellingItemTrade(Items.FIREWORK_STAR, 3, 9, 4, 9));
         level3.add(new SellingItemTrade(Items.CYAN_BANNER, 3, 4, 4, 9));
         level3.add(new SellingItemTrade(Items.SPYGLASS, 5, 1, 2, 9));
+        level3.add(new SellingMap(10, true, "item.cloudstorage.big_balloon_map", MapDecoration.Type.TARGET_X, 1, 13));
+        level3.add(new SellingMap(10, false, "item.cloudstorage.sky_temple_map", MapDecoration.Type.TARGET_X, 1, 13));
         level4.add(new SellingItemTrade(CSItemRegistry.PROPELLER_HAT.get(), 11, 1, 1, 15));
         level4.add(new SellingItemTrade(CSBlockRegistry.STATIC_CLOUD.get(), 3, 5, 6, 13));
         level4.add(new BuyingItemTrade(CSItemRegistry.HAPPY_CLOUD_IN_A_BOTTLE.get(), 8, 6, 7, 12));

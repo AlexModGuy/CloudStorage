@@ -17,6 +17,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -40,6 +41,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootPool;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -49,6 +52,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
 
     public static final int DEFAULT_COLOR = 0XE72929;
     private static final int[] BALLOONCOLORS = new int[]{DEFAULT_COLOR};
+    public static final ResourceLocation LOOT_TABLE = new ResourceLocation(CloudStorage.MODID, "chests/loot_balloon");
 
     public BalloonItem(Item.Properties props) {
         super(props);
@@ -65,25 +69,29 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
 
     public static boolean isStatic(ItemStack stack) {
         CompoundTag compoundtag = stack.getTag();
-        return compoundtag != null && compoundtag.getBoolean("static");
+        return compoundtag != null && compoundtag.getBoolean("static") && !isLoot(stack);
+    }
+
+    public static boolean isLoot(ItemStack stack) {
+        CompoundTag compoundtag = stack.getTag();
+        return compoundtag != null && compoundtag.getBoolean("LootBalloon");
     }
 
     public static int get3DRender(ItemStack stack) {
         CompoundTag compoundtag = stack.getTag();
         return compoundtag != null ? compoundtag.getInt("3DRender") : 0;
-
     }
 
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flags) {
         super.appendHoverText(stack, level, components, flags);
-        if (isStatic(stack)) {
+        if (!isLoot(stack) && isStatic(stack)) {
             components.add(new TranslatableComponent("item.cloudstorage.balloon.static").withStyle(ChatFormatting.AQUA));
         }
     }
 
     public boolean hasCustomColor(ItemStack stack) {
         CompoundTag compoundtag = stack.getTagElement("display");
-        return compoundtag != null && compoundtag.contains("color", 99) && compoundtag.getInt("color") != DEFAULT_COLOR;
+        return compoundtag != null && compoundtag.contains("color", 99) && compoundtag.getInt("color") != DEFAULT_COLOR && compoundtag.getInt("color") != -1;
     }
 
     @Override
@@ -95,22 +103,22 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
     public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list) {
         if (this.allowdedIn(tab)) {
             for (int i = 0; i < BALLOONCOLORS.length; i++) {
-                list.add(createBalloon(DEFAULT_COLOR, false));
+                list.add(createBalloon(DEFAULT_COLOR, 0));
             }
             if(this == CSItemRegistry.BALLOON.get()){
                 for (int i = 0; i < BALLOONCOLORS.length; i++) {
-                    list.add(createBalloon(DEFAULT_COLOR, true));
+                    list.add(createBalloon(DEFAULT_COLOR, 1));
                 }
+                list.add(createBalloon(-1, 2));
             }
         }
     }
 
-    public ItemStack createBalloon(int color, boolean lgihtning) {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean("static", lgihtning);
-        tag.putInt("color", color);
+    public ItemStack createBalloon(int color, int type) {
         ItemStack stack = new ItemStack(this);
-        stack.setTag(tag);
+        this.setColor(stack, color);
+        this.setStatic(stack, type == 1);
+        this.setLoot(stack, type == 2);
         return stack;
     }
 
@@ -125,9 +133,32 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         }
     }
 
+    public static void setStatic(ItemStack stack, boolean isStatic) {
+        if (isStatic) {
+            stack.getOrCreateTag().putBoolean("static", true);
+        }
+    }
+
+    public static void setLoot(ItemStack stack, boolean isLoot) {
+        if (isLoot) {
+            stack.getOrCreateTag().putBoolean("LootBalloon", true);
+        }
+    }
+
+    public Component getName(ItemStack stack) {
+        return isLoot(stack) ? new TranslatableComponent("item.cloudstorage.loot_balloon") : super.getName(stack);
+    }
+
+    public Rarity getRarity(ItemStack stack) {
+        return isLoot(stack) ? Rarity.UNCOMMON : super.getRarity(stack);
+    }
+
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int i, boolean held) {
         boolean rightHand = false;
         boolean leftHand = false;
+        if(isLoot(stack) && getBalloonColor(stack) == -1){
+            setColor(stack, level.getRandom().nextInt(0xFFFFFF));
+        }
         if (entity instanceof LivingEntity) {
             LivingEntity player = (LivingEntity) entity;
             boolean flag = held || player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof BalloonItem;
@@ -150,10 +181,18 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
                         entity.setDeltaMovement(entity.getDeltaMovement().multiply(1F, 0.95F, 1F));
                     }
                 }
+                updateBalloon(player, player.getItemInHand(InteractionHand.MAIN_HAND), player.getMainArm() == HumanoidArm.LEFT);
+                updateBalloon(player, player.getItemInHand(InteractionHand.OFF_HAND), player.getMainArm() == HumanoidArm.RIGHT);
                 if(rightHand || leftHand){
                     entity.fallDistance *= 0.9F;
                 }
             }
+        }
+    }
+
+    private void updateBalloon(LivingEntity player, ItemStack itemInHand, boolean left) {
+        if(itemInHand.is(CSItemRegistry.BALLOON.get())){
+            CloudStorage.PROXY.onHoldingBalloon(player, itemInHand, left);
         }
     }
 
@@ -165,7 +204,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
             blockstate = level.getBlockState(blockpos1);
         }
         Random random = new Random();
-        if (!isStatic(itemstack) && blockstate.is(CSBlockRegistry.STATIC_CLOUD.get())) {
+        if (!isLoot(itemstack) && !isStatic(itemstack) && blockstate.is(CSBlockRegistry.STATIC_CLOUD.get())) {
             CompoundTag tag = itemstack.getOrCreateTag().copy();
             tag.putBoolean("static", true);
             ItemStack copyOff = itemstack.copy();
@@ -205,15 +244,31 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         } else if (player != null && ((!isStatic(itemstack) && blockstate.is(CSBlockRegistry.CLOUD_CHEST.get())) || (isStatic(itemstack) && blockstate.is(CSBlockRegistry.STATIC_CLOUD_CHEST.get())))) {            BlockEntity te = level.getBlockEntity(blockpos);
             if (te instanceof AbstractCloudChestBlockEntity cloudChest) {
                 if (cloudChest.hasBalloonFor(player)) {
-                    this.setColor(itemstack, cloudChest.getBalloonFor(player));
-                    ItemEntity itemEntity = new ItemEntity(level, blockpos.getX() + 0.5F, blockpos.getY() + 0.75F, blockpos.getZ() + 0.5F, itemstack);
+                    this.setColor(itemstack, cloudChest.getBalloonFor(player));					
+					ItemStack newBalloon = new ItemStack(CSItemRegistry.BALLOON.get());
+                    newBalloon.setCount(1);
+                    BalloonItem newBalloonItem = (BalloonItem) newBalloon.getItem();
+                    newBalloonItem.setColor(newBalloon, cloudChest.getBalloonFor(player));
+                    newBalloonItem.setStatic(newBalloon, blockstate.is(CSBlockRegistry.STATIC_CLOUD_CHEST.get()));
+                    newBalloonItem.setLoot(newBalloon, cloudChest.hasLootBalloon());
+                    ItemEntity itemEntity = new ItemEntity(level, blockpos.getX() + 0.5F, blockpos.getY() + 0.75F, blockpos.getZ() + 0.5F, newBalloon);
                     itemEntity.setDefaultPickUpDelay();
                     level.addFreshEntity(itemEntity);
                 }
                 cloudChest.setBalloonColorFor(player, this.getColor(itemstack));
+                }
+                if(isLoot(itemstack)){
+                    cloudChest.setLootBalloon(this.getColor(itemstack), LOOT_TABLE, random.nextLong());
+                }else{
+                    cloudChest.setLootBalloon(0, null, random.nextLong());
+                    cloudChest.setBalloonColorFor(player, this.getColor(itemstack));
+                }
                 itemstack.shrink(1);
                 return true;
             }
+        }
+        if(isLoot(itemstack)){
+            return false;
         }
         BalloonEntity balloon = CSEntityRegistry.BALLOON.get().create(level);
 
@@ -247,10 +302,10 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
             }
             if (!level.isClientSide) {
                 level.gameEvent(player, GameEvent.ENTITY_PLACE, blockpos);
-                level.addFreshEntity(balloon);
             }
-
-            itemstack.shrink(1);
+            if(level.addFreshEntity(balloon)){
+                itemstack.shrink(1);
+            }
             return true;
         } else {
             return false;
