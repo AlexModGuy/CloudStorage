@@ -4,13 +4,11 @@ import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
-import com.github.alexthe668.cloudstorage.misc.CSWorldData;
-import com.github.alexthe668.cloudstorage.misc.CloudIndex;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
@@ -137,11 +135,7 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
 
     public abstract int getBalloonFor(Player player);
 
-    public abstract boolean getBalloonStaticFor(Player player);
-
     public abstract void setBalloonColorFor(Player player, int color);
-
-    public abstract void setBalloonStaticFor(Player player, boolean isStatic);
 
     private ItemStack getValidBalloonStack(Player player) {
         ItemStack itemStack1 = player.getMainHandItem();
@@ -164,4 +158,10 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
     public abstract void releaseBalloons();
 
     public abstract int getContainerSize(Player player);
+
+    public void setLootBalloon(int color, ResourceLocation resourceLocation, long seed){}
+
+    public boolean hasLootBalloon(){
+        return false;
+    }
 }

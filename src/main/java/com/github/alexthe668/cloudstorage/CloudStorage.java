@@ -7,6 +7,8 @@ import com.github.alexthe668.cloudstorage.client.ClientProxy;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.network.*;
+import com.github.alexthe668.cloudstorage.world.CSStructureRegistry;
+import com.github.alexthe668.cloudstorage.world.CSStructureSetRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CreativeModeTab;
@@ -82,6 +84,7 @@ public class CloudStorage
         CSEntityRegistry.DEF_REG.register(bus);
         CSBlockEntityRegistry.DEF_REG.register(bus);
         CSPOIRegistry.DEF_REG.register(bus);
+        CSStructureRegistry.DEF_REG.register(bus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(PROXY);
     }
@@ -106,6 +109,7 @@ public class CloudStorage
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdateCloudInfo.class, MessageUpdateCloudInfo::write, MessageUpdateCloudInfo::read, MessageUpdateCloudInfo.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageScrollCloudChest.class, MessageScrollCloudChest::write, MessageScrollCloudChest::read, MessageScrollCloudChest.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageOpenCloudChest.class, MessageOpenCloudChest::write, MessageOpenCloudChest::read, MessageOpenCloudChest.Handler::handle);
+        event.enqueueWork(CSStructureSetRegistry::bootstrap);
     }
 
     public static <MSG> void sendMSGToAll(MSG message) {

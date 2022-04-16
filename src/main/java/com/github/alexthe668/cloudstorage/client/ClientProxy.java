@@ -122,13 +122,22 @@ public class ClientProxy extends CommonProxy {
     @OnlyIn(Dist.CLIENT)
     public static void onItemColors(ColorHandlerEvent.Item event) {
         CloudStorage.LOGGER.info("loaded in item colorizer");
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1 ? -1 : BalloonItem.getBalloonColor(stack), CSItemRegistry.BALLOON_INVENTORY.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1 ? -1 : BalloonItem.getBalloonColor(stack), CSItemRegistry.BALLOON.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1 && colorIn != 3 ? -1 : BalloonBuddyItem.getBalloonColor(stack), CSItemRegistry.BALLOON_BUDDY_INVENTORY.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1  && colorIn != 3 ? -1 : BalloonBuddyItem.getBalloonColor(stack), CSItemRegistry.BALLOON_BUDDY.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 2 ? -1 : BalloonArrowItem.getBalloonColor(stack), CSItemRegistry.BALLOON_ARROW.get());
+        event.getItemColors().register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_INVENTORY.get());
+        event.getItemColors().register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON.get());
+        event.getItemColors().register((stack, colorIn) -> colorIn != 1 && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY_INVENTORY.get());
+        event.getItemColors().register((stack, colorIn) -> colorIn != 1  && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY.get());
+        event.getItemColors().register((stack, colorIn) -> colorIn != 2 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_ARROW.get());
     }
 
+    private static int getBalloonColorForRender(ItemStack stack) {
+        int color = BalloonItem.getBalloonColor(stack);
+        if(color == -1){
+            //TODO render rainbow colors properly
+            return BalloonItem.DEFAULT_COLOR;
+        }else{
+            return color;
+        }
+    }
 
 
     @SubscribeEvent
@@ -208,17 +217,16 @@ public class ClientProxy extends CommonProxy {
                 e.getModelRegistry().put(id, new BakedModelFinalLayerFullbright(e.getModelRegistry().get(id)));
             }
         }
-        ItemProperties.register(CSItemRegistry.BALLOON.get(), new ResourceLocation("static"), (stack, lvl, holder, i) -> {
-            return BalloonItem.isStatic(stack) ? 1 : 0;
+        ItemProperties.register(CSItemRegistry.BALLOON.get(), new ResourceLocation("loot_or_static"), (stack, lvl, holder, i) -> {
+            return BalloonItem.isLoot(stack) ? 1F : BalloonItem.isStatic(stack) ? 0.5F : 0;
         });
-        ItemProperties.register(CSItemRegistry.BALLOON_INVENTORY.get(), new ResourceLocation("static"), (stack, lvl, holder, i) -> {
-            return BalloonItem.isStatic(stack) ? 1 : 0;
+        ItemProperties.register(CSItemRegistry.BALLOON_INVENTORY.get(), new ResourceLocation("loot_or_static"), (stack, lvl, holder, i) -> {
+            return BalloonItem.isLoot(stack) ? 1F : BalloonItem.isStatic(stack) ? 0.5F : 0;
         });
     }
 
     public void bakeEntityModels(final EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(PROPELLER_HAT_MODEL, () -> PropellerHatModel.createArmorLayer(new CubeDeformation(0.5F)));
-
     }
 
     public void setVisibleCloudSlots(int i){
@@ -250,4 +258,10 @@ public class ClientProxy extends CommonProxy {
         Minecraft.getInstance().setScreen(new GuideBookScreen(itemStackIn));
     }
 
+    public void onHoldingBalloon(LivingEntity holder, ItemStack balloon, boolean leftHanded) {
+        super.onHoldingBalloon(holder, balloon, leftHanded);
+        if(BalloonItem.isStatic(balloon)){
+            CSItemRenderer.renderBalloonStatic(holder, balloon, leftHanded);
+        }
+    }
 }

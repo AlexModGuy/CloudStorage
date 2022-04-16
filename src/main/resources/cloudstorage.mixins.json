@@ -5,6 +5,7 @@
   "target": "@env(DEFAULT)",
   "refmap": "cloudstorage.refmap.json",
   "mixins": [
+    "ArmorDyeRecipeMixin",
     "CelebrateVillagersSurvivedRaidMixin",
     "LightningBoltMixin",
     "PoolsMixin"

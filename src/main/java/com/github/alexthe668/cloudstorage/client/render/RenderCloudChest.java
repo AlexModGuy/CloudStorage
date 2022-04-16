@@ -71,6 +71,10 @@ public class RenderCloudChest<T extends AbstractCloudChestBlockEntity> implement
             BALLOON_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 0.75F);
             VertexConsumer ivertexbuilder3 = bufferIn.getBuffer(RenderType.entityTranslucent(BalloonTextures.STRING_TIE));
             BALLOON_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder3, combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1.0F);
+            if(tileEntityIn.hasLootBalloon()){
+                VertexConsumer ivertexbuilder4 = bufferIn.getBuffer(RenderType.entityTranslucent(BalloonTextures.LOOT));
+                BALLOON_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder4, combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1.0F);
+            }
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
             matrixStackIn.translate(0, -1.5F, 0);

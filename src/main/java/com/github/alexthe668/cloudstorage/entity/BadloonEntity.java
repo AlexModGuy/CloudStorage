@@ -350,6 +350,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
 
     @Nullable
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+        this.setBalloonColor(BalloonItem.DEFAULT_COLOR);
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
