@@ -1,0 +1,23 @@
+{
+    "display": {
+        "icon": {
+            "item": "cloudstorage:balloon",
+            "nbt": "{LootBalloon:1}"
+        },
+        "title": {
+            "translate": "advancements.cloudstorage.loot_balloon.title"
+        },
+        "description": {
+            "translate": "advancements.cloudstorage.loot_balloon.desc"
+        }
+    },
+    "parent": "cloudstorage:cloudstorage/balloon_stand",
+    "criteria": {
+        "open_chest": {
+            "trigger": "minecraft:player_generates_container_loot",
+            "conditions": {
+                "loot_table": "cloudstorage:chests/loot_balloon"
+            }
+        }
+    }
+}

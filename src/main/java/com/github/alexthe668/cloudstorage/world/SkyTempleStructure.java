@@ -196,7 +196,7 @@ public class SkyTempleStructure extends StructureFeature<NoneFeatureConfiguratio
                         tie.setBalloonCount(1);
                         accessor.addFreshEntityWithPassengers(tie);
                         BalloonEntity balloon = CSEntityRegistry.BALLOON.get().create(accessor.getLevel());
-                        balloon.setStringLength(4);
+                        balloon.setStringLength(3);
                         balloon.setPos(pos.getX() + 0.5F, pos.getY() + 3.1F, pos.getZ() + 0.5F);
                         balloon.setChildId(tie.getUUID());
                         accessor.addFreshEntityWithPassengers(balloon);
