@@ -117,8 +117,11 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
     public ItemStack createBalloon(int color, int type) {
         ItemStack stack = new ItemStack(this);
         this.setColor(stack, color);
-        this.setStatic(stack, type == 1);
-        this.setLoot(stack, type == 2);
+        setStatic(stack, type == 1);
+        setLoot(stack, type == 2);
+        if(type == 2){
+            stack.hideTooltipPart(ItemStack.TooltipPart.DYE);
+        }
         return stack;
     }
 
