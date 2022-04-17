@@ -152,7 +152,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
                 matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-180F));
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180F));
                 matrixStackIn.translate(0, -2F, 0);
-                StringRenderHelper.renderSting(Minecraft.getInstance().player, from, partialTick, matrixStackIn, bufferIn, to);
+                StringRenderHelper.renderSting(Minecraft.getInstance().player, from, partialTick, matrixStackIn, bufferIn, to, combinedLightIn);
                 matrixStackIn.translate(swingVec.x, swingVec.y, swingVec.z);
                 BALLOON_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(BalloonTextures.BALLOON)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
                 if (itemStackIn.is(CSItemRegistry.BALLOON_BUDDY.get())) {

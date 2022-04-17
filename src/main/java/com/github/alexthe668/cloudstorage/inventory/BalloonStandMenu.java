@@ -1,6 +1,7 @@
 package com.github.alexthe668.cloudstorage.inventory;
 
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
+import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -41,12 +42,12 @@ public class BalloonStandMenu extends AbstractContainerMenu {
         this.access = access;
         this.addSlot(new Slot(this.container, 0, 77, 16) {
             public boolean mayPlace(ItemStack stack) {
-                return stack.is(CSItemRegistry.BALLOON.get());
+                return stack.is(CSItemRegistry.BALLOON.get()) && !BalloonItem.isLoot(stack);
             }
         });
         this.addSlot(new Slot(this.container, 1, 77, 53) {
             public boolean mayPlace(ItemStack stack) {
-                return stack.is(CSItemRegistry.BALLOON.get());
+                return stack.is(CSItemRegistry.BALLOON.get()) && !BalloonItem.isLoot(stack);
             }
         });
         this.addSlot(new Slot(this.resultContainer, 2, 137, 35) {

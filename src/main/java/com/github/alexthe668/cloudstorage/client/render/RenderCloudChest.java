@@ -79,7 +79,7 @@ public class RenderCloudChest<T extends AbstractCloudChestBlockEntity> implement
             matrixStackIn.pushPose();
             matrixStackIn.translate(0, -1.5F, 0);
             Vec3 to = new Vec3(swingVec.x, 1.5F * emerge + 0.2F, swingVec.z);
-            StringRenderHelper.renderSting(Minecraft.getInstance().player, to, partialTicks, matrixStackIn, bufferIn, Vec3.ZERO);
+            StringRenderHelper.renderSting(Minecraft.getInstance().player, to, partialTicks, matrixStackIn, bufferIn, Vec3.ZERO, combinedLightIn);
             matrixStackIn.popPose();
             matrixStackIn.popPose();
         }
