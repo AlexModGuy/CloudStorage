@@ -123,7 +123,7 @@ public class CloudChestBlockEntity extends AbstractCloudChestBlockEntity {
     public AbstractContainerMenu getMenu(int i, Inventory playerInventory) {
         CSWorldData data = CSWorldData.get(getLevel());
         Player player = playerInventory.player;
-        if(data != null && this.hasBalloonFor(player)){
+        if(data != null && this.hasBalloonFor(player) && !hasNoInvSpace(player)){
             CloudIndex cloudIndex = getOrInitializePrivateCloud(data, player);
             if(cloudIndex != null && cloudIndex.getContainerSize() > 0){
                 return new CloudChestMenu(i, playerInventory, cloudIndex.getContainer());

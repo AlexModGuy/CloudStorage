@@ -101,17 +101,6 @@
                     }
                 ]
             }
-        },
-        "personality11": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "items": ["cloudstorage:balloon_buddy"],
-                        "nbt": "{Personality:11}"
-                    }
-                ]
-            }
         }
     },
     "requirements": [
@@ -122,7 +111,6 @@
         ["personality7"],
         ["personality8"],
         ["personality9"],
-        ["personality10"],
-        ["personality11"]
+        ["personality10"]
     ]
 }
