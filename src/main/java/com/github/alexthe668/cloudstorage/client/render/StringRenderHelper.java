@@ -28,11 +28,8 @@ public class StringRenderHelper {
     private static final float STRING_COLOR_G2 = 1F;
     private static final float STRING_COLOR_B2 = 1F;
 
-    private static void addVertexPairAlex(VertexConsumer p_174308_, Matrix4f p_174309_, float p_174310_, float p_174311_, float p_174312_, int p_174313_, int p_174314_, int p_174315_, int p_174316_, float p_174317_, float p_174318_, float p_174319_, float p_174320_, int p_174321_, boolean p_174322_) {
+    private static void addVertexPairAlex(VertexConsumer p_174308_, Matrix4f p_174309_, float p_174310_, float p_174311_, float p_174312_, int packedLight, float p_174317_, float p_174318_, float p_174319_, float p_174320_, int p_174321_, boolean p_174322_) {
         float f = (float) p_174321_ / 24.0F;
-        int i = (int) Mth.lerp(f, (float) p_174313_, (float) p_174314_);
-        int j = (int) Mth.lerp(f, (float) p_174315_, (float) p_174316_);
-        int k = LightTexture.pack(i, j);
         float f2 = STRING_COLOR_R;
         float f3 = STRING_COLOR_G;
         float f4 = STRING_COLOR_B;
@@ -44,11 +41,11 @@ public class StringRenderHelper {
         float f5 = p_174310_ * f;
         float f6 = p_174311_ > 0.0F ? p_174311_ * f * f : p_174311_ - p_174311_ * (1.0F - f) * (1.0F - f);
         float f7 = p_174312_ * f;
-        p_174308_.vertex(p_174309_, f5 - p_174319_, f6 + p_174318_, f7 + p_174320_).color(f2, f3, f4, 1.0F).uv2(k).endVertex();
-        p_174308_.vertex(p_174309_, f5 + p_174319_, f6 + p_174317_ - p_174318_, f7 - p_174320_).color(f2, f3, f4, 1.0F).uv2(k).endVertex();
+        p_174308_.vertex(p_174309_, f5 - p_174319_, f6 + p_174318_, f7 + p_174320_).color(f2, f3, f4, 1.0F).uv2(packedLight).endVertex();
+        p_174308_.vertex(p_174309_, f5 + p_174319_, f6 + p_174317_ - p_174318_, f7 - p_174320_).color(f2, f3, f4, 1.0F).uv2(packedLight).endVertex();
     }
 
-    public static <E extends Entity> void renderSting(Entity from, Vec3 fromVec, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, Vec3 to) {
+    public static <E extends Entity> void renderSting(Entity from, Vec3 fromVec, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, Vec3 to, int lightIn) {
         poseStack.pushPose();
         double d3 = fromVec.x;
         double d4 = fromVec.y;
@@ -63,21 +60,22 @@ public class StringRenderHelper {
         float width = 0.025F;
         BlockPos blockpos = new BlockPos(fromVec);
         BlockPos blockpos1 = new BlockPos(to);
-        int i = getStringLightLevel(from, blockpos);
-        int j = from.level.getBrightness(LightLayer.BLOCK, blockpos1);
-        int k = from.level.getBrightness(LightLayer.SKY, blockpos);
-        int l = from.level.getBrightness(LightLayer.SKY, blockpos1);
+        if(lightIn == -1){
+            int i = getStringLightLevel(from, blockpos);
+            int j = Math.max(from.level.getBrightness(LightLayer.SKY, blockpos1), from.level.getBrightness(LightLayer.BLOCK, blockpos1));
+            lightIn = LightTexture.pack(i, j);
+        }
         for (int i1 = 0; i1 <= 24; ++i1) {
-            addVertexPairAlex(vertexconsumer, matrix4f, f, f1, f2, i, j, k, l, width, width, width, width, i1, false);
+            addVertexPairAlex(vertexconsumer, matrix4f, f, f1, f2, lightIn, width, width, width, width, i1, false);
         }
         for (int j1 = 24; j1 >= 0; --j1) {
-            addVertexPairAlex(vertexconsumer, matrix4f, f, f1, f2, i, j, k, l, width, width, width, width, j1, true);
+            addVertexPairAlex(vertexconsumer, matrix4f, f, f1, f2, lightIn, width, width, width, width, j1, true);
         }
         poseStack.popPose();
     }
 
-    protected static int getStringLightLevel(Entity p_114496_, BlockPos p_114497_) {
-        return p_114496_.isOnFire() ? 15 : p_114496_.level.getBrightness(LightLayer.BLOCK, p_114497_);
+    protected static int getStringLightLevel(Entity entity, BlockPos pos) {
+        return entity.isOnFire() ? 15 : Math.max(entity.level.getBrightness(LightLayer.BLOCK, pos), entity.level.getBrightness(LightLayer.SKY, pos));
     }
 
     public static void renderBloviatorBeam(float p_114188_, float p_114189_, float p_114190_, float p_114191_, int p_114192_, PoseStack p_114193_, MultiBufferSource p_114194_, int p_114195_, float intensity, float alpha) {
