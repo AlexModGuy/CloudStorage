@@ -11,6 +11,7 @@ import com.github.alexthe668.cloudstorage.network.MessageUpdateCloudInfo;
 import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import com.github.alexthe668.cloudstorage.world.SkyMobSpawner;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
