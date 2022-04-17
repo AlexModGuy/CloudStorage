@@ -131,6 +131,9 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         this.setColor(stack, color);
         setStatic(stack, type == 1);
         setLoot(stack, type == 2);
+        if(type == 2){
+            stack.hideTooltipPart(ItemStack.TooltipPart.DYE);
+        }
         return stack;
     }
 
