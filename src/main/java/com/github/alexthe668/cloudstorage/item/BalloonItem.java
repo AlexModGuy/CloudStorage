@@ -261,7 +261,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
                 if(isLoot(itemstack)){
                     cloudChest.setLootBalloon(this.getColor(itemstack), LOOT_TABLE, random.nextLong());
                 }else{
-                    cloudChest.setLootBalloon(0, null, random.nextLong());
+                    cloudChest.setLootBalloon(1, null, random.nextLong());
                     cloudChest.setBalloonColorFor(player, this.getColor(itemstack));
                 }
                 itemstack.shrink(1);

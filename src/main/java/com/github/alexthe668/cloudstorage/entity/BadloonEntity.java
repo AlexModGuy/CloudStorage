@@ -130,8 +130,11 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
             this.setChildId(compound.getUUID("ChildUUID"));
         }
         this.setFaceInt(compound.getInt("Face"));
-        this.setBalloonColor(compound.getInt("BalloonColor"));
-
+        if(compound.contains("BalloonColor")){
+            this.setBalloonColor(compound.getInt("BalloonColor"));
+        }else {
+            this.setBalloonColor(BalloonItem.DEFAULT_COLOR);
+        }
     }
 
     public void addAdditionalSaveData(CompoundTag compound) {

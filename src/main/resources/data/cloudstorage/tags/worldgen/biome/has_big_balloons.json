@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#is_ocean",
+    "#is_beach",
+    "#is_river",
+    "#has_structure/mineshaft",
+    "#has_structure/stronghold"
+  ]
+}
