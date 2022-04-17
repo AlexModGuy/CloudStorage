@@ -35,7 +35,7 @@ public class CSConfig {
         builder.pop();
         builder.push("village");
         balloonSalesmanVillager = builder.comment(" whether the balloon salesman villager is enabled or not").translation("balloon_salesman_villager").define("balloon_salesman_villager", true);
-        balloonStandSpawnWeight = builder.comment(" the weight of the balloon stand village structure spawning. set to zero to disable").translation("balloon_stand_spawn_weight").defineInRange("balloon_stand_spawn_weight", 4, 0, 100);
+        balloonStandSpawnWeight = builder.comment(" the weight of the balloon stand village structure spawning. set to zero to disable").translation("balloon_stand_spawn_weight").defineInRange("balloon_stand_spawn_weight", 2, 0, 100);
         builder.pop();
         builder.comment(" spawning of sky mobs is handled a bit differently than vanilla, since vanilla spawns are based on height map which would not work in this case.");
         builder.push("spawning");
