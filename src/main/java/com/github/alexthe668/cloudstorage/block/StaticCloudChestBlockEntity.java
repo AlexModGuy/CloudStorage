@@ -89,7 +89,7 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
 
     @Override
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing) {
-        if (!this.remove && facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.remove && facing != null && balloonColor != -1 && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if(!this.hasNoInvSpace(null)){
                 if(!input.isPresent()){
                     Container cloudContainer = getCloudContainer();
