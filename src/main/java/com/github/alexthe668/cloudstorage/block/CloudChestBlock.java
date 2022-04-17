@@ -53,11 +53,11 @@ public class CloudChestBlock extends BaseEntityBlock {
     }
 
     public BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {
-        return (BlockState)p_185499_1_.setValue(HORIZONTAL_FACING, p_185499_2_.rotate((Direction)p_185499_1_.getValue(HORIZONTAL_FACING)));
+        return p_185499_1_.setValue(HORIZONTAL_FACING, p_185499_2_.rotate(p_185499_1_.getValue(HORIZONTAL_FACING)));
     }
 
     public BlockState mirror(BlockState p_185471_1_, Mirror p_185471_2_) {
-        return p_185471_1_.rotate(p_185471_2_.getRotation((Direction)p_185471_1_.getValue(HORIZONTAL_FACING)));
+        return p_185471_1_.rotate(p_185471_2_.getRotation(p_185471_1_.getValue(HORIZONTAL_FACING)));
     }
 
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -70,26 +70,30 @@ public class CloudChestBlock extends BaseEntityBlock {
 
     @OnlyIn(Dist.CLIENT)
     public boolean skipRendering(BlockState p_200122_1_, BlockState p_200122_2_, Direction p_200122_3_) {
-        return p_200122_2_.getBlock() == this ? true : super.skipRendering(p_200122_1_, p_200122_2_, p_200122_3_);
+        return p_200122_2_.getBlock() == this || super.skipRendering(p_200122_1_, p_200122_2_, p_200122_3_);
     }
 
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(handIn);
-        if(worldIn.getBlockEntity(pos) instanceof AbstractCloudChestBlockEntity chest){
-            if(!chest.hasClearance()){
+        if (worldIn.getBlockEntity(pos) instanceof AbstractCloudChestBlockEntity chest) {
+            if (!chest.hasClearance()) {
                 player.displayClientMessage(new TranslatableComponent("message.cloudstorage.no_sky_access").withStyle(ChatFormatting.RED), true);
-            }else if(!chest.hasBalloonFor(player)){
+                return InteractionResult.PASS;
+            } else if (!chest.hasBalloonFor(player)) {
                 player.displayClientMessage(new TranslatableComponent("message.cloudstorage.no_balloon").withStyle(ChatFormatting.RED), true);
+                return InteractionResult.PASS;
             }
             if (worldIn.isClientSide) {
                 return InteractionResult.SUCCESS;
             } else {
                 CloudStorage.sendMSGToAll(new MessageOpenCloudChest(chest.getContainerSize(player)));
-                MenuProvider menuprovider = chest.getMenuProvider();
-                if(chest.hasNoInvSpace(player)){
+                if (chest.hasNoInvSpace(player)) {
                     player.displayClientMessage(new TranslatableComponent("message.cloudstorage.no_inventory_space").withStyle(ChatFormatting.RED), true);
-                }else if (menuprovider != null) {
-                    player.openMenu(menuprovider);
+                } else {
+                    MenuProvider menuprovider = chest.getMenuProvider();
+                    if (menuprovider != null) {
+                        player.openMenu(menuprovider);
+                    }
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -98,7 +102,7 @@ public class CloudChestBlock extends BaseEntityBlock {
     }
 
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if(worldIn.getBlockEntity(pos) instanceof AbstractCloudChestBlockEntity cloudChest){
+        if (worldIn.getBlockEntity(pos) instanceof AbstractCloudChestBlockEntity cloudChest) {
             cloudChest.releaseBalloons();
         }
         super.onRemove(state, worldIn, pos, newState, isMoving);
@@ -116,9 +120,9 @@ public class CloudChestBlock extends BaseEntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_152180_, BlockState p_152181_, BlockEntityType<T> p_152182_) {
-        if(lightning){
+        if (lightning) {
             return createTickerHelper(p_152182_, CSBlockEntityRegistry.STATIC_CLOUD_CHEST.get(), StaticCloudChestBlockEntity::commonTick);
-        }else{
+        } else {
             return createTickerHelper(p_152182_, CSBlockEntityRegistry.CLOUD_CHEST.get(), CloudChestBlockEntity::commonTick);
         }
     }
@@ -129,14 +133,14 @@ public class CloudChestBlock extends BaseEntityBlock {
             BlockPos blockpos = pos.relative(direction);
             BlockState blockstate = level.getBlockState(blockpos);
             if (!state.canOcclude() || !blockstate.isFaceSturdy(level, blockpos, direction.getOpposite())) {
-                double d0 = direction.getStepX() == 0 ? rng.nextDouble() - 0.5D : (double)direction.getStepX() * 0.3D;
-                double d1 = direction.getStepY() == 0 ? rng.nextDouble() - 0.5D : (double)direction.getStepY() * 0.3D;
-                double d2 = direction.getStepZ() == 0 ? rng.nextDouble() - 0.5D : (double)direction.getStepZ() * 0.3D;
+                double d0 = direction.getStepX() == 0 ? rng.nextDouble() - 0.5D : (double) direction.getStepX() * 0.3D;
+                double d1 = direction.getStepY() == 0 ? rng.nextDouble() - 0.5D : (double) direction.getStepY() * 0.3D;
+                double d2 = direction.getStepZ() == 0 ? rng.nextDouble() - 0.5D : (double) direction.getStepZ() * 0.3D;
                 double length = 0.3D + rng.nextFloat() * 0.3D;
                 double d3 = d0 * length;
                 double d4 = d1 * length;
                 double d5 = d2 * length;
-                level.addParticle(CSParticleRegistry.STATIC_LIGHTNING, (double)pos.getX() + 0.5D + d0, (double)pos.getY() + 0.5D + d1, (double)pos.getZ() + 0.5D + d2, d3, d4, d5);
+                level.addParticle(CSParticleRegistry.STATIC_LIGHTNING, (double) pos.getX() + 0.5D + d0, (double) pos.getY() + 0.5D + d1, (double) pos.getZ() + 0.5D + d2, d3, d4, d5);
             }
         }
     }
