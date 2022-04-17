@@ -60,11 +60,6 @@ public class StringRenderHelper {
         float width = 0.025F;
         BlockPos blockpos = new BlockPos(fromVec);
         BlockPos blockpos1 = new BlockPos(to);
-        if(lightIn == -1){
-            int i = getStringLightLevel(from, blockpos);
-            int j = Math.max(from.level.getBrightness(LightLayer.SKY, blockpos1), from.level.getBrightness(LightLayer.BLOCK, blockpos1));
-            lightIn = LightTexture.pack(i, j);
-        }
         for (int i1 = 0; i1 <= 24; ++i1) {
             addVertexPairAlex(vertexconsumer, matrix4f, f, f1, f2, lightIn, width, width, width, width, i1, false);
         }
@@ -74,9 +69,6 @@ public class StringRenderHelper {
         poseStack.popPose();
     }
 
-    protected static int getStringLightLevel(Entity entity, BlockPos pos) {
-        return entity.isOnFire() ? 15 : Math.max(entity.level.getBrightness(LightLayer.BLOCK, pos), entity.level.getBrightness(LightLayer.SKY, pos));
-    }
 
     public static void renderBloviatorBeam(float p_114188_, float p_114189_, float p_114190_, float p_114191_, int p_114192_, PoseStack p_114193_, MultiBufferSource p_114194_, int p_114195_, float intensity, float alpha) {
         float f = Mth.sqrt(p_114188_ * p_114188_ + p_114190_ * p_114190_);

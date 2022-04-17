@@ -78,7 +78,7 @@ public class RenderBalloonBuddy extends MobRenderer<BalloonBuddyEntity, BalloonM
             Vec3 handPosition = new Vec3(d3, d4, d5);
             Vec3 from = new Vec3(0, 0.2F, 0).xRot(xRot * ((float) Math.PI / 180F)).yRot(-yRot * ((float) Math.PI / 180F)).zRot(-zRot * ((float) Math.PI / 180F));
             Vec3 to = handPosition.add(0.0F, hand.getBbHeight() * 0.8F, 0);
-            StringRenderHelper.renderSting(entityIn, position.add(from), partialTicks, matrixStackIn, bufferIn, to, -1);
+            StringRenderHelper.renderSting(entityIn, position.add(from), partialTicks, matrixStackIn, bufferIn, to, packedLightIn);
             matrixStackIn.popPose();
         }
     }
