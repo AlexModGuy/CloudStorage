@@ -245,7 +245,6 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
             BlockEntity te = level.getBlockEntity(blockpos);
             if (te instanceof AbstractCloudChestBlockEntity cloudChest) {
                 if (cloudChest.hasBalloonFor(player)) {
-                    this.setColor(itemstack, cloudChest.getBalloonFor(player));
                     ItemStack newBalloon = new ItemStack(CSItemRegistry.BALLOON.get());
                     newBalloon.setCount(1);
                     BalloonItem newBalloonItem = (BalloonItem) newBalloon.getItem();
@@ -256,11 +255,10 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
                     itemEntity.setDefaultPickUpDelay();
                     level.addFreshEntity(itemEntity);
                 }
-                cloudChest.setBalloonColorFor(player, this.getColor(itemstack));
                 if (isLoot(itemstack)) {
                     cloudChest.setLootBalloon(this.getColor(itemstack), LOOT_TABLE, random.nextLong());
                 } else {
-                    cloudChest.setLootBalloon(0, null, random.nextLong());
+                    cloudChest.setLootBalloon(1, null, random.nextLong());
                     cloudChest.setBalloonColorFor(player, this.getColor(itemstack));
                 }
                 itemstack.shrink(1);
