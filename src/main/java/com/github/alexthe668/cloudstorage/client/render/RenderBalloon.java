@@ -1,10 +1,7 @@
 package com.github.alexthe668.cloudstorage.client.render;
 
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
-import com.github.alexthe668.cloudstorage.client.model.BadloonHandModel;
 import com.github.alexthe668.cloudstorage.client.model.BalloonModel;
-import com.github.alexthe668.cloudstorage.entity.BadloonEntity;
-import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

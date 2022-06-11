@@ -9,12 +9,11 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MapItem;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
 public class BalloonStandMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
@@ -38,7 +37,7 @@ public class BalloonStandMenu extends AbstractContainerMenu {
     }
 
     public BalloonStandMenu(int id, Inventory inventory, final ContainerLevelAccess access) {
-        super(CSMenuRegistry.BALLOON_STAND_MENU, id);
+        super(CSMenuRegistry.BALLOON_STAND_MENU.get(), id);
         this.access = access;
         this.addSlot(new Slot(this.container, 0, 77, 16) {
             public boolean mayPlace(ItemStack stack) {

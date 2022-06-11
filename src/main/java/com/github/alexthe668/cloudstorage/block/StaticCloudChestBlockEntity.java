@@ -3,13 +3,12 @@ package com.github.alexthe668.cloudstorage.block;
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
-import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import com.github.alexthe668.cloudstorage.misc.CloudIndex;
+import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +22,7 @@ import javax.annotation.Nullable;
 
 public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
 
-    private static final Component CONTAINER_TITLE = new TranslatableComponent("cloudstorage.container.static_cloud_chest");
+    private static final Component CONTAINER_TITLE = Component.translatable("cloudstorage.container.static_cloud_chest");
     private int balloonColor = -1;
     private net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler> input = LazyOptional.empty();
 

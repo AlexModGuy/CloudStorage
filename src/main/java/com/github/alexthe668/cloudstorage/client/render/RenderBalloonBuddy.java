@@ -1,18 +1,15 @@
 package com.github.alexthe668.cloudstorage.client.render;
 
 import com.github.alexthe668.cloudstorage.client.model.BalloonModel;
-import com.github.alexthe668.cloudstorage.entity.BalloonBuddyEntity;
 import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
+import com.github.alexthe668.cloudstorage.entity.BalloonBuddyEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;

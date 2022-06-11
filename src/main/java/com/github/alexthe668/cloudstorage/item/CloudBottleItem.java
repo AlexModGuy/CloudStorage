@@ -2,7 +2,7 @@ package com.github.alexthe668.cloudstorage.item;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
-import net.minecraft.nbt.CompoundTag;
+import com.github.alexthe668.cloudstorage.misc.CSCreativeTab;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +16,7 @@ public class CloudBottleItem extends Item {
     private boolean happy;
 
     public CloudBottleItem(boolean happy) {
-        super(new Item.Properties().tab(CloudStorage.TAB).stacksTo(8).craftRemainder(happy ? Items.GLASS_BOTTLE : null));
+        super(new Item.Properties().tab(CSCreativeTab.INSTANCE).stacksTo(8).craftRemainder(happy ? Items.GLASS_BOTTLE : null));
         this.happy = happy;
     }
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
@@ -26,7 +26,7 @@ public class CloudBottleItem extends Item {
         player.setDeltaMovement(player.getDeltaMovement().add(0, up, 0));
         player.fallDistance /= 2.0D;
         for(int i = 0; i < 12 + player.getRandom().nextInt(12); i++){
-            level.addParticle(CSParticleRegistry.BLOVIATOR_BREATH, player.getRandomX(0.5F), player.getY(0.5F), player.getRandomZ(0.5F), 0, up * (0.1F + player.getRandom().nextFloat() * 0.2F), 0);
+            level.addParticle(CSParticleRegistry.BLOVIATOR_BREATH.get(), player.getRandomX(0.5F), player.getY(0.5F), player.getRandomZ(0.5F), 0, up * (0.1F + player.getRandom().nextFloat() * 0.2F), 0);
         }
         if (!player.getAbilities().instabuild) {
             itemstack.shrink(1);

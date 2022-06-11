@@ -1,6 +1,5 @@
 package com.github.alexthe668.cloudstorage.world;
 
-import com.github.alexthe668.cloudstorage.CSConfig;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import net.minecraft.core.BlockPos;

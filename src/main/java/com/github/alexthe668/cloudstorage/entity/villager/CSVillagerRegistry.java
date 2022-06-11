@@ -9,13 +9,16 @@ import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
-import com.github.alexthe668.cloudstorage.world.BalloonStandPoolElement;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
+import com.github.alexthe668.cloudstorage.world.BalloonStandPoolElement;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.MoveToSkySeeingSpot;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.Villager;
@@ -26,25 +29,21 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+
 import java.util.List;
-import java.util.Random;
+import java.util.function.Predicate;
 
 @Mod.EventBusSubscriber(modid = CloudStorage.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CSVillagerRegistry {
 
-    public static final VillagerProfession BALLOON_SALESMAN = new BalloonSalesman().setRegistryName(CloudStorage.MODID, "balloon_salesman");
+    public static final DeferredRegister<VillagerProfession> DEF_REG = DeferredRegister.create(ForgeRegistries.PROFESSIONS, CloudStorage.MODID);
+    public static final RegistryObject<VillagerProfession> BALLOON_SALESMAN = DEF_REG.register("balloon_salesman", () -> buildVillagerProfession());
     public static final StructurePoolElementType<BalloonStandPoolElement> BALLOON_STAND_TYPE = Registry.register(Registry.STRUCTURE_POOL_ELEMENT, new ResourceLocation(CloudStorage.MODID, "balloon_stand"), () -> BalloonStandPoolElement.CODEC);
     public static boolean registeredHouses = false;
-
-    @SubscribeEvent
-    public static void registerVillagers(final RegistryEvent.Register<VillagerProfession> event) {
-        if (CloudStorage.CONFIG.balloonSalesmanVillager.get()) {
-            event.getRegistry().register(BALLOON_SALESMAN);
-        }
-    }
 
     public static void initTrades(List<VillagerTrades.ItemListing> level1, List<VillagerTrades.ItemListing> level2, List<VillagerTrades.ItemListing> level3, List<VillagerTrades.ItemListing> level4, List<VillagerTrades.ItemListing> level5) {
         level1.add(new BuyingItemTrade(Items.STRING, 10, 3, 11, 2));
@@ -86,7 +85,7 @@ public class CSVillagerRegistry {
     }
 
     public static void onBalloonCelebrate(ServerLevel level, Villager villager) {
-        Random random = villager.getRandom();
+        RandomSource random = villager.getRandom();
         if (random.nextInt(75) == 0) {
             villager.playCelebrateSound();
             if(MoveToSkySeeingSpot.hasNoBlocksAbove(level, villager, villager.blockPosition())) {
@@ -118,40 +117,19 @@ public class CSVillagerRegistry {
             return new int[]{BalloonItem.DEFAULT_COLOR};
         }
     }
-   /*  public static void registerHouses(MinecraftServer server) {
-       RegistryAccess.Frozen manager = server.registryAccess();
-        Registry<StructureTemplatePool> registry = manager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY);
-        registerJigsawPiece(registry, new ResourceLocation("minecraft:village/plains/houses"), new ResourceLocation(DomesticationMod.MODID, "plains_petshop"), 20);
-        registerJigsawPiece(registry, new ResourceLocation("minecraft:village/desert/houses"), new ResourceLocation(DomesticationMod.MODID, "desert_petshop"), 20);
-        registerJigsawPiece(registry, new ResourceLocation("minecraft:village/savanna/houses"), new ResourceLocation(DomesticationMod.MODID, "savanna_petshop"), 20);
-        registerJigsawPiece(registry, new ResourceLocation("minecraft:village/snowy/houses"), new ResourceLocation(DomesticationMod.MODID, "snowy_petshop"), 20);
-        registerJigsawPiece(registry, new ResourceLocation("minecraft:village/taiga/houses"), new ResourceLocation(DomesticationMod.MODID, "taiga_petshop"), 20);
 
+    private static VillagerProfession buildVillagerProfession() {
+        Predicate<Holder<PoiType>> heldJobSite = (poiType) -> {
+            return poiType.is(CSPOIRegistry.BALLOON_STAND.getKey());
+        };
+        Predicate<Holder<PoiType>> acquirableJobSite = (poiType) -> {
+            return poiType.is(CSPOIRegistry.BALLOON_STAND.getKey());
+        };
+        if(!CloudStorage.CONFIG.balloonSalesmanVillager.get()){
+            heldJobSite = Predicates.alwaysFalse();
+            acquirableJobSite = Predicates.alwaysFalse();
+        }
+        return new VillagerProfession("balloon_salesman", heldJobSite, acquirableJobSite, ImmutableSet.of(), ImmutableSet.of(), CSSoundRegistry.BALLOON_HURT.get());
     }
 
-    private static void registerJigsawPiece(Registry<StructureTemplatePool> registry, ResourceLocation poolLocation, ResourceLocation nbtLocation, int weight) {
-        StructureTemplatePool pool = registry.get(poolLocation);
-        StructurePoolElement element = new PetshopStructurePoolElement(nbtLocation, ProcessorLists.EMPTY);
-        if (pool != null) {
-            List<StructurePoolElement> templates = new ArrayList<>(pool.templates);
-            for (int i = 0; i < weight; i++) {
-                templates.add(element);
-            }
-            List<Pair<StructurePoolElement, Integer>> rawTemplates = new ArrayList(pool.rawTemplates);
-            rawTemplates.add(new Pair<>(element, weight));
-            pool.templates = templates;
-            pool.rawTemplates = rawTemplates;
-        }
-    }*/
-
-    private static class BalloonSalesman extends VillagerProfession {
-
-        public BalloonSalesman() {
-            super("balloon_salesman", null, ImmutableSet.of(), ImmutableSet.of(), CSSoundRegistry.BALLOON_HURT);
-        }
-
-        public PoiType getJobPoiType() {
-            return CSPOIRegistry.BALLOON_STAND.get();
-        }
-    }
 }

@@ -3,13 +3,16 @@ package com.github.alexthe668.cloudstorage.client.model.baked;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class BakedModelFinalLayerFullbright extends BakedModelWrapper {
 
@@ -18,7 +21,7 @@ public class BakedModelFinalLayerFullbright extends BakedModelWrapper {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, @Nonnull IModelData extraData){
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, @Nonnull IModelData extraData){
         if (state == null) {
             return originalModel.getQuads(state, side, rand, extraData);
         }

@@ -3,17 +3,14 @@ package com.github.alexthe668.cloudstorage.block;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import com.github.alexthe668.cloudstorage.network.MessageOpenCloudChest;
-import com.github.alexthe668.cloudstorage.network.MessageUpdateCloudInfo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.Containers;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,7 +22,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
@@ -35,7 +31,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class CloudChestBlock extends BaseEntityBlock {
 
@@ -77,10 +72,10 @@ public class CloudChestBlock extends BaseEntityBlock {
         ItemStack heldItem = player.getItemInHand(handIn);
         if (worldIn.getBlockEntity(pos) instanceof AbstractCloudChestBlockEntity chest) {
             if (!chest.hasClearance()) {
-                player.displayClientMessage(new TranslatableComponent("message.cloudstorage.no_sky_access").withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(Component.translatable("message.cloudstorage.no_sky_access").withStyle(ChatFormatting.RED), true);
                 return InteractionResult.PASS;
             } else if (!chest.hasBalloonFor(player)) {
-                player.displayClientMessage(new TranslatableComponent("message.cloudstorage.no_balloon").withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(Component.translatable("message.cloudstorage.no_balloon").withStyle(ChatFormatting.RED), true);
                 return InteractionResult.PASS;
             }
             if (worldIn.isClientSide) {
@@ -88,7 +83,7 @@ public class CloudChestBlock extends BaseEntityBlock {
             } else {
                 CloudStorage.sendMSGToAll(new MessageOpenCloudChest(chest.getContainerSize(player)));
                 if (chest.hasNoInvSpace(player)) {
-                    player.displayClientMessage(new TranslatableComponent("message.cloudstorage.no_inventory_space").withStyle(ChatFormatting.RED), true);
+                    player.displayClientMessage(Component.translatable("message.cloudstorage.no_inventory_space").withStyle(ChatFormatting.RED), true);
                 } else {
                     MenuProvider menuprovider = chest.getMenuProvider();
                     if (menuprovider != null) {
@@ -127,7 +122,7 @@ public class CloudChestBlock extends BaseEntityBlock {
         }
     }
 
-    public void animateTick(BlockState state, Level level, BlockPos pos, Random rng) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rng) {
         if (lightning && rng.nextInt(1) == 0) {
             Direction direction = Direction.getRandom(rng);
             BlockPos blockpos = pos.relative(direction);
@@ -140,7 +135,7 @@ public class CloudChestBlock extends BaseEntityBlock {
                 double d3 = d0 * length;
                 double d4 = d1 * length;
                 double d5 = d2 * length;
-                level.addParticle(CSParticleRegistry.STATIC_LIGHTNING, (double) pos.getX() + 0.5D + d0, (double) pos.getY() + 0.5D + d1, (double) pos.getZ() + 0.5D + d2, d3, d4, d5);
+                level.addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), (double) pos.getX() + 0.5D + d0, (double) pos.getY() + 0.5D + d1, (double) pos.getZ() + 0.5D + d2, d3, d4, d5);
             }
         }
     }

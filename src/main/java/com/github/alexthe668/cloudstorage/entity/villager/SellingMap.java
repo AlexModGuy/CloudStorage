@@ -3,38 +3,28 @@ package com.github.alexthe668.cloudstorage.entity.villager;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
-import com.github.alexthe668.cloudstorage.world.CSConfiguredStructureRegistry;
-import com.github.alexthe668.cloudstorage.world.CSStructureSetRegistry;
-import com.google.common.collect.ImmutableList;
+import com.github.alexthe668.cloudstorage.world.CSStructureRegistry;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.StructureFeatureManager;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.structure.StructureCheckResult;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
-import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Optional;
 
 public class SellingMap implements VillagerTrades.ItemListing {
     private final int emeraldCost;
@@ -55,15 +45,15 @@ public class SellingMap implements VillagerTrades.ItemListing {
 
     @Nullable
     public BlockPos findNearestMapFeature(ServerLevel level, BlockPos pos, int dist, boolean bool) {
-        if (!level.getServer().getWorldData().worldGenSettings().generateFeatures()) {
+        if (!level.getServer().getWorldData().worldGenSettings().generateStructures()) {
             return null;
         } else {
             try{
-                Registry<ConfiguredStructureFeature<?, ?>> registry = level.getLevel().registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
-                Holder<ConfiguredStructureFeature<?, ?>> holder = balloon ? registry.getHolder(CSConfiguredStructureRegistry.CONFIGURED_BIG_BALLOON).get() : registry.getHolder(CSConfiguredStructureRegistry.CONFIGURED_SKY_TEMPLE).get();
-                HolderSet<ConfiguredStructureFeature<?, ?>> holderset = HolderSet.direct(holder);
-                Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>> pair = level.getChunkSource().getGenerator().findNearestMapFeature(level, holderset, pos, 100, false);
-                return pair == null ? null : pair.getFirst();
+                return null;
+                //Holder<Structure> holder = Optional.empty();
+                //HolderSet<Structure> holderset = HolderSet.direct(holder);
+                //Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level, holderset, pos, 100, false);
+                //return pair == null ? null : pair.getFirst();
             }catch (Exception e){
                 return null;
             }
@@ -71,7 +61,7 @@ public class SellingMap implements VillagerTrades.ItemListing {
     }
 
     @Nullable
-    public MerchantOffer getOffer(Entity entity, Random random) {
+    public MerchantOffer getOffer(Entity entity, RandomSource random) {
         if (!(entity.level instanceof ServerLevel)) {
             return null;
         } else {
@@ -83,7 +73,7 @@ public class SellingMap implements VillagerTrades.ItemListing {
                 MapItemSavedData.addTargetDecoration(itemstack, blockpos, "+", this.destinationType);
                 CompoundTag compoundtag1 = itemstack.getOrCreateTagElement("display");
                 compoundtag1.putInt("MapColor", balloon ? BalloonItem.DEFAULT_COLOR : 0XA6B3BF);
-                itemstack.setHoverName(new TranslatableComponent(this.displayName));
+                itemstack.setHoverName(Component.translatable(this.displayName));
                 return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCost), new ItemStack(balloon ? CSItemRegistry.BALLOON.get() : CSBlockRegistry.CLOUD.get()), itemstack, this.maxUses, this.villagerXp, 0.2F);
             } else {
                 return null;

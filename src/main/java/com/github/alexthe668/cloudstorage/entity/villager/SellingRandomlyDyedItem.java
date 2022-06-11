@@ -1,5 +1,6 @@
 package com.github.alexthe668.cloudstorage.entity.villager;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.DyeableLeatherItem;
@@ -8,8 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.block.Block;
-
-import java.util.Random;
 
 public class SellingRandomlyDyedItem implements VillagerTrades.ItemListing {
     private final ItemStack sellingItem;
@@ -44,7 +43,7 @@ public class SellingRandomlyDyedItem implements VillagerTrades.ItemListing {
         this.priceMultiplier = priceMultiplier;
     }
 
-    public MerchantOffer getOffer(Entity trader, Random rand) {
+    public MerchantOffer getOffer(Entity trader, RandomSource rand) {
         ItemStack dyed = this.sellingItem.copy();
         dyed.setCount(sellingItemCount);
         if(dyed.getItem() instanceof DyeableLeatherItem){

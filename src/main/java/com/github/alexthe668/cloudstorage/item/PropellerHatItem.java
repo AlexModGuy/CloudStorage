@@ -1,6 +1,7 @@
 package com.github.alexthe668.cloudstorage.item;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
+import com.github.alexthe668.cloudstorage.misc.CSCreativeTab;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -19,7 +20,7 @@ public class PropellerHatItem extends ArmorItem {
     public static final HatMaterial HAT_ARMOR_MATERIAL = new HatMaterial();
 
     public PropellerHatItem() {
-        super(HAT_ARMOR_MATERIAL, EquipmentSlot.HEAD, new Item.Properties().tab(CloudStorage.TAB));
+        super(HAT_ARMOR_MATERIAL, EquipmentSlot.HEAD, new Item.Properties().tab(CSCreativeTab.INSTANCE));
     }
 
     @Override

@@ -4,9 +4,8 @@ import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,8 +18,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.level.material.Material;
 
 import java.util.Map;
-import java.util.Random;
-import java.util.function.Supplier;
 
 public class SkyTempleBlockProcessor extends StructureProcessor {
 
@@ -60,7 +57,7 @@ public class SkyTempleBlockProcessor extends StructureProcessor {
     }
 
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos pos1, BlockPos pos2, StructureTemplate.StructureBlockInfo info1, StructureTemplate.StructureBlockInfo info2, StructurePlaceSettings settings) {
-        Random random = settings.getRandom(info2.pos);
+        RandomSource random = settings.getRandom(info2.pos);
         if(info2.state.getBlock() == Blocks.WHITE_WOOL){
             return new StructureTemplate.StructureBlockInfo(info2.pos, DYE_TO_BLOCK.get(woolColor1).defaultBlockState(), info2.nbt);
         }else if(info2.state.getBlock() == Blocks.RED_WOOL){

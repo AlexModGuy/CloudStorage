@@ -2,8 +2,6 @@ package com.github.alexthe668.cloudstorage.client.gui;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
-import com.github.alexthe668.cloudstorage.inventory.ItemSorting;
-import com.github.alexthe668.cloudstorage.network.MessageScrollCloudChest;
 import com.github.alexthe668.cloudstorage.network.MessageSearchCloudChest;
 import com.github.alexthe668.cloudstorage.network.MessageSortCloudChest;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -12,14 +10,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -70,7 +65,7 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
             mode = 2;
             resetButtons();
         }));
-        this.searchBox = new EditBox(this.font, this.leftPos + 82, this.topPos + 6, 80, 9, new TranslatableComponent("itemGroup.search"));
+        this.searchBox = new EditBox(this.font, this.leftPos + 82, this.topPos + 6, 80, 9, Component.translatable("itemGroup.search"));
         this.searchBox.setMaxLength(50);
         this.searchBox.setBordered(false);
         this.searchBox.setVisible(mode == 2);
@@ -146,7 +141,7 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
 
     protected void renderLabels(PoseStack stack, int x, int y) {
         if(mode == 2){
-            this.font.draw(stack, new TranslatableComponent("cloudstorage.container.cloud_chest.searchbar"), (float)this.titleLabelX + 20, (float)this.titleLabelY, 4210752);
+            this.font.draw(stack, Component.translatable("cloudstorage.container.cloud_chest.searchbar"), (float)this.titleLabelX + 20, (float)this.titleLabelY, 4210752);
         }else{
             this.font.draw(stack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
         }

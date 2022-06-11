@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "cloudstorage:sky_temple",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 5932102,
+    "spacing": 25,
+    "separation": 18
+  }
+}

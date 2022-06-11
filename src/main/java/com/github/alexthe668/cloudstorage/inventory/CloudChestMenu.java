@@ -17,6 +17,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
@@ -33,7 +34,7 @@ public class CloudChestMenu extends AbstractContainerMenu {
     }
 
     public CloudChestMenu(int id, Inventory playerInv, Container containerIn) {
-        super(CSMenuRegistry.CLOUD_CHEST_MENU, id);
+        super(CSMenuRegistry.CLOUD_CHEST_MENU.get(), id);
         this.container = containerIn;
         containerIn.startOpen(playerInv.player);
         int clampedSize = Math.min(containerIn.getContainerSize(), 54);
@@ -73,7 +74,10 @@ public class CloudChestMenu extends AbstractContainerMenu {
         }
         if (search.startsWith("@")) {
             String modid = search.substring(1);
-            matches = stack.getItem().getRegistryName().getNamespace().contains(modid);
+            ResourceLocation res = ForgeRegistries.ITEMS.getKey(stack.getItem());
+            if(res != null){
+                matches = res.getNamespace().contains(modid);
+            }
         } else if (search.startsWith("#")) {
             String tagId = search.substring(1);
             List<TagKey<Item>> tags = stack.getTags().toList();

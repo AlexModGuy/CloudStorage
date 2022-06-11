@@ -2,6 +2,7 @@ package com.github.alexthe668.cloudstorage.entity.ai;
 
 import com.github.alexthe668.cloudstorage.entity.BalloonFlyer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.ClipContext;
@@ -54,7 +55,7 @@ public class FlyAroundGoal<T extends Mob & BalloonFlyer> extends Goal {
 
     @Nullable
     private Vec3 getRandomLocation() {
-        Random random = flyer.getRandom();
+        RandomSource random = flyer.getRandom();
         BlockPos blockpos = null;
         BlockPos origin = flyer.hasRestriction() ? this.flyer.getRestrictCenter() : flyer.blockPosition();
         for (int i = 0; i < 15; i++) {

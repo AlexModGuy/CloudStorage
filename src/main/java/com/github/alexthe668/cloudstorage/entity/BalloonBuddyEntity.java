@@ -1,14 +1,17 @@
 package com.github.alexthe668.cloudstorage.entity;
 
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
-import com.github.alexthe668.cloudstorage.entity.ai.*;
+import com.github.alexthe668.cloudstorage.entity.ai.BalloonBuddyAttackGoal;
+import com.github.alexthe668.cloudstorage.entity.ai.BalloonBuddyFollowGoal;
+import com.github.alexthe668.cloudstorage.entity.ai.FlightMoveController;
+import com.github.alexthe668.cloudstorage.entity.ai.FlyAroundGoal;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -37,7 +40,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
@@ -321,7 +323,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
     }
 
     protected SoundEvent getHurtSound(DamageSource source) {
-        return CSSoundRegistry.BALLOON_HURT;
+        return CSSoundRegistry.BALLOON_HURT.get();
     }
 
     public BalloonFace getFace() {
@@ -375,7 +377,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
         int max = 3;
         if(this.deathTime == 0){
             if(!this.isSilent()){
-                this.playSound(CSSoundRegistry.BALLOON_POP, this.getSoundVolume(), 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
+                this.playSound(CSSoundRegistry.BALLOON_POP.get(), this.getSoundVolume(), 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
             }
         }
         ++this.deathTime;
@@ -393,14 +395,14 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
             float g = (float) (color >> 8 & 255) / 255.0F;
             float b = (float) (color & 255) / 255.0F;
             for (int i = 0; i < 5 + random.nextInt(2) + 5; i++) {
-                this.level.addParticle(CSParticleRegistry.BALLOON_SHARD, this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
+                this.level.addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
             }
         } else if (id == 68) {
             for (int i = 0; i < 5 + random.nextInt(2) + 2; i++) {
-                this.level.addParticle(CSParticleRegistry.STOP_SPAWN, this.getRandomX(1.0F), this.getY(0.5F), this.getRandomZ(1.0F), 0, 0, 0);
+                this.level.addParticle(CSParticleRegistry.STOP_SPAWN.get(), this.getRandomX(1.0F), this.getY(0.5F), this.getRandomZ(1.0F), 0, 0, 0);
             }
         } else if (id == 69) {
-            this.level.addParticle(CSParticleRegistry.COOL, this.getRandomX(0.8F), this.getY(0.75F), this.getRandomZ(0.8F), 0, 0, 0);
+            this.level.addParticle(CSParticleRegistry.COOL.get(), this.getRandomX(0.8F), this.getY(0.75F), this.getRandomZ(0.8F), 0, 0, 0);
         } else {
             super.handleEntityEvent(id);
         }
@@ -458,7 +460,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
                 if (!level.isClientSide) {
                     int command = (getCommand() + 1) % 3;
                     this.setCommand(command);
-                    player.displayClientMessage(new TranslatableComponent("entity.balloon_buddy.command_" + command, this.getName()), true);
+                    player.displayClientMessage(Component.translatable("entity.balloon_buddy.command_" + command, this.getName()), true);
                 }
             }
             return InteractionResult.SUCCESS;

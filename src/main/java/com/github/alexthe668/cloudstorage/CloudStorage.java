@@ -4,11 +4,15 @@ import com.github.alexthe668.cloudstorage.block.CSBlockEntityRegistry;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.block.CSPOIRegistry;
 import com.github.alexthe668.cloudstorage.client.ClientProxy;
+import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
+import com.github.alexthe668.cloudstorage.entity.villager.CSVillagerRegistry;
+import com.github.alexthe668.cloudstorage.inventory.CSMenuRegistry;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
+import com.github.alexthe668.cloudstorage.misc.CSRecipeRegistry;
+import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import com.github.alexthe668.cloudstorage.network.*;
 import com.github.alexthe668.cloudstorage.world.CSStructureRegistry;
-import com.github.alexthe668.cloudstorage.world.CSStructureSetRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CreativeModeTab;
@@ -33,20 +37,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.stream.Collectors;
-
 @Mod("cloudstorage")
 public class CloudStorage
 {
     public static final String MODID = "cloudstorage";
     public static final Logger LOGGER = LogManager.getLogger();
     public static CommonProxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
-    public static CreativeModeTab TAB = new CreativeModeTab(MODID) {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(CSItemRegistry.BALLOON.get());
-        }
-    };
+
     private static int packetsRegistered = 0;
     public static final SimpleChannel NETWORK_WRAPPER;
     private static final String PROTOCOL_VERSION = Integer.toString(1);
@@ -84,7 +81,13 @@ public class CloudStorage
         CSEntityRegistry.DEF_REG.register(bus);
         CSBlockEntityRegistry.DEF_REG.register(bus);
         CSPOIRegistry.DEF_REG.register(bus);
-        CSStructureRegistry.DEF_REG.register(bus);
+        CSStructureRegistry.STRUCTURE_PIECE_DEF_REG.register(bus);
+        CSStructureRegistry.STRUCTURE_TYPE_DEF_REG.register(bus);
+        CSSoundRegistry.DEF_REG.register(bus);
+        CSMenuRegistry.DEF_REG.register(bus);
+        CSVillagerRegistry.DEF_REG.register(bus);
+        CSRecipeRegistry.DEF_REG.register(bus);
+        CSParticleRegistry.DEF_REG.register(bus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(PROXY);
     }
@@ -109,7 +112,6 @@ public class CloudStorage
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdateCloudInfo.class, MessageUpdateCloudInfo::write, MessageUpdateCloudInfo::read, MessageUpdateCloudInfo.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageScrollCloudChest.class, MessageScrollCloudChest::write, MessageScrollCloudChest::read, MessageScrollCloudChest.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageOpenCloudChest.class, MessageOpenCloudChest::write, MessageOpenCloudChest::read, MessageOpenCloudChest.Handler::handle);
-        event.enqueueWork(CSStructureSetRegistry::bootstrap);
     }
 
     public static <MSG> void sendMSGToAll(MSG message) {
@@ -119,8 +121,6 @@ public class CloudStorage
     }
 
     public static <MSG> void sendNonLocal(MSG msg, ServerPlayer player) {
-        if (player.server.isDedicatedServer() || !player.getName().equals(player.server.getSingleplayerName())) {
-            NETWORK_WRAPPER.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        }
+        NETWORK_WRAPPER.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 }

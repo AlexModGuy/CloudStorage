@@ -2,18 +2,13 @@ package com.github.alexthe668.cloudstorage.client.render;
 
 import com.github.alexthe668.cloudstorage.block.AbstractCloudChestBlockEntity;
 import com.github.alexthe668.cloudstorage.block.CloudChestBlock;
-import com.github.alexthe668.cloudstorage.block.CloudChestBlockEntity;
 import com.github.alexthe668.cloudstorage.block.StaticCloudChestBlockEntity;
 import com.github.alexthe668.cloudstorage.client.model.BalloonModel;
 import com.github.alexthe668.cloudstorage.client.model.CloudChestModel;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.GraphicsStatus;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;

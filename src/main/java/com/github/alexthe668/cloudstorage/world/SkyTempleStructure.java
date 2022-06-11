@@ -7,33 +7,40 @@ import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonTieEntity;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
+import com.mojang.serialization.Codec;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.*;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.ObserverBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.structure.*;
-import net.minecraft.world.level.levelgen.structure.pieces.*;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
+import java.util.Optional;
 import java.util.Random;
 
-public class SkyTempleStructure extends StructureFeature<NoneFeatureConfiguration> {
+public class SkyTempleStructure extends Structure {
+
+    public static final Codec<SkyTempleStructure> BALLOON_CODEC = simpleCodec((settings) -> new SkyTempleStructure(true, settings));
+    public static final Codec<SkyTempleStructure> TEMPLE_CODEC = simpleCodec((settings) -> new SkyTempleStructure(false, settings));
 
     private static final ResourceLocation[] TEMPLES = new ResourceLocation[]{
             new ResourceLocation("cloudstorage:sky_temple_0"),
@@ -47,40 +54,47 @@ public class SkyTempleStructure extends StructureFeature<NoneFeatureConfiguratio
             new ResourceLocation("cloudstorage:big_balloon_2")
     };
 
-    public static SkyTempleStructure balloon() {
-        return new SkyTempleStructure(SkyTempleStructure::generateBalloonPieces);
+    private boolean balloon = false;
+
+
+    public SkyTempleStructure(boolean balloon, StructureSettings settings) {
+        super(settings);
+        this.balloon = balloon;
     }
 
-    public static SkyTempleStructure skyTemple() {
-        return new SkyTempleStructure(SkyTempleStructure::generateTemplePieces);
-    }
-
-    private SkyTempleStructure(PieceGenerator supplier) {
-        super(NoneFeatureConfiguration.CODEC, PieceGeneratorSupplier.simple(PieceGeneratorSupplier.checkForBiomeOnTop(Heightmap.Types.WORLD_SURFACE_WG), supplier));
-    }
-
-    private static void generateTemplePieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> contex) {
-        if(CloudStorage.CONFIG.generateSkyTemples.get()){
+    private static Optional<Structure.GenerationStub> generateTemplePieces(Structure.GenerationContext contex) {
+        if (CloudStorage.CONFIG.generateSkyTemples.get()) {
             Rotation rotation = Rotation.getRandom(contex.random());
             LevelHeightAccessor levelHeight = contex.heightAccessor();
-            int y = contex.chunkGenerator().getFirstOccupiedHeight(contex.chunkPos().getMinBlockX(), contex.chunkPos().getMinBlockZ(), Heightmap.Types.WORLD_SURFACE_WG, levelHeight) + 3;
+            int y = contex.chunkGenerator().getFirstOccupiedHeight(contex.chunkPos().getMinBlockX(), contex.chunkPos().getMinBlockZ(), Heightmap.Types.WORLD_SURFACE_WG, levelHeight, contex.randomState()) + 3;
             int randomHeight = 10 + contex.random().nextInt(10);
             BlockPos blockpos = new BlockPos(contex.chunkPos().getMinBlockX(), Math.max(y, CloudStorage.CONFIG.cloudHeight.get()) + randomHeight, contex.chunkPos().getMinBlockZ());
             ResourceLocation res = Util.getRandom(TEMPLES, contex.random());
-            builder.addPiece(new Piece(contex.structureManager(), res, blockpos, rotation, contex.random().nextLong()));
+            return Optional.of(new Structure.GenerationStub(blockpos, (piecesBuilder -> piecesBuilder.addPiece(new Piece(contex.structureTemplateManager(), res, blockpos, rotation, contex.random().nextLong())))));
         }
+        return Optional.empty();
     }
 
-    private static void generateBalloonPieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> contex) {
-        if(CloudStorage.CONFIG.generateBigBalloons.get()) {
+    private static Optional<Structure.GenerationStub> generateBalloonPieces(Structure.GenerationContext contex) {
+        if (CloudStorage.CONFIG.generateBigBalloons.get()) {
             Rotation rotation = Rotation.getRandom(contex.random());
             LevelHeightAccessor levelHeight = contex.heightAccessor();
-            int y = contex.chunkGenerator().getFirstOccupiedHeight(contex.chunkPos().getMinBlockX(), contex.chunkPos().getMinBlockZ(), Heightmap.Types.WORLD_SURFACE_WG, levelHeight) + 3;
+            int y = contex.chunkGenerator().getFirstOccupiedHeight(contex.chunkPos().getMinBlockX(), contex.chunkPos().getMinBlockZ(), Heightmap.Types.WORLD_SURFACE_WG, levelHeight, contex.randomState()) + 3;
             int randomHeight = 10 + contex.random().nextInt(40);
             BlockPos blockpos = new BlockPos(contex.chunkPos().getMinBlockX(), Math.max(y, CloudStorage.CONFIG.cloudHeight.get()) + randomHeight, contex.chunkPos().getMinBlockZ());
             ResourceLocation res = Util.getRandom(BALLOONS, contex.random());
-            builder.addPiece(new Piece(contex.structureManager(), res, blockpos, rotation, contex.random().nextLong()));
+            return Optional.of(new Structure.GenerationStub(blockpos, (piecesBuilder -> piecesBuilder.addPiece(new Piece(contex.structureTemplateManager(), res, blockpos, rotation, contex.random().nextLong())))));
         }
+        return Optional.empty();
+    }
+
+    public Optional<GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
+        return balloon ? generateBalloonPieces(context) : generateTemplePieces(context);
+    }
+
+    @Override
+    public StructureType<?> type() {
+        return balloon ? CSStructureRegistry.BALLOON_TYPE.get() : CSStructureRegistry.SKY_TEMPLE_TYPE.get();
     }
 
     @Override
@@ -91,26 +105,26 @@ public class SkyTempleStructure extends StructureFeature<NoneFeatureConfiguratio
     public static class Piece extends TemplateStructurePiece {
         private long seed;
 
-        public Piece(StructureManager manager, ResourceLocation resourceLocation, BlockPos pos, Rotation rotation, long seed) {
-            super(CSStructureSetRegistry.SKY_TEMPLE_PIECE, 0, manager, resourceLocation, resourceLocation.toString(), makeSettings(rotation, seed), pos);
+        public Piece(StructureTemplateManager manager, ResourceLocation resourceLocation, BlockPos pos, Rotation rotation, long seed) {
+            super(CSStructureRegistry.SKY_TEMPLE_PIECE.get(), 0, manager, resourceLocation, resourceLocation.toString(), makeSettings(rotation, seed), pos);
             this.seed = seed;
         }
 
-        public Piece(StructureManager manager, CompoundTag tag) {
-            super(CSStructureSetRegistry.SKY_TEMPLE_PIECE, tag, manager, (x) -> {
+        public Piece(StructureTemplateManager manager, CompoundTag tag) {
+            super(CSStructureRegistry.SKY_TEMPLE_PIECE.get(), tag, manager, (x) -> {
                 return makeSettings(Rotation.valueOf(tag.getString("Rotation")), tag.getLong("Seed"));
             });
         }
 
         public Piece(StructurePieceSerializationContext context, CompoundTag tag) {
-            this(context.structureManager(), tag);
+            this(context.structureTemplateManager(), tag);
         }
 
         private static StructurePlaceSettings makeSettings(Rotation rotation, long seed) {
             StructurePlaceSettings settings = (new StructurePlaceSettings()).setRotation(rotation).setMirror(Mirror.NONE);
             settings.clearProcessors();
             settings.addProcessor(BlockIgnoreProcessor.STRUCTURE_AND_AIR);
-            Random random = new Random(seed);
+            RandomSource random = RandomSource.create(seed);
             WoodType woodType;
             switch (random.nextInt(5)) {
                 case 1:
@@ -143,7 +157,7 @@ public class SkyTempleStructure extends StructureFeature<NoneFeatureConfiguratio
             tag.putLong("Seed", this.seed);
         }
 
-        protected void handleDataMarker(String string, BlockPos pos, ServerLevelAccessor accessor, Random random, BoundingBox box) {
+        protected void handleDataMarker(String string, BlockPos pos, ServerLevelAccessor accessor, RandomSource random, BoundingBox box) {
             accessor.setBlock(pos, Blocks.AIR.defaultBlockState(), 1);
             switch (string) {
                 case "cloud_chest":
@@ -172,7 +186,7 @@ public class SkyTempleStructure extends StructureFeature<NoneFeatureConfiguratio
                     break;
                 case "tied_balloon":
                     Random seedRng = new Random(seed);
-                    switch (seedRng.nextInt(5)){
+                    switch (seedRng.nextInt(5)) {
                         case 1:
                             accessor.setBlock(pos, Blocks.BIRCH_FENCE.defaultBlockState(), 2);
                             break;

@@ -1,6 +1,5 @@
 package com.github.alexthe668.cloudstorage.inventory;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.SimpleContainer;

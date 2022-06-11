@@ -3,9 +3,9 @@ package com.github.alexthe668.cloudstorage.inventory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemSorting {
 
@@ -17,8 +17,8 @@ public class ItemSorting {
         } else if (stack2.isEmpty()) {
             return -1;
         } else {
-            ResourceLocation name1 = stack1.getItem().getRegistryName();
-            ResourceLocation name2 = stack2.getItem().getRegistryName();
+            ResourceLocation name1 = ForgeRegistries.ITEMS.getKey(stack1.getItem());
+            ResourceLocation name2 = ForgeRegistries.ITEMS.getKey(stack2.getItem());
             int modid = name1.getNamespace().compareTo(name2.getNamespace());
             return Integer.compare(Item.getId(stack1.getItem()), Item.getId(stack2.getItem()));
         }

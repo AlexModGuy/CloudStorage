@@ -15,8 +15,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -42,7 +42,6 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class BloviatorEntity extends Monster implements BalloonFlyer {
 
@@ -181,15 +180,15 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
 
 
     protected SoundEvent getHurtSound(DamageSource source) {
-        return CSSoundRegistry.BLOVIATOR_HURT;
+        return CSSoundRegistry.BLOVIATOR_HURT.get();
     }
 
     protected SoundEvent getDeathSound() {
-        return CSSoundRegistry.BLOVIATOR_HURT;
+        return CSSoundRegistry.BLOVIATOR_HURT.get();
     }
 
     protected SoundEvent getAmbientSound() {
-        return CSSoundRegistry.BLOVIATOR_IDLE;
+        return CSSoundRegistry.BLOVIATOR_IDLE.get();
     }
 
     public float getVoicePitch() {
@@ -301,7 +300,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
                 this.pushProgress += 1.0F;
             }
             if(blowingSoundTime % 60 == 0){
-                this.playSound(CSSoundRegistry.BLOVIATOR_BLOW, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(CSSoundRegistry.BLOVIATOR_BLOW.get(), this.getSoundVolume(), this.getVoicePitch());
             }
             blowingSoundTime++;
             if (canPush(pushing)) {
@@ -311,7 +310,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
                     for (int i = 0; i < this.getCloudCount(); i++) {
                         Vec3 randomOffset = new Vec3(random.nextFloat() - 0.5F, random.nextFloat() - 0.5F, random.nextFloat() - 0.5F).scale(this.getCloudScale());
                         Vec3 vec3 = pushing.getEyePosition().add(randomOffset).subtract(mouth).normalize().add(this.getDeltaMovement()).scale(0.5F);
-                        this.level.addParticle(CSParticleRegistry.BLOVIATOR_BREATH, mouth.x, mouth.y, mouth.z, vec3.x, vec3.y, vec3.z);
+                        this.level.addParticle(CSParticleRegistry.BLOVIATOR_BREATH.get(), mouth.x, mouth.y, mouth.z, vec3.x, vec3.y, vec3.z);
                     }
                 }
                 pushing.setDeltaMovement(pushing.getDeltaMovement().add(vec2));
@@ -334,7 +333,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
 
 
                     } else {
-                        this.playSound(CSSoundRegistry.BLOVIATOR_LIGHTNING, this.getSoundVolume(), 0.65F * this.getVoicePitch());
+                        this.playSound(CSSoundRegistry.BLOVIATOR_LIGHTNING.get(), this.getSoundVolume(), 0.65F * this.getVoicePitch());
                         if (this.getShockingEntity() != null) {
                             this.shock(this.getShockingEntity());
                         }
@@ -359,7 +358,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
                 double d3 = d0 * dist;
                 double d4 = d1 * dist;
                 double d5 = d2 * dist;
-                this.level.addParticle(CSParticleRegistry.STATIC_LIGHTNING, this.getX() + d0, this.getY() + d1, this.getZ() + d2, d3, d4, d5);
+                this.level.addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), this.getX() + d0, this.getY() + d1, this.getZ() + d2, d3, d4, d5);
             }
         } else {
             if (this.transformProgress > 5.0F) {
@@ -509,7 +508,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
         return true;
     }
 
-    public static boolean canBloviatorSpawn(EntityType<BloviatorEntity> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, Random random) {
+    public static boolean canBloviatorSpawn(EntityType<BloviatorEntity> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
         return reason == MobSpawnType.SPAWNER || random.nextFloat() < 0.2F && iServerWorld.canSeeSky(pos);
     }
 }

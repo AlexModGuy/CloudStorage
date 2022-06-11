@@ -1,20 +1,16 @@
 package com.github.alexthe668.cloudstorage.entity.ai;
 
-import com.github.alexthe668.cloudstorage.entity.*;
+import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
+import com.github.alexthe668.cloudstorage.entity.BalloonBuddyEntity;
+import com.github.alexthe668.cloudstorage.entity.BalloonFace;
+import com.github.alexthe668.cloudstorage.entity.GloveGesture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Comparator;
 import java.util.EnumSet;
-import java.util.List;
-import java.util.function.Predicate;
 
 public class BalloonBuddyAttackGoal extends Goal {
 

@@ -1,0 +1,10 @@
+{
+  "type": "cloudstorage:sky_temple",
+  "biomes": "#cloudstorage:has_big_balloons",
+  "step": "surface_structures",
+  "start_height": {
+    "absolute": 160
+  },
+  "use_expansion_hack": false,
+  "spawn_overrides": {}
+}

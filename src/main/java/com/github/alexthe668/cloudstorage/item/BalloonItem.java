@@ -3,12 +3,11 @@ package com.github.alexthe668.cloudstorage.item;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.block.AbstractCloudChestBlockEntity;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
-import com.github.alexthe668.cloudstorage.block.CloudChestBlockEntity;
-import com.github.alexthe668.cloudstorage.client.render.BalloonTextures;
 import com.github.alexthe668.cloudstorage.entity.BalloonCargoEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonTieEntity;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
+import com.github.alexthe668.cloudstorage.misc.CSCreativeTab;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -16,9 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Container;
@@ -28,21 +25,15 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.*;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootPool;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -59,7 +50,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
     }
 
     public BalloonItem() {
-        this(new Item.Properties().stacksTo(8).tab(CloudStorage.TAB));
+        this(new Item.Properties().stacksTo(8).tab(CSCreativeTab.INSTANCE));
     }
 
     public static int getBalloonColor(ItemStack stack) {
@@ -85,7 +76,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flags) {
         super.appendHoverText(stack, level, components, flags);
         if (!isLoot(stack) && isStatic(stack)) {
-            components.add(new TranslatableComponent("item.cloudstorage.balloon.static").withStyle(ChatFormatting.AQUA));
+            components.add(Component.translatable("item.cloudstorage.balloon.static").withStyle(ChatFormatting.AQUA));
         }
     }
 
@@ -101,7 +92,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
 
     @Override
     public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list) {
-        if (this.allowdedIn(tab)) {
+        if (this.allowedIn(tab)) {
             for (int i = 0; i < BALLOONCOLORS.length; i++) {
                 list.add(createBalloon(DEFAULT_COLOR, 0));
             }
@@ -149,7 +140,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
     }
 
     public Component getName(ItemStack stack) {
-        return isLoot(stack) ? new TranslatableComponent("item.cloudstorage.loot_balloon") : super.getName(stack);
+        return isLoot(stack) ? Component.translatable("item.cloudstorage.loot_balloon") : super.getName(stack);
     }
 
     public Rarity getRarity(ItemStack stack) {
@@ -213,7 +204,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
             ItemStack copyOff = itemstack.copy();
             copyOff.setCount(1);
             copyOff.setTag(tag);
-            level.playSound(player, blockpos1, CSSoundRegistry.STATIC_SHOCK, SoundSource.BLOCKS, 0.5F, 0.75F + random.nextFloat() * 0.5F);
+            level.playSound(player, blockpos1, CSSoundRegistry.STATIC_SHOCK.get(), SoundSource.BLOCKS, 0.5F, 0.75F + random.nextFloat() * 0.5F);
             if(player != null && !dispensed){
                 if (!player.isCreative()) {
                     itemstack.shrink(1);

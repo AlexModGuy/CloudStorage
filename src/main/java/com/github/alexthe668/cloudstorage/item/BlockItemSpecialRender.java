@@ -1,18 +1,12 @@
 package com.github.alexthe668.cloudstorage.item;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.Nullable;
+public class BlockItemSpecialRender extends CSBlockItem {
 
-public class BlockItemSpecialRender extends BlockItem {
-
-    public BlockItemSpecialRender(Block block, Properties props) {
+    public BlockItemSpecialRender(RegistryObject<Block> block, Properties props) {
         super(block, props);
     }
 

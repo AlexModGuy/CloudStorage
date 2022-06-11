@@ -5,14 +5,13 @@ import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
-import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import com.github.alexthe668.cloudstorage.misc.CloudIndex;
+import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,7 +36,7 @@ import java.util.UUID;
 
 public class CloudChestBlockEntity extends AbstractCloudChestBlockEntity {
 
-    private static final Component CONTAINER_TITLE = new TranslatableComponent("cloudstorage.container.cloud_chest");
+    private static final Component CONTAINER_TITLE = Component.translatable("cloudstorage.container.cloud_chest");
     private Map<UUID, Integer> playerToBalloonColor = new HashMap<>();
     private int lootBalloonColor = 0;
     private ResourceLocation lootTable;

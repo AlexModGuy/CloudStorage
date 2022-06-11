@@ -3,7 +3,7 @@ package com.github.alexthe668.cloudstorage.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,7 +32,7 @@ public class ParticleBloviatorBreath extends TextureSheetParticle {
         this.setAlpha(1);
     }
 
-    public static int selectColor(int variant, Random rand) {
+    public static int selectColor(int variant, RandomSource rand) {
         return POSSIBLE_COLORS[rand.nextInt(POSSIBLE_COLORS.length - 1)];
     }
 

@@ -1,6 +1,7 @@
 package com.github.alexthe668.cloudstorage.entity;
 
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 
 import java.util.Locale;
 import java.util.Random;
@@ -58,7 +59,7 @@ public enum BalloonFace {
         return melees;
     }
 
-    public static BalloonFace getRandomPersonality(Random random){
+    public static BalloonFace getRandomPersonality(RandomSource random){
         int index = random.nextInt(values().length - 3) + 3;
         return BalloonFace.values()[Mth.clamp(index, 0, values().length)];
     }

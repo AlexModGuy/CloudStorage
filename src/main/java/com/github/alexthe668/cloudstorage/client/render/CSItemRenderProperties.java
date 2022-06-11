@@ -12,8 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.IItemRenderProperties;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CSItemRenderProperties implements IItemRenderProperties {
     private boolean armor;

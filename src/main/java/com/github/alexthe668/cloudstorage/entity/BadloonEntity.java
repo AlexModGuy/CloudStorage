@@ -16,9 +16,13 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -29,11 +33,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -258,14 +259,14 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
         return  ((float)deathTime + partialTick - 1.0F) / 3.0F;
     }
     protected SoundEvent getHurtSound(DamageSource source) {
-        return CSSoundRegistry.BALLOON_HURT;
+        return CSSoundRegistry.BALLOON_HURT.get();
     }
 
     protected void tickDeath() {
         int max = 3;
         if(this.deathTime == 0){
             if(!this.isSilent()){
-                this.playSound(CSSoundRegistry.BALLOON_POP, this.getSoundVolume(), 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
+                this.playSound(CSSoundRegistry.BALLOON_POP.get(), this.getSoundVolume(), 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
             }
         }
         ++this.deathTime;
@@ -283,7 +284,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
             float g = (float) (color >> 8 & 255) / 255.0F;
             float b = (float) (color & 255) / 255.0F;
             for (int i = 0; i < 5 + random.nextInt(2) + 5; i++) {
-                this.level.addParticle(CSParticleRegistry.BALLOON_SHARD, this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
+                this.level.addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
             }
         } else {
             super.handleEntityEvent(id);
@@ -361,7 +362,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
         return true;
     }
 
-    public static boolean canBadloonSpawn(EntityType<BadloonEntity> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, Random random) {
+    public static boolean canBadloonSpawn(EntityType<BadloonEntity> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
         return reason == MobSpawnType.SPAWNER || random.nextFloat() < 0.2F && iServerWorld.canSeeSky(pos);
     }
 }

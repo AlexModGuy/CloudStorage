@@ -1,7 +1,6 @@
 package com.github.alexthe668.cloudstorage.client.render;
 
 import com.github.alexthe668.cloudstorage.client.model.BalloonModel;
-import com.github.alexthe668.cloudstorage.entity.BadloonEntity;
 import com.github.alexthe668.cloudstorage.entity.LivingBalloon;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -11,7 +10,6 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public class BalloonFaceLayer<T extends LivingEntity & LivingBalloon> extends RenderLayer<T, BalloonModel<T>> {

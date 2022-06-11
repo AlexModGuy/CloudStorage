@@ -6,7 +6,10 @@ import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
 import com.github.alexthe668.cloudstorage.inventory.ItemSorting;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
-import com.github.alexthe668.cloudstorage.misc.*;
+import com.github.alexthe668.cloudstorage.misc.CSAdvancementTrigger;
+import com.github.alexthe668.cloudstorage.misc.CloudIndex;
+import com.github.alexthe668.cloudstorage.misc.CloudInfo;
+import com.github.alexthe668.cloudstorage.misc.DyeRandomlyLootFunction;
 import com.github.alexthe668.cloudstorage.network.MessageUpdateCloudInfo;
 import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import com.github.alexthe668.cloudstorage.world.SkyMobSpawner;
@@ -16,7 +19,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -191,7 +197,7 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void onVillagerTrades(VillagerTradesEvent event) {
-        if (CloudStorage.CONFIG.balloonSalesmanVillager.get() && event.getType() == CSVillagerRegistry.BALLOON_SALESMAN) {
+        if (CloudStorage.CONFIG.balloonSalesmanVillager.get() && event.getType() == CSVillagerRegistry.BALLOON_SALESMAN.get()) {
             List<VillagerTrades.ItemListing> level1 = new ArrayList<>();
             List<VillagerTrades.ItemListing> level2 = new ArrayList<>();
             List<VillagerTrades.ItemListing> level3 = new ArrayList<>();

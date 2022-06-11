@@ -83,7 +83,7 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
         if(e.openProgress >= 1.0F && e.emergence > 0.5F && level.isClientSide){
             float radius = 3F;
             Vec3 center = Vec3.atCenterOf(e.getBlockPos());
-            level.addParticle(CSParticleRegistry.CLOUD_CHEST, center.x + radius * (random.nextFloat() - 0.5F), center.y + radius * (random.nextFloat()), center.z + radius * (random.nextFloat() - 0.5F), center.x, center.y - 0.5F, center.z);
+            level.addParticle(CSParticleRegistry.CLOUD_CHEST.get(), center.x + radius * (random.nextFloat() - 0.5F), center.y + radius * (random.nextFloat()), center.z + radius * (random.nextFloat() - 0.5F), center.x, center.y - 0.5F, center.z);
         }
     }
 
@@ -91,7 +91,7 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
         if(this.tickCount == 0 || this.lastSoundTimestamp < this.tickCount - 10){
             this.lastSoundTimestamp = this.tickCount;
             float pitch = 0.75F + random.nextFloat() * 0.35F;
-            this.level.playSound((Player)null, this.getBlockPos(), open ? CSSoundRegistry.CLOUD_CHEST_OPEN : CSSoundRegistry.CLOUD_CHEST_CLOSE, SoundSource.BLOCKS, 1.0F, pitch);
+            this.level.playSound((Player)null, this.getBlockPos(), open ? CSSoundRegistry.CLOUD_CHEST_OPEN.get() : CSSoundRegistry.CLOUD_CHEST_CLOSE.get(), SoundSource.BLOCKS, 1.0F, pitch);
         }
     }
 

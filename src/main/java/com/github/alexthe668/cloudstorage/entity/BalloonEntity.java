@@ -6,8 +6,8 @@ import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
-import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import com.github.alexthe668.cloudstorage.misc.CloudIndex;
+import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -117,7 +117,7 @@ public class BalloonEntity extends Entity {
                 double d3 = d0 * dist;
                 double d4 = d1 * dist;
                 double d5 = d2 * dist;
-                this.level.addParticle(CSParticleRegistry.STATIC_LIGHTNING, this.getX() + d0, this.getY(1.0F) + d1, this.getZ() + d2, d3, d4, d5);
+                this.level.addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), this.getX() + d0, this.getY(1.0F) + d1, this.getZ() + d2, d3, d4, d5);
             }
         }
         this.move(MoverType.SELF, this.getDeltaMovement());
@@ -140,7 +140,7 @@ public class BalloonEntity extends Entity {
                     Vec3 vec = this.position().add(0, -1F - this.getStringLength(), 0);
                     Vec3 vec1 = new Vec3(random.nextFloat() - 0.5F, random.nextFloat() - 0.5F, random.nextFloat() - 0.5F).scale(2F).add(vec);
                     Vec3 vec32 = vec.subtract(vec1).normalize().scale(0.3F);
-                    this.level.addParticle(CSParticleRegistry.BLOVIATOR_BREATH, vec1.x, vec1.y, vec1.z, vec32.x, vec32.y, vec32.z);
+                    this.level.addParticle(CSParticleRegistry.BLOVIATOR_BREATH.get(), vec1.x, vec1.y, vec1.z, vec32.x, vec32.y, vec32.z);
                 }
             }
             if (uploadProgress >= 10.0F) {
@@ -153,7 +153,7 @@ public class BalloonEntity extends Entity {
         if (this.isPopped()) {
             if (this.popTick == 0) {
                 if (!this.isSilent()) {
-                    this.playSound(CSSoundRegistry.BALLOON_POP, 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
+                    this.playSound(CSSoundRegistry.BALLOON_POP.get(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
                 }
             }
             this.popTick++;
@@ -172,7 +172,7 @@ public class BalloonEntity extends Entity {
                     float g = (float) (color >> 8 & 255) / 255.0F;
                     float b = (float) (color & 255) / 255.0F;
                     for (int i = 0; i < 5 + random.nextInt(2) + 5; i++) {
-                        this.level.addParticle(CSParticleRegistry.BALLOON_SHARD, this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
+                        this.level.addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
                     }
                 }
                 if (child instanceof BalloonTieEntity tie) {
@@ -266,7 +266,7 @@ public class BalloonEntity extends Entity {
             if (!p_20293_.noPhysics && !this.noPhysics) {
                 if (this.isCharged() && p_20293_ instanceof BalloonEntity balloon) {
                     if (!balloon.isCharged()) {
-                        this.playSound(CSSoundRegistry.STATIC_SHOCK, 0.5F, this.random.nextFloat() * 0.25F + 0.9F);
+                        this.playSound(CSSoundRegistry.STATIC_SHOCK.get(), 0.5F, this.random.nextFloat() * 0.25F + 0.9F);
                         balloon.setCharged(true);
                     }
                 }
@@ -427,7 +427,7 @@ public class BalloonEntity extends Entity {
             float g = (float) (color >> 8 & 255) / 255.0F;
             float b = (float) (color & 255) / 255.0F;
             for (int i = 0; i < 5 + random.nextInt(2) + 5; i++) {
-                this.level.addParticle(CSParticleRegistry.BALLOON_SHARD, this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
+                this.level.addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
             }
         } else {
             super.handleEntityEvent(id);

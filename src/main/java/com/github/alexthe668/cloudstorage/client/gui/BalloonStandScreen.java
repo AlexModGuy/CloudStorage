@@ -12,14 +12,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.GrindstoneMenu;
 
-import java.util.HexFormat;
 import java.util.Locale;
 
 public class BalloonStandScreen extends AbstractContainerScreen<BalloonStandMenu> {
@@ -97,19 +93,19 @@ public class BalloonStandScreen extends AbstractContainerScreen<BalloonStandMenu
             int r = (int) (lastBalloonColor >> 16 & 255);
             int g = (int) (lastBalloonColor >> 8 & 255);
             int b = (int) (lastBalloonColor & 255);
-            this.font.draw(poseStack, new TranslatableComponent("cloudstorage.container.balloon_stand.color"), textX, textY, textColor);
+            this.font.draw(poseStack, Component.translatable("cloudstorage.container.balloon_stand.color"), textX, textY, textColor);
             this.font.draw(poseStack, color, textX, textY + 10, FastColor.ARGB32.color(alpha, r, g, b));
-            Component slotsPrivate = new TranslatableComponent("cloudstorage.container.balloon_stand.slots", ClientProxy.getCloudInt(lastBalloonColor, false), ClientProxy.getCloudInt(lastBalloonColor, true));
-            Component slotsPublic = new TranslatableComponent("cloudstorage.container.balloon_stand.slots", ClientProxy.getStaticCloudInt(lastBalloonColor, false), ClientProxy.getStaticCloudInt(lastBalloonColor, true));
+            Component slotsPrivate = Component.translatable("cloudstorage.container.balloon_stand.slots", ClientProxy.getCloudInt(lastBalloonColor, false), ClientProxy.getCloudInt(lastBalloonColor, true));
+            Component slotsPublic = Component.translatable("cloudstorage.container.balloon_stand.slots", ClientProxy.getStaticCloudInt(lastBalloonColor, false), ClientProxy.getStaticCloudInt(lastBalloonColor, true));
             if(font.width(slotsPrivate) > 78){
-                slotsPrivate = new TextComponent(ClientProxy.getCloudInt(lastBalloonColor, false) + " / " + ClientProxy.getCloudInt(lastBalloonColor, true));
+                slotsPrivate = Component.literal(ClientProxy.getCloudInt(lastBalloonColor, false) + " / " + ClientProxy.getCloudInt(lastBalloonColor, true));
             }
             if(font.width(slotsPublic) > 78){
-                slotsPublic = new TextComponent(ClientProxy.getStaticCloudInt(lastBalloonColor, false) + " / " + ClientProxy.getStaticCloudInt(lastBalloonColor, true));
+                slotsPublic = Component.literal(ClientProxy.getStaticCloudInt(lastBalloonColor, false) + " / " + ClientProxy.getStaticCloudInt(lastBalloonColor, true));
             }
-            this.font.draw(poseStack, new TranslatableComponent("cloudstorage.container.balloon_stand.private_slots"), textX, textY + 20, textColor);
+            this.font.draw(poseStack, Component.translatable("cloudstorage.container.balloon_stand.private_slots"), textX, textY + 20, textColor);
             this.font.draw(poseStack, slotsPrivate, textX, textY + 30, textColor);
-            this.font.draw(poseStack, new TranslatableComponent("cloudstorage.container.balloon_stand.public_slots"), textX, textY + 40, textColor);
+            this.font.draw(poseStack, Component.translatable("cloudstorage.container.balloon_stand.public_slots"), textX, textY + 40, textColor);
             this.font.draw(poseStack, slotsPublic, textX, textY + 50, textColor);
             poseStack.popPose();
         }

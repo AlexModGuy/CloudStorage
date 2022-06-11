@@ -1,31 +1,22 @@
 package com.github.alexthe668.cloudstorage.misc;
 
 import com.github.alexthe668.cloudstorage.CommonProxy;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.gson.*;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import net.minecraft.Util;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.functions.*;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class DyeRandomlyLootFunction extends LootItemConditionalFunction {
 
@@ -38,7 +29,7 @@ public class DyeRandomlyLootFunction extends LootItemConditionalFunction {
     }
 
     public ItemStack run(ItemStack stack, LootContext context) {
-        Random random = context.getRandom();
+        RandomSource random = context.getRandom();
         if(stack.getItem() instanceof DyeableLeatherItem leatherItem){
             leatherItem.setColor(stack, (int) (random.nextFloat() * 0xFFFFFF));
         }

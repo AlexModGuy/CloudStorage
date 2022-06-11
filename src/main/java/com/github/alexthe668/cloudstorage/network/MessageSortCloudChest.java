@@ -2,9 +2,6 @@ package com.github.alexthe668.cloudstorage.network;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;

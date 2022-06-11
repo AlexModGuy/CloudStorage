@@ -7,7 +7,6 @@ import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
 import com.github.alexthe668.cloudstorage.entity.GloveGesture;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.world.entity.Entity;
 
 public class BadloonHandModel extends AdvancedEntityModel<BadloonHandEntity> {
     private final AdvancedModelBox root;

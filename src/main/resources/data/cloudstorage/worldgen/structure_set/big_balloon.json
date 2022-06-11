@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "cloudstorage:big_balloon",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 21142069,
+    "spacing": 25,
+    "separation": 18
+  }
+}

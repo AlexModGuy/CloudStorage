@@ -4,16 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.BookViewScreen;
-import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,14 +20,14 @@ public class CloudMiniButton extends Button {
     private final Screen parent;
 
     public CloudMiniButton(Screen parent, int x, int y, int index, Button.OnPress onPress) {
-        super(x, y, 14, 14, TextComponent.EMPTY, onPress);
+        super(x, y, 14, 14, CommonComponents.EMPTY, onPress);
         this.index = index;
         this.parent = parent;
     }
 
 
     public void renderToolTip(PoseStack poseStack, int x, int y) {
-        List<Component> list = List.of( new TranslatableComponent("cloudstorage.container.cloud_chest.button_" + index));
+        List<Component> list = List.of( Component.translatable("cloudstorage.container.cloud_chest.button_" + index));
         parent.renderTooltip(poseStack, list, Optional.empty(), x, y);
 
     }

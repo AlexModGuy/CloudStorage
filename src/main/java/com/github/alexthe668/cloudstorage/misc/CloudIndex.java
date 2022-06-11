@@ -1,10 +1,8 @@
 package com.github.alexthe668.cloudstorage.misc;
 
-import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestContainer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 
 import java.util.UUID;

@@ -2,7 +2,6 @@ package com.github.alexthe668.cloudstorage.mixin;
 
 import com.github.alexthe668.cloudstorage.entity.villager.CSVillagerRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.Pools;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import org.spongepowered.asm.mixin.Mixin;

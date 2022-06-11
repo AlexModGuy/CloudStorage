@@ -1,6 +1,5 @@
 package com.github.alexthe668.cloudstorage.client.render;
 
-import com.github.alexthe668.cloudstorage.entity.BalloonCargoEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;

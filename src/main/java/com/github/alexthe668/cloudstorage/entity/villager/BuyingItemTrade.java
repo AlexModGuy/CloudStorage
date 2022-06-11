@@ -1,5 +1,6 @@
 package com.github.alexthe668.cloudstorage.entity.villager;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
@@ -7,8 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
-
-import java.util.Random;
 
 public class BuyingItemTrade implements VillagerTrades.ItemListing {
     private final Item tradeItem;
@@ -27,7 +26,7 @@ public class BuyingItemTrade implements VillagerTrades.ItemListing {
         this.priceMultiplier = 0.05F;
     }
 
-    public MerchantOffer getOffer(Entity entity, Random rng) {
+    public MerchantOffer getOffer(Entity entity, RandomSource rng) {
         ItemStack lvt_3_1_ = new ItemStack(this.tradeItem, this.itemCount);
         return new MerchantOffer(lvt_3_1_, new ItemStack(Items.EMERALD, this.emeralds), this.maxUses, this.xpValue, this.priceMultiplier);
     }

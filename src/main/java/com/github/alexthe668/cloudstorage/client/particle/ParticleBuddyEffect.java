@@ -7,8 +7,6 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Random;
-
 public class ParticleBuddyEffect extends TextureSheetParticle {
 
     private int type = 0;

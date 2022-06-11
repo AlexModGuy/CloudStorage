@@ -14,8 +14,6 @@ import com.github.alexthe668.cloudstorage.client.particle.*;
 import com.github.alexthe668.cloudstorage.client.render.*;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CSMenuRegistry;
-import com.github.alexthe668.cloudstorage.item.BalloonArrowItem;
-import com.github.alexthe668.cloudstorage.item.BalloonBuddyItem;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CloudInfo;
@@ -103,8 +101,8 @@ public class ClientProxy extends CommonProxy {
         ItemBlockRenderTypes.setRenderLayer(CSBlockRegistry.STATIC_CLOUD_CHEST.get(), RenderType.translucent());
         BlockEntityRenderers.register(CSBlockEntityRegistry.CLOUD_CHEST.get(), RenderCloudChest::new);
         BlockEntityRenderers.register(CSBlockEntityRegistry.STATIC_CLOUD_CHEST.get(), RenderCloudChest::new);
-        MenuScreens.register(CSMenuRegistry.CLOUD_CHEST_MENU, CloudChestScreen::new);
-        MenuScreens.register(CSMenuRegistry.BALLOON_STAND_MENU, BalloonStandScreen::new);
+        MenuScreens.register(CSMenuRegistry.CLOUD_CHEST_MENU.get(), CloudChestScreen::new);
+        MenuScreens.register(CSMenuRegistry.BALLOON_STAND_MENU.get(), BalloonStandScreen::new);
     }
 
     @Override
@@ -203,12 +201,12 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void setupParticles() {
         CloudStorage.LOGGER.debug("Registered particle factories");
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.BALLOON_SHARD, ParticleBalloonShard.Factory::new);
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.CLOUD_CHEST, ParticleCloudChest.Factory::new);
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.STATIC_LIGHTNING, new ParticleStaticLightning.Factory());
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.BLOVIATOR_BREATH, ParticleBloviatorBreath.Factory::new);
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.STOP_SPAWN, ParticleBuddyEffect.StopSpawn::new);
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.COOL, ParticleBuddyEffect.Cool::new);
+        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.BALLOON_SHARD.get(), ParticleBalloonShard.Factory::new);
+        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.CLOUD_CHEST.get(), ParticleCloudChest.Factory::new);
+        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.STATIC_LIGHTNING.get(), new ParticleStaticLightning.Factory());
+        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.BLOVIATOR_BREATH.get(), ParticleBloviatorBreath.Factory::new);
+        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.STOP_SPAWN.get(), ParticleBuddyEffect.StopSpawn::new);
+        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.COOL.get(), ParticleBuddyEffect.Cool::new);
     }
 
     private void bakeModels(final ModelBakeEvent e) {

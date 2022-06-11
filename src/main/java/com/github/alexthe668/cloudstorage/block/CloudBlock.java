@@ -3,14 +3,13 @@ package com.github.alexthe668.cloudstorage.block;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -81,7 +80,7 @@ public class CloudBlock extends Block {
         return true;
     }
 
-    public void animateTick(BlockState state, Level level, BlockPos pos, Random rng) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rng) {
         if (lightning && rng.nextInt(1) == 0) {
             Direction direction = Direction.getRandom(rng);
             BlockPos blockpos = pos.relative(direction);
@@ -94,7 +93,7 @@ public class CloudBlock extends Block {
                 double d3 = d0 * length;
                 double d4 = d1 * length;
                 double d5 = d2 * length;
-                level.addParticle(CSParticleRegistry.STATIC_LIGHTNING, (double)pos.getX() + 0.5D + d0, (double)pos.getY() + 0.5D + d1, (double)pos.getZ() + 0.5D + d2, d3, d4, d5);
+                level.addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), (double)pos.getX() + 0.5D + d0, (double)pos.getY() + 0.5D + d1, (double)pos.getZ() + 0.5D + d2, d3, d4, d5);
             }
         }
     }
