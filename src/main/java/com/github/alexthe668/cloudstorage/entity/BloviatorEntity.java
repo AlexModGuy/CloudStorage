@@ -291,7 +291,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
             if (this.pushProgress > 0.0F) {
                 this.pushProgress -= 1.0F;
             }
-            if (!level.isClientSide && canPush(this.getTarget())) {
+            if (!level.isClientSide && this.getTarget() != null && this.getTarget().isAlive() && canPush(this.getTarget())) {
                 this.entityData.set(PUSH_ENTITY, this.getTarget().getId());
             }
             blowingSoundTime = 0;
