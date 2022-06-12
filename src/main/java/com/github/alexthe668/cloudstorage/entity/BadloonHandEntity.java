@@ -109,6 +109,11 @@ public class BadloonHandEntity extends Entity {
         }
     }
 
+    @Override
+    protected Entity.MovementEmission getMovementEmission() {
+        return MovementEmission.NONE;
+    }
+    
     private void faceTowardsX(float f) {
         this.setXRot(BalloonFace.rotlerp(this.getXRot(), Mth.clamp(f, -75, 75), 25F));
     }
