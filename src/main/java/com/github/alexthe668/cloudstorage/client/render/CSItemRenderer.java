@@ -27,6 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ForgeRenderTypes;
 
 import java.util.Random;
 
@@ -196,7 +197,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-180F));
             CLOUD_CHEST_MODEL.resetToDefaultPose();
             CLOUD_CHEST_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(CLOUD_CHEST_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
-            CLOUD_CHEST_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.dragonExplosionAlpha(CLOUD_CHEST_LIGHTNING_TEXTURE)), 240, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+            CLOUD_CHEST_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(ForgeRenderTypes.getUnlitTranslucent(CLOUD_CHEST_LIGHTNING_TEXTURE)), 240, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
             matrixStackIn.popPose();
         }
     }

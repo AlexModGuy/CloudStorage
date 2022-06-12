@@ -66,11 +66,15 @@ public class CloudChestMenu extends AbstractContainerMenu {
 
     public static boolean matchesSearch(Player player, String search, ItemStack stack) {
         boolean matches = false;
-        for (Component line : stack.getTooltipLines(player, TooltipFlag.Default.ADVANCED)) {
-            if (ChatFormatting.stripFormatting(line.getString()).toLowerCase(Locale.ROOT).contains(search)) {
-                matches = true;
-                break;
+        try{
+            for (Component line : stack.getTooltipLines(player, TooltipFlag.Default.ADVANCED)) {
+                if (ChatFormatting.stripFormatting(line.getString()).toLowerCase(Locale.ROOT).contains(search)) {
+                    matches = true;
+                    break;
+                }
             }
+        }catch (Exception e){
+            CloudStorage.LOGGER.warn("cloud storage stopped a crash from displaying the tooltip of " + ForgeRegistries.ITEMS.getKey(stack.getItem()));
         }
         if (search.startsWith("@")) {
             String modid = search.substring(1);

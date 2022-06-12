@@ -18,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ForgeRenderTypes;
 
 public class RenderCloudChest<T extends AbstractCloudChestBlockEntity> implements BlockEntityRenderer<T> {
 
@@ -85,7 +86,7 @@ public class RenderCloudChest<T extends AbstractCloudChestBlockEntity> implement
         CHEST_MODEL.renderChest(tileEntityIn, partialTicks);
         CHEST_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1F, 1, 1.0F);
         if(tileEntityIn instanceof StaticCloudChestBlockEntity){
-            CHEST_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.dragonExplosionAlpha(TEXTURE_LIGHTNING)), 240, OverlayTexture.NO_OVERLAY, 1, 1F, 1, 1.0F);
+            CHEST_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(ForgeRenderTypes.getUnlitTranslucent(TEXTURE_LIGHTNING)), 240, OverlayTexture.NO_OVERLAY, 1, 1F, 1, 1.0F);
         }
         matrixStackIn.popPose();
         matrixStackIn.popPose();
