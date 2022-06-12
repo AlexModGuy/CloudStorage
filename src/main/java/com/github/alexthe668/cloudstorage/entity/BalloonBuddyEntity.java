@@ -1,5 +1,6 @@
 package com.github.alexthe668.cloudstorage.entity;
 
+import com.github.alexthe666.citadel.server.entity.IComandableMob;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import com.github.alexthe668.cloudstorage.entity.ai.BalloonBuddyAttackGoal;
 import com.github.alexthe668.cloudstorage.entity.ai.BalloonBuddyFollowGoal;
@@ -53,7 +54,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, BalloonFlyer {
+public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, BalloonFlyer, IComandableMob {
 
     private static final EntityDataAccessor<Float> ROT_Z = SynchedEntityData.defineId(BalloonBuddyEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(BalloonBuddyEntity.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -457,16 +458,15 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
                 }
                 this.remove(RemovalReason.DISCARDED);
             }else{
-                if (!level.isClientSide) {
-                    int command = (getCommand() + 1) % 3;
-                    this.setCommand(command);
-                    player.displayClientMessage(Component.translatable("entity.balloon_buddy.command_" + command, this.getName()), true);
-                }
+                this.playerSetCommand(player, this);
             }
             return InteractionResult.SUCCESS;
         }
-
         return InteractionResult.PASS;
+    }
+
+    public void sendCommandMessage(Player owner, int command, Component name) {
+        owner.displayClientMessage(Component.translatable("entity.balloon_buddy.command_" + command, this.getName()), true);
     }
 
     @Nullable
