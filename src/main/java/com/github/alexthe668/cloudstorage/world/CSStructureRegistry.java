@@ -4,6 +4,7 @@ import com.github.alexthe668.cloudstorage.CloudStorage;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.MobCategory;
@@ -28,4 +29,6 @@ public class CSStructureRegistry {
     public static final RegistryObject<StructureType<SkyTempleStructure>> BALLOON_TYPE = STRUCTURE_TYPE_DEF_REG.register("big_balloon", () -> () -> SkyTempleStructure.BALLOON_CODEC);
     public static final RegistryObject<StructurePieceType> SKY_TEMPLE_PIECE = STRUCTURE_PIECE_DEF_REG.register("sky_temple", () -> SkyTempleStructure.Piece::new);
 
+    public static final ResourceKey<Structure> SKY_TEMPLE_KEY = ResourceKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(CloudStorage.MODID, "sky_temple"));
+    public static final ResourceKey<Structure> BIG_BALLOON_KEY = ResourceKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(CloudStorage.MODID, "big_balloon"));
 }

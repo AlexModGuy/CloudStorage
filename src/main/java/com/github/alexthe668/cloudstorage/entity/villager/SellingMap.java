@@ -24,7 +24,6 @@ import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 public class SellingMap implements VillagerTrades.ItemListing {
     private final int emeraldCost;
@@ -49,11 +48,11 @@ public class SellingMap implements VillagerTrades.ItemListing {
             return null;
         } else {
             try{
-                return null;
-                //Holder<Structure> holder = Optional.empty();
-                //HolderSet<Structure> holderset = HolderSet.direct(holder);
-                //Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level, holderset, pos, 100, false);
-                //return pair == null ? null : pair.getFirst();
+                Registry<Structure> registry = level.getLevel().registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY);
+                Holder<Structure> holder = balloon ? registry.getHolderOrThrow(CSStructureRegistry.BIG_BALLOON_KEY) : registry.getHolderOrThrow(CSStructureRegistry.SKY_TEMPLE_KEY);
+                HolderSet<Structure> holderset = HolderSet.direct(holder);
+                Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level, holderset, pos, 100, false);
+                return pair == null ? null : pair.getFirst();
             }catch (Exception e){
                 return null;
             }
