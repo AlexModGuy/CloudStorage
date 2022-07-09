@@ -88,13 +88,6 @@ public class BalloonEntity extends Entity {
                     Vec3 back = child.position().add(0, this.getStringLength(), 0).subtract(this.position());
                     this.setDeltaMovement(this.getDeltaMovement().add(back.scale(f)));
                 }
-                if(this.isArrow() && !(child instanceof AbstractArrow)){
-                    this.setDeltaMovement(this.getDeltaMovement().add(0, 0.1F, 0));
-                    child.setDeltaMovement(child.getDeltaMovement().add(0, 0.1F, 0).multiply(0.7F, 0.7F, 0.7F));
-                }
-                if (child instanceof BalloonCargoEntity) {
-                    this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08F, 0));
-                }
             }
             if (randomMoveOffset == null || random.nextInt(20) == 0) {
                 randomMoveOffset = new Vec3(random.nextFloat() - 0.5F, random.nextFloat() - 0.5F, random.nextFloat() - 0.5F).normalize();
@@ -199,6 +192,23 @@ public class BalloonEntity extends Entity {
             }
         } if (child == null && this.getStringLength() < 1){
             this.setStringLength(1);
+        }
+        moveChild();
+    }
+
+    private void moveChild() {
+        Entity child = this.getChild();
+        if(level.isClientSide && child == null){
+            child = getTieForRendering();
+        }
+        if(child != null){
+            if(this.isArrow() && !(child instanceof AbstractArrow)){
+                this.setDeltaMovement(this.getDeltaMovement().add(0, 0.1F, 0));
+                child.setDeltaMovement(child.getDeltaMovement().add(0, 0.1F, 0).multiply(0.7F, 0.7F, 0.7F));
+            }
+            if (child instanceof BalloonCargoEntity) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08F, 0));
+            }
         }
     }
 

@@ -148,6 +148,7 @@ public class CommonProxy {
                 }
                 if(tied != null){
                     tied.setChildId(entity.getUUID());
+                    arrow.setNoGravity(false);
                     tied.setStringLength(BalloonEntity.DEFAULT_STRING_LENGTH);
                     tied.setArrowTime(random.nextInt(80) + 80);
                 }
