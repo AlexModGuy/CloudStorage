@@ -9,11 +9,11 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nullable;
 
-public class CSItemRenderProperties implements IItemRenderProperties {
+public class CSItemRenderProperties implements IClientItemExtensions {
     private boolean armor;
     public static PropellerHatModel PROPELLER_HAT_MODEL;
 
@@ -22,19 +22,18 @@ public class CSItemRenderProperties implements IItemRenderProperties {
     }
 
     @Nullable
-    public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default){
-        if(armor){
+    public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {   if(armor){
             if(itemStack.getItem() == CSItemRegistry.PROPELLER_HAT.get()){
                 if(PROPELLER_HAT_MODEL == null){
                     PROPELLER_HAT_MODEL = new PropellerHatModel(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.PROPELLER_HAT_MODEL));
                 }
-                return PROPELLER_HAT_MODEL.withAnimations(entityLiving);
+                return PROPELLER_HAT_MODEL.withAnimations(livingEntity);
             }
         }
         return null;
     }
 
-    public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+    public BlockEntityWithoutLevelRenderer getCustomRenderer() {
         return this.armor ? Minecraft.getInstance().getItemRenderer().getBlockEntityRenderer() : new CSItemRenderer();
     }
 }

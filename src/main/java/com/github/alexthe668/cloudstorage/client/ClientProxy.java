@@ -109,6 +109,8 @@ public class ClientProxy extends CommonProxy {
     public void init(){
         super.init();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientProxy::onAddLayers);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientProxy::bakeEntityModels);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientProxy::setupParticles);
     }
 
     @Override
@@ -118,13 +120,13 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public static void onItemColors(ColorHandlerEvent.Item event) {
+    public static void onItemColors(RegisterColorHandlersEvent.Item event) {
         CloudStorage.LOGGER.info("loaded in item colorizer");
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_INVENTORY.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1 && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY_INVENTORY.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 1  && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY.get());
-        event.getItemColors().register((stack, colorIn) -> colorIn != 2 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_ARROW.get());
+        event.register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_INVENTORY.get());
+        event.register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON.get());
+        event.register((stack, colorIn) -> colorIn != 1 && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY_INVENTORY.get());
+        event.register((stack, colorIn) -> colorIn != 1  && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY.get());
+        event.register((stack, colorIn) -> colorIn != 2 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_ARROW.get());
     }
 
     private static int getBalloonColorForRender(ItemStack stack) {
@@ -169,7 +171,7 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onPostRenderEntity(RenderNameplateEvent event) {
+    public void onPostRenderEntity(RenderNameTagEvent event) {
         if(event.getEntity() instanceof FallingBlockEntity entity){
             BlockState blockstate = entity.getBlockState();
             PoseStack stack = event.getPoseStack();
@@ -198,21 +200,20 @@ public class ClientProxy extends CommonProxy {
 
     }
 
-    @Override
-    public void setupParticles() {
+    public static void setupParticles(RegisterParticleProvidersEvent event) {
         CloudStorage.LOGGER.debug("Registered particle factories");
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.BALLOON_SHARD.get(), ParticleBalloonShard.Factory::new);
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.CLOUD_CHEST.get(), ParticleCloudChest.Factory::new);
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.STATIC_LIGHTNING.get(), new ParticleStaticLightning.Factory());
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.BLOVIATOR_BREATH.get(), ParticleBloviatorBreath.Factory::new);
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.STOP_SPAWN.get(), ParticleBuddyEffect.StopSpawn::new);
-        Minecraft.getInstance().particleEngine.register(CSParticleRegistry.COOL.get(), ParticleBuddyEffect.Cool::new);
+        event.register(CSParticleRegistry.BALLOON_SHARD.get(), ParticleBalloonShard.Factory::new);
+        event.register(CSParticleRegistry.CLOUD_CHEST.get(), ParticleCloudChest.Factory::new);
+        event.register(CSParticleRegistry.STATIC_LIGHTNING.get(), new ParticleStaticLightning.Factory());
+        event.register(CSParticleRegistry.BLOVIATOR_BREATH.get(), ParticleBloviatorBreath.Factory::new);
+        event.register(CSParticleRegistry.STOP_SPAWN.get(), ParticleBuddyEffect.StopSpawn::new);
+        event.register(CSParticleRegistry.COOL.get(), ParticleBuddyEffect.Cool::new);
     }
 
-    private void bakeModels(final ModelBakeEvent e) {
-        for (ResourceLocation id : e.getModelRegistry().keySet()) {
+    private void bakeModels(final ModelEvent.BakingCompleted e) {
+        for (ResourceLocation id : e.getModels().keySet()) {
             if(FULLBRIGHTS.contains(id.toString())){
-                e.getModelRegistry().put(id, new BakedModelFinalLayerFullbright(e.getModelRegistry().get(id)));
+                e.getModels().put(id, new BakedModelFinalLayerFullbright(e.getModels().get(id)));
             }
         }
         ItemProperties.register(CSItemRegistry.BALLOON.get(), new ResourceLocation("loot_or_static"), (stack, lvl, holder, i) -> {
@@ -223,7 +224,7 @@ public class ClientProxy extends CommonProxy {
         });
     }
 
-    public void bakeEntityModels(final EntityRenderersEvent.RegisterLayerDefinitions event) {
+    public static void bakeEntityModels(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(PROPELLER_HAT_MODEL, () -> PropellerHatModel.createArmorLayer(new CubeDeformation(0.5F)));
     }
 

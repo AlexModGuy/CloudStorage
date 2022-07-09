@@ -67,9 +67,6 @@ public class CommonProxy {
         CriteriaTriggers.register(LUFTBALLONS_TRIGGER);
     }
 
-    public void setupParticles() {
-    }
-
     public Object getISTERProperties(boolean armor) {
         return null;
     }
@@ -107,8 +104,6 @@ public class CommonProxy {
         }
     }
 
-    public void bakeEntityModels(final EntityRenderersEvent.RegisterLayerDefinitions event) {
-    }
 
     @SubscribeEvent
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event){

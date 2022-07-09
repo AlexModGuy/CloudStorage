@@ -71,7 +71,7 @@ public class CSVillagerRegistry {
 
     public static void registerHouses() {
         registeredHouses = true;
-        int weight = CloudStorage.CONFIG.balloonStandSpawnWeight.get();
+        int weight = CloudStorage.CONFIG.balloonStandSpawnWeight.getDefault();
         StructurePoolElement plains = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_plains"), ProcessorLists.EMPTY);
         VillageHouseManager.register("minecraft:village/plains/houses", (pool) -> VillageHouseManager.addToPool(pool, plains, weight));
         StructurePoolElement desert = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_desert"), ProcessorLists.EMPTY);
@@ -125,7 +125,7 @@ public class CSVillagerRegistry {
         Predicate<Holder<PoiType>> acquirableJobSite = (poiType) -> {
             return poiType.is(CSPOIRegistry.BALLOON_STAND.getKey());
         };
-        if(!CloudStorage.CONFIG.balloonSalesmanVillager.get()){
+        if(!CloudStorage.CONFIG.balloonSalesmanVillager.getDefault()){
             heldJobSite = Predicates.alwaysFalse();
             acquirableJobSite = Predicates.alwaysFalse();
         }

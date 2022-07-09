@@ -18,7 +18,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -72,8 +71,6 @@ public class CloudStorage
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::setupClient);
         bus.addListener(this::setup);
-        bus.addListener(this::setupParticleEvent);
-        bus.addListener(this::setupEntityModels);
         final ModLoadingContext modLoadingContext = ModLoadingContext.get();
         modLoadingContext.registerConfig(ModConfig.Type.COMMON, CONFIG_SPEC, "cloud-storage.toml");
         CSBlockRegistry.DEF_REG.register(bus);
@@ -90,22 +87,15 @@ public class CloudStorage
         CSParticleRegistry.DEF_REG.register(bus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(PROXY);
-    }
-
-    private void setupEntityModels(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        PROXY.bakeEntityModels(event);
+        PROXY.init();
     }
 
     private void setupClient(FMLClientSetupEvent event) {
         PROXY.clientInit();
     }
 
-    private void setupParticleEvent(ParticleFactoryRegisterEvent event) {
-        PROXY.setupParticles();
-    }
 
     private void setup(final FMLCommonSetupEvent event) {
-        PROXY.init();
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSortCloudChest.class, MessageSortCloudChest::write, MessageSortCloudChest::read, MessageSortCloudChest.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSearchCloudChest.class, MessageSearchCloudChest::write, MessageSearchCloudChest::read, MessageSearchCloudChest.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageRequestCloudInfo.class, MessageRequestCloudInfo::write, MessageRequestCloudInfo::read, MessageRequestCloudInfo.Handler::handle);
