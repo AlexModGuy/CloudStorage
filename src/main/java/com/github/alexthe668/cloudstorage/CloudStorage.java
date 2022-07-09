@@ -102,6 +102,7 @@ public class CloudStorage
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdateCloudInfo.class, MessageUpdateCloudInfo::write, MessageUpdateCloudInfo::read, MessageUpdateCloudInfo.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageScrollCloudChest.class, MessageScrollCloudChest::write, MessageScrollCloudChest::read, MessageScrollCloudChest.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageOpenCloudChest.class, MessageOpenCloudChest::write, MessageOpenCloudChest::read, MessageOpenCloudChest.Handler::handle);
+        CSItemRegistry.registerDispenserBehavior();
     }
 
     public static <MSG> void sendMSGToAll(MSG message) {
