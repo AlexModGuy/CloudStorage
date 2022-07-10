@@ -8,6 +8,7 @@ import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.client.gui.BalloonStandScreen;
 import com.github.alexthe668.cloudstorage.client.gui.CloudChestScreen;
 import com.github.alexthe668.cloudstorage.client.gui.GuideBookScreen;
+import com.github.alexthe668.cloudstorage.client.model.CloudBlowerBackpackModel;
 import com.github.alexthe668.cloudstorage.client.model.PropellerHatModel;
 import com.github.alexthe668.cloudstorage.client.model.baked.BakedModelFinalLayerFullbright;
 import com.github.alexthe668.cloudstorage.client.particle.*;
@@ -16,23 +17,31 @@ import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CSMenuRegistry;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
+import com.github.alexthe668.cloudstorage.item.CloudBlowerItem;
 import com.github.alexthe668.cloudstorage.misc.CloudInfo;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -44,6 +53,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -57,27 +67,73 @@ import java.util.Map;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
 
-    private static final List<String> FULLBRIGHTS = ImmutableList.of("cloudstorage:static_cloud#");
     public static final ModelLayerLocation PROPELLER_HAT_MODEL = new ModelLayerLocation(new ResourceLocation("cloudstorage", "propeller_hat"), "main");
+    private static final List<String> FULLBRIGHTS = ImmutableList.of("cloudstorage:static_cloud#");
     private static final Map<Integer, CloudInfo> CLIENT_CLOUD_INFO = new HashMap<>();
     private int visibleSlots;
 
     public static int getCloudInt(int color, boolean allSlots) {
         CloudInfo info = CLIENT_CLOUD_INFO.get(color);
-        if(info == null){
+        if (info == null) {
             return 0;
-        }else{
+        } else {
             return allSlots ? info.getSlotCount() : info.getUsedSlots();
         }
     }
 
     public static int getStaticCloudInt(int color, boolean allSlots) {
         CloudInfo info = CLIENT_CLOUD_INFO.get(color);
-        if(info == null){
+        if (info == null) {
             return 0;
-        }else{
+        } else {
             return allSlots ? info.getStaticSlotCount() : info.getUsedStaticSlots();
         }
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void onItemColors(RegisterColorHandlersEvent.Item event) {
+        CloudStorage.LOGGER.info("loaded in item colorizer");
+        event.register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_INVENTORY.get());
+        event.register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON.get());
+        event.register((stack, colorIn) -> colorIn != 1 && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY_INVENTORY.get());
+        event.register((stack, colorIn) -> colorIn != 1 && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY.get());
+        event.register((stack, colorIn) -> colorIn != 2 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_ARROW.get());
+    }
+
+    private static int getBalloonColorForRender(ItemStack stack) {
+        int color = BalloonItem.getBalloonColor(stack);
+        if (color == -1) {
+            //TODO render rainbow colors properly
+            return BalloonItem.DEFAULT_COLOR;
+        } else {
+            return color;
+        }
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+        event.getRenderer(EntityType.VILLAGER).addLayer(new VillagerHatLayer(event.getRenderer(EntityType.VILLAGER)));
+        event.getRenderer(EntityType.ZOMBIE_VILLAGER).addLayer(new VillagerHatLayer(event.getRenderer(EntityType.ZOMBIE_VILLAGER)));
+
+        for (String skinType : event.getSkins()) {
+            event.getSkin(skinType).addLayer(new CloudBlowerBackpackLayer(event.getSkin(skinType)));
+        }
+    }
+
+    public static void setupParticles(RegisterParticleProvidersEvent event) {
+        CloudStorage.LOGGER.debug("Registered particle factories");
+        event.register(CSParticleRegistry.BALLOON_SHARD.get(), ParticleBalloonShard.Factory::new);
+        event.register(CSParticleRegistry.CLOUD_CHEST.get(), ParticleCloudChest.Factory::new);
+        event.register(CSParticleRegistry.STATIC_LIGHTNING.get(), new ParticleStaticLightning.Factory());
+        event.register(CSParticleRegistry.BLOVIATOR_BREATH.get(), ParticleBloviatorBreath.Factory::new);
+        event.register(CSParticleRegistry.STOP_SPAWN.get(), ParticleBuddyEffect.StopSpawn::new);
+        event.register(CSParticleRegistry.COOL.get(), ParticleBuddyEffect.Cool::new);
+    }
+
+    public static void bakeEntityModels(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(PROPELLER_HAT_MODEL, () -> PropellerHatModel.createArmorLayer(new CubeDeformation(0.5F)));
     }
 
     @Override
@@ -86,15 +142,15 @@ public class ClientProxy extends CommonProxy {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::bakeModels);
 
-        EntityRenderers.register(CSEntityRegistry.BADLOON.get(),  RenderBadloon::new);
-        EntityRenderers.register(CSEntityRegistry.BADLOON_HAND.get(),  RenderBadloonHand::new);
-        EntityRenderers.register(CSEntityRegistry.BALLOON.get(),  RenderBalloon::new);
-        EntityRenderers.register(CSEntityRegistry.BALLOON_TIE.get(),  RenderBalloonTie::new);
-        EntityRenderers.register(CSEntityRegistry.BALLOON_CARGO.get(),  RenderBalloonCargo::new);
-        EntityRenderers.register(CSEntityRegistry.BLOVIATOR.get(),  RenderBloviator::new);
-        EntityRenderers.register(CSEntityRegistry.BALLOON_BUDDY.get(),  RenderBalloonBuddy::new);
+        EntityRenderers.register(CSEntityRegistry.BADLOON.get(), RenderBadloon::new);
+        EntityRenderers.register(CSEntityRegistry.BADLOON_HAND.get(), RenderBadloonHand::new);
+        EntityRenderers.register(CSEntityRegistry.BALLOON.get(), RenderBalloon::new);
+        EntityRenderers.register(CSEntityRegistry.BALLOON_TIE.get(), RenderBalloonTie::new);
+        EntityRenderers.register(CSEntityRegistry.BALLOON_CARGO.get(), RenderBalloonCargo::new);
+        EntityRenderers.register(CSEntityRegistry.BLOVIATOR.get(), RenderBloviator::new);
+        EntityRenderers.register(CSEntityRegistry.BALLOON_BUDDY.get(), RenderBalloonBuddy::new);
         //needs to be overwritten so that it renders falling tile entities
-        EntityRenderers.register(EntityType.FALLING_BLOCK,  RenderFallingBlockWithTE::new);
+        EntityRenderers.register(EntityType.FALLING_BLOCK, RenderFallingBlockWithTE::new);
         ItemBlockRenderTypes.setRenderLayer(CSBlockRegistry.CLOUD.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(CSBlockRegistry.STATIC_CLOUD.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(CSBlockRegistry.CLOUD_CHEST.get(), RenderType.translucent());
@@ -106,7 +162,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void init(){
+    public void init() {
         super.init();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientProxy::onAddLayers);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientProxy::bakeEntityModels);
@@ -120,50 +176,63 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public static void onItemColors(RegisterColorHandlersEvent.Item event) {
-        CloudStorage.LOGGER.info("loaded in item colorizer");
-        event.register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_INVENTORY.get());
-        event.register((stack, colorIn) -> colorIn != 1 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON.get());
-        event.register((stack, colorIn) -> colorIn != 1 && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY_INVENTORY.get());
-        event.register((stack, colorIn) -> colorIn != 1  && colorIn != 3 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_BUDDY.get());
-        event.register((stack, colorIn) -> colorIn != 2 ? -1 : getBalloonColorForRender(stack), CSItemRegistry.BALLOON_ARROW.get());
-    }
-
-    private static int getBalloonColorForRender(ItemStack stack) {
-        int color = BalloonItem.getBalloonColor(stack);
-        if(color == -1){
-            //TODO render rainbow colors properly
-            return BalloonItem.DEFAULT_COLOR;
-        }else{
-            return color;
-        }
-    }
-
-
-    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
     public void onPoseHand(EventPosePlayerHand event) {
         LivingEntity player = (LivingEntity) event.getEntityIn();
         float f = Minecraft.getInstance().getFrameTime();
-        boolean rightHand = false;
-        boolean leftHand = false;
+        boolean rightHandBalloon = false;
+        boolean leftHandBalloon = false;
         boolean flag = false;
+        float rightHandCloudBlower = 0F;
+        float leftHandCloudBlower = 0F;
         if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BalloonItem) {
-            leftHand = leftHand || player.getMainArm() == HumanoidArm.LEFT;
-            rightHand = rightHand|| player.getMainArm() == HumanoidArm.RIGHT;
+            leftHandBalloon = leftHandBalloon || player.getMainArm() == HumanoidArm.LEFT;
+            rightHandBalloon = rightHandBalloon || player.getMainArm() == HumanoidArm.RIGHT;
             flag = true;
         }
         if (player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof BalloonItem) {
-            leftHand = leftHand || player.getMainArm() != HumanoidArm.LEFT;
-            rightHand = rightHand || player.getMainArm() != HumanoidArm.RIGHT;
+            leftHandBalloon = leftHandBalloon || player.getMainArm() != HumanoidArm.LEFT;
+            rightHandBalloon = rightHandBalloon || player.getMainArm() != HumanoidArm.RIGHT;
             flag = true;
         }
-        if(flag){
-            if (leftHand && event.isLeftHand()) {
-                event.getModel().leftArm.xRot = -(float) Math.toRadians(135F);
+        if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof CloudBlowerItem) {
+            if (player.getMainArm() == HumanoidArm.RIGHT) {
+                rightHandCloudBlower = Math.max(rightHandCloudBlower, CloudBlowerItem.getLerpedUseTime(player.getItemInHand(InteractionHand.MAIN_HAND), f));
+            } else {
+                leftHandCloudBlower = Math.max(leftHandCloudBlower, CloudBlowerItem.getLerpedUseTime(player.getItemInHand(InteractionHand.MAIN_HAND), f));
             }
-            if (rightHand && !event.isLeftHand()) {
-                event.getModel().rightArm.xRot = -(float) Math.toRadians(135F);
+            flag = true;
+        }
+        if (player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof CloudBlowerItem) {
+            if (player.getMainArm() == HumanoidArm.RIGHT) {
+                leftHandCloudBlower = Math.max(leftHandCloudBlower, CloudBlowerItem.getLerpedUseTime(player.getItemInHand(InteractionHand.OFF_HAND), f));
+            } else {
+                rightHandCloudBlower = Math.max(rightHandCloudBlower, CloudBlowerItem.getLerpedUseTime(player.getItemInHand(InteractionHand.OFF_HAND), f));
+            }
+            flag = true;
+        }
+        if (flag) {
+            if (leftHandBalloon) {
+                event.getModel().leftArm.xRot = -(float) Math.toRadians(90F);
+            }
+            if (rightHandBalloon) {
+                event.getModel().rightArm.xRot = -(float) Math.toRadians(110F);
+            }
+            float minArmAngle = (float) Math.toRadians(-270);
+            float maxArmAngle = (float) Math.toRadians(50F);
+            float yawDiff = (float)Math.toRadians(event.getEntityIn().getYRot() - ((LivingEntity) event.getEntityIn()).yBodyRot);
+            if (leftHandCloudBlower > 0) {
+                float f1 = Math.min(leftHandCloudBlower, 5F) / 5F;
+                float f2 = (event.getModel().head.xRot - (float) Math.toRadians(75)) * f1;
+                event.getModel().leftArm.xRot = Mth.clamp(f2, minArmAngle, maxArmAngle);
+                event.getModel().leftArm.yRot = yawDiff * f1;
+                event.setResult(Event.Result.ALLOW);
+            }
+            if (rightHandCloudBlower > 0) {
+                float f1 = Math.min(rightHandCloudBlower, 5F) / 5F;
+                float f2 = (event.getModel().head.xRot - (float) Math.toRadians(75)) * f1;
+                event.getModel().rightArm.xRot = Mth.clamp(f2, minArmAngle, maxArmAngle);
+                event.getModel().rightArm.yRot = yawDiff * f1;
+                event.setResult(Event.Result.ALLOW);
             }
         }
 
@@ -172,13 +241,13 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void onPostRenderEntity(RenderNameTagEvent event) {
-        if(event.getEntity() instanceof FallingBlockEntity entity){
+        if (event.getEntity() instanceof FallingBlockEntity entity) {
             BlockState blockstate = entity.getBlockState();
             PoseStack stack = event.getPoseStack();
             if (blockstate.getRenderShape() == RenderShape.ENTITYBLOCK_ANIMATED) {
                 stack.pushPose();
                 stack.translate(-0.5D, 0, -0.5D);
-                if(blockstate.hasProperty(HorizontalDirectionalBlock.FACING)){
+                if (blockstate.hasProperty(HorizontalDirectionalBlock.FACING)) {
                     float f = blockstate.getValue(HorizontalDirectionalBlock.FACING).toYRot();
                     stack.translate(0.5D, 0.5D, 0.5D);
                     stack.mulPose(Vector3f.YP.rotationDegrees(-f));
@@ -187,32 +256,12 @@ public class ClientProxy extends CommonProxy {
                 Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, stack, event.getMultiBufferSource(), event.getPackedLight(), OverlayTexture.NO_OVERLAY);
                 stack.popPose();
             }
-
         }
-    }
-
-    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
-    public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
-
-        event.getRenderer(EntityType.VILLAGER).addLayer(new VillagerHatLayer(event.getRenderer(EntityType.VILLAGER)));
-        event.getRenderer(EntityType.ZOMBIE_VILLAGER).addLayer(new VillagerHatLayer(event.getRenderer(EntityType.ZOMBIE_VILLAGER)));
-
-    }
-
-    public static void setupParticles(RegisterParticleProvidersEvent event) {
-        CloudStorage.LOGGER.debug("Registered particle factories");
-        event.register(CSParticleRegistry.BALLOON_SHARD.get(), ParticleBalloonShard.Factory::new);
-        event.register(CSParticleRegistry.CLOUD_CHEST.get(), ParticleCloudChest.Factory::new);
-        event.register(CSParticleRegistry.STATIC_LIGHTNING.get(), new ParticleStaticLightning.Factory());
-        event.register(CSParticleRegistry.BLOVIATOR_BREATH.get(), ParticleBloviatorBreath.Factory::new);
-        event.register(CSParticleRegistry.STOP_SPAWN.get(), ParticleBuddyEffect.StopSpawn::new);
-        event.register(CSParticleRegistry.COOL.get(), ParticleBuddyEffect.Cool::new);
     }
 
     private void bakeModels(final ModelEvent.BakingCompleted e) {
         for (ResourceLocation id : e.getModels().keySet()) {
-            if(FULLBRIGHTS.contains(id.toString())){
+            if (FULLBRIGHTS.contains(id.toString())) {
                 e.getModels().put(id, new BakedModelFinalLayerFullbright(e.getModels().get(id)));
             }
         }
@@ -224,16 +273,12 @@ public class ClientProxy extends CommonProxy {
         });
     }
 
-    public static void bakeEntityModels(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(PROPELLER_HAT_MODEL, () -> PropellerHatModel.createArmorLayer(new CubeDeformation(0.5F)));
-    }
-
-    public void setVisibleCloudSlots(int i){
-        this.visibleSlots = i;
-    }
-
-    public int getVisibleCloudSlots(){
+    public int getVisibleCloudSlots() {
         return this.visibleSlots;
+    }
+
+    public void setVisibleCloudSlots(int i) {
+        this.visibleSlots = i;
     }
 
     public Player getClientSidePlayer() {
@@ -248,7 +293,7 @@ public class ClientProxy extends CommonProxy {
 
 
     public void setClientCloudInfo(Player player, int balloonColor, CloudInfo cloudInfo) {
-        if(Minecraft.getInstance().player == player){
+        if (Minecraft.getInstance().player == player) {
             CLIENT_CLOUD_INFO.put(balloonColor, cloudInfo);
         }
     }
@@ -259,7 +304,7 @@ public class ClientProxy extends CommonProxy {
 
     public void onHoldingBalloon(LivingEntity holder, ItemStack balloon, boolean leftHanded) {
         super.onHoldingBalloon(holder, balloon, leftHanded);
-        if(BalloonItem.isStatic(balloon)){
+        if (BalloonItem.isStatic(balloon)) {
             CSItemRenderer.renderBalloonStatic(holder, balloon, leftHanded);
         }
     }

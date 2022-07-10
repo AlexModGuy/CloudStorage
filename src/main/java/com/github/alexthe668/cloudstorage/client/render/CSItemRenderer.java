@@ -3,14 +3,15 @@ package com.github.alexthe668.cloudstorage.client.render;
 import com.github.alexthe666.citadel.client.render.LightningBoltData;
 import com.github.alexthe666.citadel.client.render.LightningRender;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
-import com.github.alexthe668.cloudstorage.client.model.BalloonModel;
-import com.github.alexthe668.cloudstorage.client.model.BloviatorModel;
-import com.github.alexthe668.cloudstorage.client.model.CloudChestModel;
+import com.github.alexthe668.cloudstorage.client.model.*;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import com.github.alexthe668.cloudstorage.entity.BalloonFace;
 import com.github.alexthe668.cloudstorage.item.BalloonBuddyItem;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
+import com.github.alexthe668.cloudstorage.item.CloudBlowerItem;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
@@ -26,6 +27,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeRenderTypes;
 
@@ -36,9 +38,11 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
     public static final ResourceLocation CLOUD_CHEST_TEXTURE = new ResourceLocation("cloudstorage:textures/entity/cloud_chest.png");
     public static final ResourceLocation CLOUD_CHEST_LIGHTNING_TEXTURE = new ResourceLocation("cloudstorage:textures/entity/cloud_chest_static.png");
     public static final ResourceLocation BLOVIATOR_TEXTURE = new ResourceLocation("cloudstorage:textures/entity/bloviator/bloviator.png");
+    public static final ResourceLocation CLOUD_BLOWER_NOZZLE_TEXTURE = new ResourceLocation("cloudstorage:textures/entity/cloud_blower_nozzle.png");
     private static final BalloonModel BALLOON_MODEL = new BalloonModel();
     private static final CloudChestModel CLOUD_CHEST_MODEL = new CloudChestModel();
     private static final BloviatorModel BLOVIATOR_MODEL = new BloviatorModel(5);
+    private static final CloudBlowerNozzleModel CLOUD_BLOWER_NOZZLE_MODEL = new CloudBlowerNozzleModel();
     private static Vec3 lightningZapPos = Vec3.ZERO;
     private static final Random random = new Random();
     private static int tickForRender = 0;
@@ -199,6 +203,37 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
             CLOUD_CHEST_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(CLOUD_CHEST_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
             CLOUD_CHEST_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(ForgeRenderTypes.getUnlitTranslucent(CLOUD_CHEST_LIGHTNING_TEXTURE)), 240, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
             matrixStackIn.popPose();
+        }
+        if(itemStackIn.is(CSItemRegistry.CLOUD_BLOWER.get())) {
+            if (transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND) {
+                matrixStackIn.pushPose();
+                matrixStackIn.translate(0.45F, 1.8F, 0.5F);
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-180F));
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-180F));
+                float useTime = CloudBlowerItem.getLerpedUseTime(itemStackIn, partialTick);
+                CLOUD_BLOWER_NOZZLE_MODEL.animateInHand(useTime, transformType);
+                CLOUD_BLOWER_NOZZLE_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(CLOUD_BLOWER_NOZZLE_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+                if(useTime > 5F){
+                    Vec3 beam = new Vec3(0, 0, 3F);
+                    matrixStackIn.pushPose();
+                    if(transformType.firstPerson()){
+                        matrixStackIn.translate(0, 1.1F, -0.4F);
+                    }else{
+                        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-20F));
+                        matrixStackIn.translate(0, 1.3F, -0.1F);
+                    }
+                    StringRenderHelper.renderCloudBlowerBeam((float) beam.x, (float) beam.y, (float) beam.z, partialTick, CloudBlowerItem.getUseTime(itemStackIn), matrixStackIn, bufferIn, combinedLightIn, 1F, 1F, false);
+                    matrixStackIn.popPose();
+                }
+                matrixStackIn.popPose();
+            } else {
+                matrixStackIn.pushPose();
+                matrixStackIn.translate(0.5F, 0.5f, 0.5f);
+                ItemStack cloudBlower = new ItemStack(CSItemRegistry.CLOUD_BLOWER_INVENTORY.get());
+                Minecraft.getInstance().getItemRenderer().renderStatic(cloudBlower, transformType, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn, 0);
+                matrixStackIn.popPose();
+
+            }
         }
     }
 

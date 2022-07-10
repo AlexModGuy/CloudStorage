@@ -39,6 +39,8 @@ public class CSItemRegistry {
     public static final RegistryObject<Item> BALLOON_ARROW = DEF_REG.register("balloon_arrow", () -> new BalloonArrowItem());
     public static final RegistryObject<Item> PROPELLER_HAT = DEF_REG.register("propeller_hat", () -> new PropellerHatItem());
     public static final RegistryObject<Item> COTTON_CANDY = DEF_REG.register("cotton_candy", () -> new Item(new Item.Properties().tab(CSCreativeTab.INSTANCE).food((new FoodProperties.Builder()).nutrition(4).saturationMod(0.15F).fast().build())));
+    public static final RegistryObject<Item> CLOUD_BLOWER_INVENTORY = DEF_REG.register("cloud_blower_inventory", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CLOUD_BLOWER = DEF_REG.register("cloud_blower", () -> new CloudBlowerItem());
     public static final RegistryObject<Item> MUSIC_DISC_DRIFT = DEF_REG.register("music_disc_drift", () -> new RecordItem(14, CSSoundRegistry.MUSIC_DISC_DRIFT, new Item.Properties().tab(CSCreativeTab.INSTANCE).stacksTo(1).rarity(Rarity.RARE)));
 
     public static void registerDispenserBehavior(){
