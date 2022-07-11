@@ -25,3 +25,7 @@ Trolling - This balloon picks up its attack targets and drops them from a height
 Charming - This balloon will not engage in combat, but its sheer presence can put nearby mobs into love mode.
 <NEWLINE>
 Cool - This balloon's slick drawn-on shades distract hostile targets from moving or attacking for a short period.
+<NEWLINE>
+Happy Cloud Bottles can also be used to craft the Cloud Blower, a useful tool that can be set to blow or suck air at great speeds.
+<NEWLINE>
+The Cloud Blower can pull in any items or mobs, or push them away. It can also be set to blast the user up into the sky, which works better when also holding a balloon. Cloud Blowers use Cloud Bottles as fuel, so be sure to have plent of those on hand.

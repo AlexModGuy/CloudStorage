@@ -125,6 +125,27 @@
     ],
     "subtitle": "cloudstorage.sound.subtitle.static_shock"
   },
+  "cloud_blower": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "cloudstorage:cloud_blower_0"
+      },
+      {
+        "name": "cloudstorage:cloud_blower_1"
+      },
+      {
+        "name": "cloudstorage:cloud_blower_2"
+      },
+      {
+        "name": "cloudstorage:cloud_blower_3"
+      },
+      {
+        "name": "cloudstorage:cloud_blower_4"
+      }
+    ],
+    "subtitle": "cloudstorage.sound.subtitle.cloud_blower"
+  },
   "music_disc_drift": {
     "category": "record",
     "sounds": [

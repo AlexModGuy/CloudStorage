@@ -102,6 +102,7 @@ public class CloudStorage
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdateCloudInfo.class, MessageUpdateCloudInfo::write, MessageUpdateCloudInfo::read, MessageUpdateCloudInfo.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageScrollCloudChest.class, MessageScrollCloudChest::write, MessageScrollCloudChest::read, MessageScrollCloudChest.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageOpenCloudChest.class, MessageOpenCloudChest::write, MessageOpenCloudChest::read, MessageOpenCloudChest.Handler::handle);
+        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageLeftClickCloudBlower.class, MessageLeftClickCloudBlower::write, MessageLeftClickCloudBlower::read, MessageLeftClickCloudBlower.Handler::handle);
         CSItemRegistry.registerDispenserBehavior();
     }
 
@@ -113,5 +114,9 @@ public class CloudStorage
 
     public static <MSG> void sendNonLocal(MSG msg, ServerPlayer player) {
         NETWORK_WRAPPER.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    }
+
+    public static <MSG> void sendMSGToServer(MSG message) {
+        NETWORK_WRAPPER.sendToServer(message);
     }
 }

@@ -40,12 +40,12 @@ public class CloudBlowerNozzleModel extends AdvancedEntityModel {
         this.resetToDefaultPose();
     }
 
-    public void animateInHand(float useTime, ItemTransforms.TransformType transformType) {
+    public void animateInHand(float useTime, float leverForwards, ItemTransforms.TransformType transformType) {
         resetToDefaultPose();
         float div = 5F;
         float useProgress = Math.min(div, useTime) / div;
         float forwards = 60F;
-        progressPositionPrev(lever, useProgress, 0F, 2F, 0F, 1F);
+        lever.rotationPointY += leverForwards;
         if(transformType.firstPerson()){
             forwards = 80F;
             progressPositionPrev(root, useProgress, 0, -5, 2, 1F);

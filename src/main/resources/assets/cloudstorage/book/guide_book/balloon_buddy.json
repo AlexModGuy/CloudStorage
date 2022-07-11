@@ -15,14 +15,6 @@
       "y": 12,
       "page" : 0,
       "scale": 2.75
-    },
-    {
-      "item" : "cloudstorage:balloon_buddy",
-      "item_tag": "{3DRender:2,Personality:-1}",
-      "x": 95,
-      "y": 14,
-      "page" : 3,
-      "scale": 2.75
     }
   ],
   "recipes": [
@@ -33,23 +25,21 @@
       "y": 100,
       "page": 0,
       "scale": 1.2
+    },
+    {
+      "recipe": "cloudstorage:cloud_blower",
+      "shapeless": false,
+      "x": 20,
+      "y": 60,
+      "page": 3,
+      "scale": 1.2
     }
   ],
   "tabula_renders": [
 
   ],
   "entity_renders": [
-    {
-      "entity": "cloudstorage:badloon_hand",
-      "x": 282,
-      "y": 110,
-      "page" : 3,
-      "scale": 1.0,
-      "rot_x": 35,
-      "rot_y": 225,
-      "rot_z": 0,
-      "follow_cursor": false
-    }
+
   ]
 }
 

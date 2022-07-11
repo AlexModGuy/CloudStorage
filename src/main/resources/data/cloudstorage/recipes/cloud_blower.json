@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SIS",
+    "ICI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "S": {
+      "tag": "forge:string"
+    },
+    "C": {
+      "item": "cloudstorage:happy_cloud_in_a_bottle"
+    }
+  },
+  "result": {
+    "item": "cloudstorage:cloud_blower",
+    "count": 1
+  }
+}

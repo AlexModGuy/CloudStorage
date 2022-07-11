@@ -19,6 +19,7 @@ import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.item.CloudBlowerItem;
 import com.github.alexthe668.cloudstorage.misc.CloudInfo;
+import com.github.alexthe668.cloudstorage.network.MessageLeftClickCloudBlower;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -53,6 +54,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -215,7 +217,7 @@ public class ClientProxy extends CommonProxy {
                 event.getModel().leftArm.xRot = -(float) Math.toRadians(90F);
             }
             if (rightHandBalloon) {
-                event.getModel().rightArm.xRot = -(float) Math.toRadians(110F);
+                event.getModel().rightArm.xRot = -(float) Math.toRadians(90F);
             }
             float minArmAngle = (float) Math.toRadians(-270);
             float maxArmAngle = (float) Math.toRadians(50F);
@@ -225,15 +227,14 @@ public class ClientProxy extends CommonProxy {
                 float f2 = (event.getModel().head.xRot - (float) Math.toRadians(75)) * f1;
                 event.getModel().leftArm.xRot = Mth.clamp(f2, minArmAngle, maxArmAngle);
                 event.getModel().leftArm.yRot = yawDiff * f1;
-                event.setResult(Event.Result.ALLOW);
             }
             if (rightHandCloudBlower > 0) {
                 float f1 = Math.min(rightHandCloudBlower, 5F) / 5F;
                 float f2 = (event.getModel().head.xRot - (float) Math.toRadians(75)) * f1;
                 event.getModel().rightArm.xRot = Mth.clamp(f2, minArmAngle, maxArmAngle);
                 event.getModel().rightArm.yRot = yawDiff * f1;
-                event.setResult(Event.Result.ALLOW);
             }
+            event.setResult(Event.Result.ALLOW);
         }
 
     }
@@ -257,6 +258,14 @@ public class ClientProxy extends CommonProxy {
                 stack.popPose();
             }
         }
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
+        CloudBlowerItem.onLeftClick(event.getPlayer(), event.getPlayer().getMainHandItem());
+        CloudBlowerItem.onLeftClick(event.getPlayer(), event.getPlayer().getOffhandItem());
+        CloudStorage.sendMSGToServer(new MessageLeftClickCloudBlower());
     }
 
     private void bakeModels(final ModelEvent.BakingCompleted e) {

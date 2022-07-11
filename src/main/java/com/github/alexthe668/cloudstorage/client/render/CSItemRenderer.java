@@ -211,7 +211,8 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
                 matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-180F));
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-180F));
                 float useTime = CloudBlowerItem.getLerpedUseTime(itemStackIn, partialTick);
-                CLOUD_BLOWER_NOZZLE_MODEL.animateInHand(useTime, transformType);
+                float leverForwards = CloudBlowerItem.getMode(itemStackIn);
+                CLOUD_BLOWER_NOZZLE_MODEL.animateInHand(useTime, leverForwards, transformType);
                 CLOUD_BLOWER_NOZZLE_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(CLOUD_BLOWER_NOZZLE_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
                 if(useTime > 5F){
                     Vec3 beam = new Vec3(0, 0, 3F);
@@ -222,7 +223,8 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
                         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-20F));
                         matrixStackIn.translate(0, 1.3F, -0.1F);
                     }
-                    StringRenderHelper.renderCloudBlowerBeam((float) beam.x, (float) beam.y, (float) beam.z, partialTick, CloudBlowerItem.getUseTime(itemStackIn), matrixStackIn, bufferIn, combinedLightIn, 1F, 1F, false);
+                    float intensity = leverForwards == 1 ? -1.0F : 1.0F;
+                    StringRenderHelper.renderCloudBlowerBeam((float) beam.x, (float) beam.y, (float) beam.z, partialTick, CloudBlowerItem.getUseTime(itemStackIn), matrixStackIn, bufferIn, combinedLightIn, intensity, 1F, false);
                     matrixStackIn.popPose();
                 }
                 matrixStackIn.popPose();
