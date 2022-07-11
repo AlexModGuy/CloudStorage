@@ -28,6 +28,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -147,6 +148,7 @@ public class BalloonEntity extends Entity {
             if (this.popTick == 0) {
                 if (!this.isSilent()) {
                     this.playSound(CSSoundRegistry.BALLOON_POP.get(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
+                    this.gameEvent(GameEvent.ENTITY_ROAR);
                 }
             }
             this.popTick++;

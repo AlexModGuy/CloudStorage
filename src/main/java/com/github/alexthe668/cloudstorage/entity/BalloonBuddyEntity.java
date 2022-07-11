@@ -44,6 +44,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -379,6 +380,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
         if(this.deathTime == 0){
             if(!this.isSilent()){
                 this.playSound(CSSoundRegistry.BALLOON_POP.get(), this.getSoundVolume(), 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
+                this.gameEvent(GameEvent.ENTITY_ROAR);
             }
         }
         ++this.deathTime;

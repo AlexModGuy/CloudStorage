@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -92,6 +93,7 @@ public abstract class AbstractCloudChestBlockEntity extends BlockEntity {
             this.lastSoundTimestamp = this.tickCount;
             float pitch = 0.75F + random.nextFloat() * 0.35F;
             this.level.playSound((Player)null, this.getBlockPos(), open ? CSSoundRegistry.CLOUD_CHEST_OPEN.get() : CSSoundRegistry.CLOUD_CHEST_CLOSE.get(), SoundSource.BLOCKS, 1.0F, pitch);
+            this.level.gameEvent(null, GameEvent.BLOCK_CHANGE, this.getBlockPos());
         }
     }
 
