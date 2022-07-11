@@ -2,6 +2,7 @@ package com.github.alexthe668.cloudstorage.inventory;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.network.MessageScrollCloudChest;
+import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -67,7 +68,13 @@ public class CloudChestMenu extends AbstractContainerMenu {
     public static boolean matchesSearch(Player player, String search, ItemStack stack) {
         boolean matches = false;
         try{
-            for (Component line : stack.getTooltipLines(player, TooltipFlag.Default.ADVANCED)) {
+            List<Component> tooltipLines = Lists.newArrayList();
+            try{
+                tooltipLines = stack.getTooltipLines(player, TooltipFlag.Default.ADVANCED);
+            }catch (Exception e){
+                tooltipLines = Lists.newArrayList(stack.getHoverName());
+            }
+            for (Component line : tooltipLines) {
                 if (ChatFormatting.stripFormatting(line.getString()).toLowerCase(Locale.ROOT).contains(search)) {
                     matches = true;
                     break;
