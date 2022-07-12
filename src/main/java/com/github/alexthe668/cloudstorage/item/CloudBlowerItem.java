@@ -37,7 +37,7 @@ import java.util.Optional;
 
 public class CloudBlowerItem extends Item {
 
-    public static int MAX_FUEL = 400;
+    public static int MAX_FUEL = 300;
 
     public CloudBlowerItem() {
         super(new Item.Properties().tab(CSCreativeTab.INSTANCE).stacksTo(1));
