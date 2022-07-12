@@ -15,7 +15,7 @@ import net.minecraftforge.registries.RegistryObject;
 @Mod.EventBusSubscriber(modid = CloudStorage.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CSEntityRegistry {
 
-    public static final DeferredRegister<EntityType<?>> DEF_REG = DeferredRegister.create(ForgeRegistries.ENTITIES, CloudStorage.MODID);
+    public static final DeferredRegister<EntityType<?>> DEF_REG = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, CloudStorage.MODID);
     public static final RegistryObject<EntityType<BadloonEntity>> BADLOON = DEF_REG.register("badloon", () -> EntityType.Builder.of(BadloonEntity::new, MobCategory.MONSTER).sized(0.7F, 0.9F).build("badloon"));
     public static final RegistryObject<EntityType<BadloonHandEntity>> BADLOON_HAND = DEF_REG.register("badloon_hand", () -> (EntityType)EntityType.Builder.of(BadloonHandEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).setCustomClientFactory(BadloonHandEntity::new).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).updateInterval(1).clientTrackingRange(20).build("badloon_hand"));
     public static final RegistryObject<EntityType<BalloonEntity>> BALLOON = DEF_REG.register("balloon", () -> (EntityType)EntityType.Builder.of(BalloonEntity::new, MobCategory.MISC).sized(0.7F, 0.9F).setCustomClientFactory(BalloonEntity::new).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).updateInterval(10).clientTrackingRange(20).build("balloon"));

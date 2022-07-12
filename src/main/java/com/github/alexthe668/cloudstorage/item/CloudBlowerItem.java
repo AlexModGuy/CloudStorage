@@ -113,7 +113,7 @@ public class CloudBlowerItem extends Item {
             ItemStack ammo = findAmmo(player);
             boolean flag = player.isCreative();
             if(!ammo.isEmpty() && !flag){
-                player.addItem(ammo.getContainerItem().copy());
+                player.addItem(ammo.getCraftingRemainingItem().copy());
                 ammo.shrink(1);
                 flag = true;
             }

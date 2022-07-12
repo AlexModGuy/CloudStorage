@@ -263,8 +263,8 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
-        CloudBlowerItem.onLeftClick(event.getPlayer(), event.getPlayer().getMainHandItem());
-        CloudBlowerItem.onLeftClick(event.getPlayer(), event.getPlayer().getOffhandItem());
+        CloudBlowerItem.onLeftClick(event.getEntity(), event.getEntity().getMainHandItem());
+        CloudBlowerItem.onLeftClick(event.getEntity(), event.getEntity().getOffhandItem());
         CloudStorage.sendMSGToServer(new MessageLeftClickCloudBlower());
     }
 

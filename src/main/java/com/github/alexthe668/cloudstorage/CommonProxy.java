@@ -158,10 +158,10 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void onMobAttemptSpawn(LivingSpawnEvent.CheckSpawn event){
-        if(event.getEntityLiving() instanceof Monster && random.nextFloat() < 0.5F){
+        if(event.getEntity() instanceof Monster && random.nextFloat() < 0.5F){
             double dist = 64;
-            AABB aabb = event.getEntityLiving().getBoundingBox().inflate(dist);
-            List<BalloonBuddyEntity> balloonBuddies = event.getWorld().getEntitiesOfClass(BalloonBuddyEntity.class, aabb);
+            AABB aabb = event.getEntity().getBoundingBox().inflate(dist);
+            List<BalloonBuddyEntity> balloonBuddies = event.getLevel().getEntitiesOfClass(BalloonBuddyEntity.class, aabb);
             if(!balloonBuddies.isEmpty()){
                 for(BalloonBuddyEntity balloonBuddy : balloonBuddies){
                     if(balloonBuddy.getPersonality() == BalloonFace.HAPPY){
@@ -176,10 +176,10 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void onMobVisiblity(LivingEvent.LivingVisibilityEvent event){
-        if(event.getEntityLiving() instanceof Player){
+        if(event.getEntity() instanceof Player){
             double dist = 16;
-            AABB aabb = event.getEntityLiving().getBoundingBox().inflate(dist);
-            List<BalloonBuddyEntity> balloonBuddies = event.getEntityLiving().getLevel().getEntitiesOfClass(BalloonBuddyEntity.class, aabb);
+            AABB aabb = event.getEntity().getBoundingBox().inflate(dist);
+            List<BalloonBuddyEntity> balloonBuddies = event.getEntity().getLevel().getEntitiesOfClass(BalloonBuddyEntity.class, aabb);
             if(!balloonBuddies.isEmpty()){
                 for(BalloonBuddyEntity balloonBuddy : balloonBuddies){
                     if(balloonBuddy.getPersonality() == BalloonFace.EYEPATCH){
@@ -238,9 +238,9 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void onServerTick(TickEvent.WorldTickEvent tick) {
-        if (!tick.world.isClientSide && tick.world instanceof ServerLevel && CloudStorage.CONFIG.skyMobSpawning.get() && tick.world.getDifficulty() != Difficulty.PEACEFUL) {
-            ServerLevel serverWorld = (ServerLevel) tick.world;
+    public void onServerTick(TickEvent.LevelTickEvent tick) {
+        if (!tick.level.isClientSide && tick.level instanceof ServerLevel && CloudStorage.CONFIG.skyMobSpawning.get() && tick.level.getDifficulty() != Difficulty.PEACEFUL) {
+            ServerLevel serverWorld = (ServerLevel) tick.level;
             if (SKY_MOB_SPAWNER_MAP.get(serverWorld) == null) {
                 SKY_MOB_SPAWNER_MAP.put(serverWorld, new SkyMobSpawner(serverWorld));
             }
@@ -267,23 +267,23 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void onPlayerCraft(PlayerEvent.ItemCraftedEvent event) {
-        checkForLuftballoons(event.getPlayer());
+        checkForLuftballoons(event.getEntity());
     }
 
     @SubscribeEvent
     public void onPlayerPickup(PlayerEvent.ItemPickupEvent event) {
-        checkForLuftballoons(event.getPlayer());
+        checkForLuftballoons(event.getEntity());
     }
 
     @SubscribeEvent
     public void onPlayerOpenContainer(PlayerContainerEvent event) {
-        checkForLuftballoons(event.getPlayer());
+        checkForLuftballoons(event.getEntity());
     }
 
     @SubscribeEvent
     public void onEntitySetTarget(LivingSetAttackTargetEvent event) {
-        if(event.getEntityLiving() instanceof Mob && event.getTarget() instanceof BalloonBuddyEntity && ((BalloonBuddyEntity)event.getTarget()).getPersonality() == BalloonFace.EYEPATCH){
-            ((Mob) event.getEntityLiving()).setTarget(null);
+        if(event.getEntity() instanceof Mob && event.getTarget() instanceof BalloonBuddyEntity && ((BalloonBuddyEntity)event.getTarget()).getPersonality() == BalloonFace.EYEPATCH){
+            ((Mob) event.getEntity()).setTarget(null);
         }
     }
 

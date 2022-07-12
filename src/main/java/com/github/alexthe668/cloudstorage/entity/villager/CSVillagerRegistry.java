@@ -40,7 +40,7 @@ import java.util.function.Predicate;
 @Mod.EventBusSubscriber(modid = CloudStorage.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CSVillagerRegistry {
 
-    public static final DeferredRegister<VillagerProfession> DEF_REG = DeferredRegister.create(ForgeRegistries.PROFESSIONS, CloudStorage.MODID);
+    public static final DeferredRegister<VillagerProfession> DEF_REG = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, CloudStorage.MODID);
     public static final RegistryObject<VillagerProfession> BALLOON_SALESMAN = DEF_REG.register("balloon_salesman", () -> buildVillagerProfession());
     public static final StructurePoolElementType<BalloonStandPoolElement> BALLOON_STAND_TYPE = Registry.register(Registry.STRUCTURE_POOL_ELEMENT, new ResourceLocation(CloudStorage.MODID, "balloon_stand"), () -> BalloonStandPoolElement.CODEC);
     public static boolean registeredHouses = false;
