@@ -94,6 +94,8 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
                     Container cloudContainer = getCloudContainer();
                     if(cloudContainer != null){
                         input = LazyOptional.of(() -> new InvWrapper(cloudContainer));
+                    }else{
+                        return LazyOptional.empty();
                     }
                 }
                 return input.cast();
