@@ -87,7 +87,7 @@ public class RenderBalloon extends EntityRenderer<BalloonEntity> {
         matrixStackIn.pushPose();
         matrixStackIn.translate(-d0, -d1, -d2);
         Vec3 position = new Vec3(d0, d1, d2);
-        Vec3 from = new Vec3(0, 0.2F, 0).xRot(xRot * ((float) Math.PI / 180F)).yRot(-yRot * ((float) Math.PI / 180F));
+        Vec3 from = BALLOON_MODEL.translateToBottom(new Vec3(0, 0.2F, 0)).xRot(xRot * ((float) Math.PI / 180F)).yRot(-yRot * ((float) Math.PI / 180F));
         StringRenderHelper.renderSting(entityIn, to, partialTicks, matrixStackIn, bufferIn, position.add(from), packedLightIn);
         matrixStackIn.popPose();
         float uploadProgress = entityIn.getUploadProgress(partialTicks);

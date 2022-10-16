@@ -9,7 +9,9 @@ import com.github.alexthe668.cloudstorage.entity.LivingBalloon;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector4f;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public class BalloonModel<T extends Entity> extends AdvancedEntityModel<T> {
     private final AdvancedModelBox balloonModel;
@@ -100,6 +102,22 @@ public class BalloonModel<T extends Entity> extends AdvancedEntityModel<T> {
         this.b = b;
         this.a = 1.0F;
     }
+
+
+    public Vec3 translateToBottom(Vec3 in){
+        PoseStack modelTranslateStack = new PoseStack();
+        this.balloonModel.translateAndRotate(modelTranslateStack);
+        this.balloon.translateAndRotate(modelTranslateStack);
+        this.tie.translateAndRotate(modelTranslateStack);
+        this.below.translateAndRotate(modelTranslateStack);
+
+        Vector4f bodyOffsetVec = new Vector4f((float)in.x, (float)in.y, (float)in.z, 1.0F);
+        bodyOffsetVec.transform(modelTranslateStack.last().pose());
+        Vec3 offset = new Vec3(bodyOffsetVec.x(), bodyOffsetVec.y(), bodyOffsetVec.z());
+        modelTranslateStack.popPose();
+        return offset.add(0, -1.5F, 0);
+    }
+
 
     public void setAlpha(float a){
         this.a = a;

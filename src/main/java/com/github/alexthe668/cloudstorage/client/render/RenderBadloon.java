@@ -5,6 +5,7 @@ import com.github.alexthe668.cloudstorage.entity.BadloonEntity;
 import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -57,7 +58,9 @@ public class RenderBadloon extends MobRenderer<BadloonEntity, BalloonModel<Badlo
             matrixStackIn.translate(-d0, -d1, -d2);
             Vec3 position = new Vec3(d0, d1, d2);
             Vec3 handPosition = new Vec3(d3, d4, d5);
-            Vec3 from = new Vec3(0, 0.2F, 0).xRot(xRot * ((float) Math.PI / 180F)).yRot(-yRot * ((float) Math.PI / 180F)).zRot(-zRot * ((float) Math.PI / 180F));
+
+            Vec3 from = model.translateToBottom(new Vec3(0, 0.2F, 0)).xRot(xRot * ((float) Math.PI / 180F)).yRot(-yRot * ((float) Math.PI / 180F)).zRot(-zRot * ((float) Math.PI / 180F));
+
             Vec3 to = handPosition.add(0.0F, hand.getBbHeight() * 0.8F, 0);
             StringRenderHelper.renderSting(entityIn, position.add(from), partialTicks, matrixStackIn, bufferIn, to, packedLightIn);
             matrixStackIn.popPose();
