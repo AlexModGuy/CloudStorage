@@ -1,5 +1,9 @@
 package com.github.alexthe668.cloudstorage.entity;
 
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.ReportedException;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -12,6 +16,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
@@ -28,6 +34,15 @@ public class BadloonHandEntity extends Entity {
     public float gestureProgress = 1.0F;
     public float prevGestureProgress;
     public GloveGesture prevPrevGuesture;
+    private int lSteps;
+    private double lx;
+    private double ly;
+    private double lz;
+    private double lyr;
+    private double lxr;
+    private double lxd;
+    private double lyd;
+    private double lzd;
 
     public BadloonHandEntity(EntityType<?> type, Level level) {
         super(type, level);
@@ -61,6 +76,7 @@ public class BadloonHandEntity extends Entity {
     }
 
     public void tick(){
+        this.setOldPosAndRot();
         if (prevPrevGuesture != this.getPrevGesture()) {
             prevPrevGuesture = this.getPrevGesture();
             gestureProgress = 0.0F;
@@ -73,29 +89,48 @@ public class BadloonHandEntity extends Entity {
             }
             this.checkInsideBlocks();
             if(parent != null){
-                Vec3 vector3d = new Vec3(parent.getX() - this.getX(), 0, parent.getZ() - this.getZ());
-                float f = Mth.sqrt((float) (vector3d.x * vector3d.x + vector3d.z * vector3d.z));
-                this.faceTowardsX((float) (f * 1 * (double) (180F / (float) Math.PI)));
-                this.faceTowardsY(parent.getYRot());
-                Vec3 newMovement = this.getDeltaMovement().add(this.moveTowardsParent(0.02F)).scale(0.9F);
-                if(this.horizontalCollision && this.distanceTo(parent) > 2.0F){
-                    double yUp = parent.getY() - this.getY();
-                    newMovement = newMovement.add(0, yUp * 0.06F, 0);
-                }else if(parent instanceof BalloonBuddyEntity && ((BalloonBuddyEntity) parent).isInSittingPose()){
-                    if(parent.getY() - 1 < this.getY()){
-                        newMovement = newMovement.add(0, -0.05F, 0);
+                if(parent.isPassenger()){
+                    Entity vehicle = parent.getVehicle();
+                    double below = vehicle.getY() + vehicle.getPassengersRidingOffset();
+                    this.setPos(parent.getX(), below, parent.getZ());
+                    this.setDeltaMovement(Vec3.ZERO);
+                    this.faceTowardsY(vehicle.getYRot());
+                    this.setGesture(GloveGesture.GRAB);
+                }else {
+                    Vec3 vector3d = new Vec3(parent.getX() - this.getX(), 0, parent.getZ() - this.getZ());
+                    float f = Mth.sqrt((float) (vector3d.x * vector3d.x + vector3d.z * vector3d.z));
+                    this.faceTowardsX((float) (f * 1 * (double) (180F / (float) Math.PI)));
+                    this.faceTowardsY(parent.getYRot());
+                    Vec3 newMovement = this.getDeltaMovement().add(this.moveTowardsParent(0.02F)).scale(0.9F);
+                    if (this.horizontalCollision && this.distanceTo(parent) > 2.0F) {
+                        double yUp = parent.getY() - this.getY();
+                        newMovement = newMovement.add(0, yUp * 0.06F, 0);
+                    } else if (parent instanceof BalloonBuddyEntity && ((BalloonBuddyEntity) parent).isInSittingPose()) {
+                        if (parent.getY() - 1 < this.getY()) {
+                            newMovement = newMovement.add(0, -0.05F, 0);
+                        }
                     }
-                }
-                if(newMovement.lengthSqr() > (double)1.0E-4F){
-                    this.setDeltaMovement(newMovement);
+                    if (newMovement.lengthSqr() > (double) 1.0E-4F) {
+                        this.setDeltaMovement(newMovement);
+                    }
                 }
             }
             this.move(MoverType.SELF, this.getDeltaMovement());
         }else{
-            double d0 = this.getX() + getDeltaMovement().x;
-            double d1 = this.getY() + getDeltaMovement().y;
-            double d2 = this.getZ() + getDeltaMovement().z;
-            this.setPosRaw(d0, d1, d2);
+            if (this.lSteps > 0) {
+                double d5 = this.getX() + (this.lx - this.getX()) / (double)this.lSteps;
+                double d6 = this.getY() + (this.ly - this.getY()) / (double)this.lSteps;
+                double d7 = this.getZ() + (this.lz - this.getZ()) / (double)this.lSteps;
+                double d2 = Mth.wrapDegrees(this.lyr - (double)this.getYRot());
+                this.setYRot(this.getYRot() + (float)d2 / (float)this.lSteps);
+                this.setXRot(this.getXRot() + (float)(this.lxr - (double)this.getXRot()) / (float)this.lSteps);
+                --this.lSteps;
+                this.setPos(d5, d6, d7);
+                this.setRot(this.getYRot(), this.getXRot());
+            } else {
+                this.reapplyPosition();
+                this.setRot(this.getYRot(), this.getXRot());
+            }
         }
 
         if (this.getPrevGesture() != this.getGesture() && gestureProgress < 1.0F) {
@@ -106,6 +141,38 @@ public class BadloonHandEntity extends Entity {
         }
         if(!this.level.isClientSide && this.isVehicle()){
             setGesture(GloveGesture.GRAB);
+        }
+    }
+
+    //compat with domestication innovation
+    protected void checkInsideBlocks() {
+        Entity parent = getParent();
+        AABB aabb = this.getBoundingBox();
+        BlockPos blockpos = new BlockPos(aabb.minX + 0.001D, aabb.minY + 0.001D, aabb.minZ + 0.001D);
+        BlockPos blockpos1 = new BlockPos(aabb.maxX - 0.001D, aabb.maxY - 0.001D, aabb.maxZ - 0.001D);
+        if (this.level.hasChunksAt(blockpos, blockpos1)) {
+            BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+            for(int i = blockpos.getX(); i <= blockpos1.getX(); ++i) {
+                for(int j = blockpos.getY(); j <= blockpos1.getY(); ++j) {
+                    for(int k = blockpos.getZ(); k <= blockpos1.getZ(); ++k) {
+                        blockpos$mutableblockpos.set(i, j, k);
+                        BlockState blockstate = this.level.getBlockState(blockpos$mutableblockpos);
+
+                        try {
+                            blockstate.entityInside(this.level, blockpos$mutableblockpos, this);
+                            this.onInsideBlock(blockstate);
+                            if(parent != null){
+                                blockstate.entityInside(this.level, blockpos$mutableblockpos, parent);
+                            }
+                        } catch (Throwable throwable) {
+                            CrashReport crashreport = CrashReport.forThrowable(throwable, "Colliding entity with block");
+                            CrashReportCategory crashreportcategory = crashreport.addCategory("Block being collided with");
+                            CrashReportCategory.populateBlockDetails(crashreportcategory, this.level, blockpos$mutableblockpos, blockstate);
+                            throw new ReportedException(crashreport);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -196,4 +263,20 @@ public class BadloonHandEntity extends Entity {
         return GloveGesture.values()[Mth.clamp(this.entityData.get(PREV_GESTURE), 0,  5)];
     }
 
+    public void lerpTo(double p_38102_, double p_38103_, double p_38104_, float p_38105_, float p_38106_, int p_38107_, boolean p_38108_) {
+        this.lx = p_38102_;
+        this.ly = p_38103_;
+        this.lz = p_38104_;
+        this.lyr = (double)p_38105_;
+        this.lxr = (double)p_38106_;
+        this.lSteps = p_38107_;
+        this.setDeltaMovement(this.lxd, this.lyd, this.lzd);
+    }
+
+    public void lerpMotion(double p_38171_, double p_38172_, double p_38173_) {
+        this.lxd = p_38171_;
+        this.lyd = p_38172_;
+        this.lzd = p_38173_;
+        this.setDeltaMovement(this.lxd, this.lyd, this.lzd);
+    }
 }

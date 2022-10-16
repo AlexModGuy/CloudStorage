@@ -9,6 +9,9 @@ import com.github.alexthe668.cloudstorage.entity.ai.FlyAroundGoal;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.ReportedException;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -575,6 +578,10 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
             }
         }
         return super.isAlliedTo(entityIn);
+    }
+
+    public double getMyRidingOffset() {
+        return 1.75F + Math.sin(tickCount * 0.05F) * 0.25F;
     }
 
     @javax.annotation.Nullable
