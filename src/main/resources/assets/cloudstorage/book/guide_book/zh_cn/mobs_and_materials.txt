@@ -1,9 +1,9 @@
-To get started with cloud storage, you will need several resources.
-Most of these can be sourced from slaying hostile mobs Chiefly among these are the Badloon and the Bloviator.
-These mobs are key to obtaining Balloon Pieces and Cloud Blocks, but finding and slaying them might not be such an easy feat...
+要开始使用云存储，你需要收集一些资源。
+其中大部分资源可以通过杀死敌对生物来获得，其中最主要的是恶气球和吐气云。
+这些生物是气球碎片和云块的关键来源，但找到并杀死它们可能并不是简单的事情……
 <NEWLINE>
 <NEWLINE>
 <NEWLINE>
 <NEWLINE>
 <NEWLINE>
-Once you have gathered a few Balloon Pieces and Cloud Blocks, you can finally begin storing your things in the cloud.
+在你收集了一些气球碎片和云块之后，你就可以开始在云中储存你的东西了。
