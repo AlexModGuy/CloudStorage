@@ -1,7 +1,7 @@
 <NEWLINE>
 <NEWLINE>
 <NEWLINE>
-Although you may have heard of "Cloud Storage" before, very few people know that it actually involves clouds and balloons.
-This introductory guide should leave you with a sense of pride and accomplishment for figuring out the ins-and-outs of cloud storage and the sky in general.
+虽然你可能听说过“云存储”，但很少有人知道它实际上涉及云和气球。
+这本引导指南会让你因为自己了解了云存储与天空的来龙去脉而感到自豪。
 <NEWLINE>
-Chapters:
+章节：
