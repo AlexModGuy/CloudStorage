@@ -1,19 +1,19 @@
-To begin storing items in the cloud, you will need at least two Balloons and one Cloud Chest.
-These can be crafted like so:
+要开始在云端存储物品，你需要至少两个气球和一个云箱。
+这些物品可以这样合成：
 <NEWLINE>
 <NEWLINE>
-Balloons can be tied to fences for display, and can be held to slightly decrease fall damage and speed.
+气球可以被绑在栅栏上展示，你也可以握住气球来略微减缓摔落的伤害和速度。
 <NEWLINE>
 <NEWLINE>
-Before the Cloud Chest can be used, you will need to add space to the cloud storage associated with your balloon color.
-Balloons can be dyed to be any color just like leather armor, and the color of the balloon denotes its storage space in the cloud.
-By tying a Balloon to a Chest or other inventory and sending it up into the sky, you will add the storage space of that chest to the cloud inventory associated with the Balloon's color.
+在使用云箱前，你需要向与气球颜色相关联的云存储添加空间。
+类似皮革盔甲，气球也可以被染成各种颜色，每种气球颜色都对应着一个云端的存储空间。
+通过将气球绑在箱子或其他容器上并将其发送到天空中，你可以将该箱子的存储空间添加到与气球颜色相关联的云物品栏中。
 <NEWLINE>
-After you have successfully uploaded a chest to the cloud, place a balloon of that same color on a Cloud Chest to link it. Note that Cloud Chests must have sky access to work, and will not work underground or in the Nether.
-This Cloud Chest's inventory is linked exclusively to you, and cannot be accessed by anyone else, even hoppers and other inventories - just like an ender chest. In order to create a cloud inventory that is accessible to everyone, you must craft a Static Cloud Chest from Static Cloud Blocks.
+成功将箱子上传到云端后，把相同颜色的气球放置在云箱上即可将其连接。需要注意的是，云箱必须在天空下才能正常工作，因此其无法在地下以及下界中工作。
+类似末影箱，此云箱的物品栏仅与你自己连接，其他任何人都无法访问，甚至漏斗和其他物品栏也无法与其交互。若要创建一个可以被所有人访问的云物品栏，你必须用静电云块来合成一个静电云箱。
 <NEWLINE>
-To upload inventory space to a Static Cloud Chest, you must use a static Balloon, which can be obtained by using a Balloon on a Static Cloud Block. Any chest uploaded with a normal Balloon will simply be added to your private cloud storage!
+要将物品栏空间上传到静电云箱，则必须要使用静电气球，静电气球可以通过对静电云块使用气球来获得。任何使用普通气球上传的箱子都只会被添加到你的私人云存储中！
 <NEWLINE>
-All Cloud Chests can be scrolled through(if large enough) and can be sorted or searched by using the helpful buttons on the left. If your Cloud Storage is too full, simply upload additional chests by tying them to a Balloon of the same color. Yes. It's that easy.
+所有的云箱都可以通过移动滚动条来滚动（前提是空间足够大），并且可以使用左侧的按钮来进行排序或搜索操作。如果你感觉你的云存储空间太满，只需要给其他箱子绑上相同颜色的气球即可上传新的存储空间。没错，就是这么简单。
 <NEWLINE>
-If you still have some extra balloons left, you can combine one with eight arrows to create balloon arrows, which will fly straight, unhindered by gravity. If they hit a mob, that mob will float upwards for a short period of time.
+如果你还剩下一些额外的气球，你可以用一个气球和八支箭来合成气球箭，气球箭会笔直地飞出，不受重力阻碍。如果气球箭击中了一个生物，则那个生物会在短时间内向上漂浮。
