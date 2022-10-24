@@ -1,31 +1,31 @@
 <NEWLINE>
 <NEWLINE>
-All this interest in Balloons leaves you quite lonely, which is definitely understandable.
-Luckily, you can craft yourself a friend that you cannot make organically.
-By capturing a tiny Bloviator in a bottle, you can get an Angry Cloud Bottle. By feeding this angry little cloud a cookie,
-you can make a Happy Cloud Bottle. This happy little cloud can be given a material form by crafting it into a Balloon Buddy:
+你对气球的浓厚兴趣会让你感到孤独，这是可以理解的。
+幸运地是，你可以为自己合成一个由非有机物组成的朋友。
+通过把一只小吐气云捉入瓶中，你可以获得一个愤怒云瓶。给这朵愤怒的小云喂一块曲奇，
+你就可以做出一个快乐云瓶。通过把这朵快乐的小云制作成气球伙伴可以使其获得物质形态的躯体：
 <NEWLINE>
-Apon creation, Balloon Buddies will be assigned a personality. This personality determines the expression and behavior of the Balloon Buddy.
-All Balloon Buddies function like a wolf or cat, and can be made to stay, follow or wander. They can be picked up and itemized by sneaking with an open hand.
+当被创造出来后，气球伙伴会被随机分配一种个性。不同个性的气球伙伴将会拥有不同的表情和行为。
+气球伙伴的功能类似狼和猫，你可以让它们停留、跟随或游荡。空手潜行即可将它们捡起并使其变成物品。
 <NEWLINE>
-Personalities:
+个性：
 <NEWLINE>
-Happy - This balloon buddy will not engage in combat, but will lower nearby monster spawns. This ability is denoted by sunshine effects coming off of the Balloon.
+快乐 - 这种气球伙伴不会参与战斗，但会减少附近怪物的生成。这种能力由气球上的阳光效果表示。
 <NEWLINE>
-Cheeky - This balloon will engage in melee combat, but can dodge any arrows and other projectiles.
+淘气 - 这种气球会进行近战攻击，并且它们会避开所有箭或其他弹射物。
 <NEWLINE>
-Scary - This balloon has a terrifying visage and can send nearby monsters running in fear - although it cannot attack.
+恐怖 - 这种气球拥有可怕的外表，会让附近的怪物恐惧地逃跑——尽管它并不能攻击。
 <NEWLINE>
-Punished - This eyepatch-toting balloon will enter "stealth mode" and will not aggro mobs with its attacks. It also reduces its owner's detection range when nearby.
+老练 - 这种戴着眼罩的气球可以进入“隐身模式”，不会因为攻击而激怒其他生物。当其靠近主人时，也会降低主人被探测到的范围。
 <NEWLINE>
-Crazed - This balloon will engage in melee combat and attacks at a rapid rate compared to other balloons.
+疯狂 - 这种气球将会以比其他气球更快的速度进行近战攻击。
 <NEWLINE>
-Trolling - This balloon picks up its attack targets and drops them from a height.
+搞怪 - 这种气球会抓起它们的攻击目标，并将其从高空扔下。
 <NEWLINE>
-Charming - This balloon will not engage in combat, but its sheer presence can put nearby mobs into love mode.
+迷人 - 这种气球不会参与战斗，但它的存在会使周围的生物进入恋爱模式。
 <NEWLINE>
-Cool - This balloon's slick drawn-on shades distract hostile targets from moving or attacking for a short period.
+酷炫 - 这种气球娴熟的Drawn-on Shade会转移敌对目标的注意力，使其在短时间内不会移动或攻击。
 <NEWLINE>
-Happy Cloud Bottles can also be used to craft the Cloud Blower, a useful tool that can be set to blow or suck air at great speeds.
+快乐云瓶也可以用来合成云动力鼓风机，一种可以高速吹气或吸气的实用工具。
 <NEWLINE>
-The Cloud Blower can pull in any items or mobs, or push them away. It can also be set to blast the user up into the sky, which works better when also holding a balloon. Cloud Blowers use Cloud Bottles as fuel, so be sure to have plent of those on hand.
+云动力鼓风机可以用于拉取或推开任何物品和生物。它还可以被设置为强气流模式来将使用者推向天空，这在手持气球时会有更明显的效果。云动力鼓风机使用云瓶作为燃料，所以请确保你手头有足够的云瓶。
