@@ -3,17 +3,17 @@
 <NEWLINE>
 <NEWLINE>
 <NEWLINE>
-Bloviators are hostile cloud spirits that can be encountered at or above cloud height.
+吐气云是一种敌对的云精灵，你可以在云层高度或以上遇到它们。
 <NEWLINE>
-When attacking, bloviators will usually attempt to spew gusts of wind at their targets, in an attempt to push them to their demise.
-For this reason, it is best to use ranged weaponry against bloviators, as getting close could be tricky.
+在攻击时，吐气云通常会试图向目标吐出一阵强风，试图将其推向死亡。
+出于这个原因，最好使用远程武器对付吐气云，因为接近它们可能会使事情变得棘手。
 <NEWLINE>
-If a large bloviator is slain, it can split into multiple smaller bloviators to continue the fight. If the smallest of these is slain, they can drop a single Cloud Block.
+如果一个大吐气云被击杀，它可以分裂成多个更小的吐气云继续战斗。如果其中最小的吐气云被击杀，则会掉落一个云块。
 <NEWLINE>
-Bloviators are also hostile towards sheep. Rumor has it that they are jealous of their puffy wool. Tiny bloviators can also be captured in a bottle, which can be used in a pinch for a jump boost.
+吐气云同样也对绵羊敌对。据说这是因为它们嫉妒绵羊拥有松软的羊毛。小型吐气云也可以被捉入瓶中，在必要时你可以用它推动自己跳起。
 <NEWLINE>
-If caught up in a rain or thunder storm, bloviators will transform into a darker variant that no longer meekly blows air at its targets. These storm bloviators instead fire lightning at their foes,
-and fighting against entire groups of them can be very difficult. Their smallest drop a Static Cloud Block instead.
+如果遇上了雨天或是雷暴，吐气云会转变为一种更暗的变种。这些雷暴吐气云不再会温和地向目标吐气，而是会向它们的敌人发射闪电，此时与一整群吐气云战斗可能会变得非常困难。
+最小的雷暴吐气云会掉落一个静电云块。
 <NEWLINE>
-Cloud Blocks have several unique properties. They can be walked through and entities will sink in them, although they will not fall through. Cloud Blocks also lighten falls and can give a jump boost.
-The static properties of a Static Cloud Block can be transferred to a Balloon and back by using a Balloon on the block.
+云块有一些独特的性质，它们可以被穿过，实体会沉入其中，不过它们不会从云块穿过而落下。云块也可以缓冲摔落，并且提升跳跃高度。
+静电云块的静电性质可以通过对其使用气球来传递到气球上，也可以把静电气球上的静电传递回云块。
