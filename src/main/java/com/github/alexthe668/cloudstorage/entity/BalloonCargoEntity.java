@@ -113,7 +113,7 @@ public class BalloonCargoEntity extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
         Entity balloon = this.getBalloon();
         if (!level.isClientSide) {
-            if(balloon == null || !balloon.isAlive()){
+            if((balloon == null || !balloon.isAlive())){
                 FallingBlockEntity fallingblockentity = FallingBlockEntity.fall(level, this.blockPosition(), this.blockState);
                 fallingblockentity.blockData = this.blockData;
                 this.remove(RemovalReason.DISCARDED);
@@ -218,7 +218,7 @@ public class BalloonCargoEntity extends Entity {
             this.setBalloonUUID(compound.getUUID("BalloonUUID"));
         }
         if (compound.hasUUID("PlayerUUID")) {
-            this.setBalloonUUID(compound.getUUID("PlayerUUID"));
+            this.setPlayerUUID(compound.getUUID("PlayerUUID"));
         }
         this.blockState = NbtUtils.readBlockState(compound.getCompound("BlockState"));
         this.time = compound.getInt("Time");
