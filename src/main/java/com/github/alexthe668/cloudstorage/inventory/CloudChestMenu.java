@@ -40,7 +40,7 @@ public class CloudChestMenu extends AbstractContainerMenu {
         containerIn.startOpen(playerInv.player);
         int clampedSize = Math.min(containerIn.getContainerSize(), 54);
 
-        int ySlots = clampedSize / 9;
+        int ySlots = (int)Math.ceil(clampedSize / 9F);
         for (int k = 0; k < ySlots; ++k) {
             for (int l = 0; l < 9 && l + k * 9 < clampedSize; ++l) {
                 int slotId = l + k * 9;

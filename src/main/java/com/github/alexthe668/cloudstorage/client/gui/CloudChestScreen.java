@@ -234,7 +234,7 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
         int j = this.topPos;
         this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
         int clampedSize = Math.min(this.slots, 54);
-        int ySlots = clampedSize / 9;
+        int ySlots = (int)Math.ceil(clampedSize / 9F);
         for (int k = 0; k < ySlots; ++k) {
             for (int l = 0; l < 9 && l + k * 9 < clampedSize; ++l) {
                 boolean hidden = menu.isSlotGray(l + k * 9);
