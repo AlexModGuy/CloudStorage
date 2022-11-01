@@ -1,5 +1,6 @@
 package com.github.alexthe668.cloudstorage;
 
+import com.github.alexthe668.cloudstorage.command.RetrieveBalloonsCommand;
 import com.github.alexthe668.cloudstorage.entity.*;
 import com.github.alexthe668.cloudstorage.entity.villager.CSVillagerRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
@@ -35,6 +36,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -172,6 +174,12 @@ public class CommonProxy {
                 }
             }
         }
+    }
+
+
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event){
+        RetrieveBalloonsCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent

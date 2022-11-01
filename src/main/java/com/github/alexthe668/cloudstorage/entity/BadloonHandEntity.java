@@ -91,7 +91,7 @@ public class BadloonHandEntity extends Entity {
             if(parent != null){
                 if(parent.isPassenger()){
                     Entity vehicle = parent.getVehicle();
-                    double below = vehicle.getY() + vehicle.getPassengersRidingOffset();
+                    double below = vehicle.getY() + vehicle.getPassengersRidingOffset() - 0.2F;
                     this.setPos(parent.getX(), below, parent.getZ());
                     this.setDeltaMovement(Vec3.ZERO);
                     this.faceTowardsY(vehicle.getYRot());
