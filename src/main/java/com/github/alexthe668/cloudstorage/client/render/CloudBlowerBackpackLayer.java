@@ -1,37 +1,27 @@
 package com.github.alexthe668.cloudstorage.client.render;
 
-import com.github.alexthe668.cloudstorage.client.ClientProxy;
 import com.github.alexthe668.cloudstorage.client.model.CloudBlowerBackpackModel;
-import com.github.alexthe668.cloudstorage.client.model.PropellerHatModel;
-import com.github.alexthe668.cloudstorage.entity.villager.CSVillagerRegistry;
-import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
-import net.minecraft.client.Minecraft;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.ZombieVillager;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector4f;
 
 public class CloudBlowerBackpackLayer<T extends LivingEntity, M extends EntityModel<T> & HeadedModel> extends RenderLayer<T, M> {
 
@@ -53,7 +43,7 @@ public class CloudBlowerBackpackLayer<T extends LivingEntity, M extends EntityMo
                 humanoidModel.body.translateAndRotate(poseStack);
             }
             poseStack.translate(0, -0.75F, 0.45F);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180));
             CLOUD_BLOWER_BACKPACK_MODEL.resetToDefaultPose();
             CLOUD_BLOWER_BACKPACK_MODEL.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
             poseStack.popPose();
@@ -66,14 +56,14 @@ public class CloudBlowerBackpackLayer<T extends LivingEntity, M extends EntityMo
                     armStack.pushPose();
                     humanoidModel.rightArm.translateAndRotate(armStack);
                     Vector4f armOffsetVec = new Vector4f(-0.05F, 0.6F, 0F, 1.0F);
-                    armOffsetVec.transform(armStack.last().pose());
+                    armOffsetVec.mul(armStack.last().pose());
                     rightHandPos = new Vec3(armOffsetVec.x(), armOffsetVec.y(), armOffsetVec.z());
                     armStack.popPose();
 
                     PoseStack bodyStack = new PoseStack();
                     humanoidModel.body.translateAndRotate(bodyStack);
                     Vector4f bodyOffsetVec = new Vector4f(-0.2F, 0.6F, 0.4F, 1.0F);
-                    bodyOffsetVec.transform(bodyStack.last().pose());
+                    bodyOffsetVec.mul(bodyStack.last().pose());
                     body = new Vec3(bodyOffsetVec.x(), bodyOffsetVec.y(), bodyOffsetVec.z());
                     bodyStack.popPose();
                 }
@@ -88,14 +78,14 @@ public class CloudBlowerBackpackLayer<T extends LivingEntity, M extends EntityMo
                     armStack.pushPose();
                     humanoidModel.leftArm.translateAndRotate(armStack);
                     Vector4f armOffsetVec = new Vector4f(0.05F, 0.6F, 0F, 1.0F);
-                    armOffsetVec.transform(armStack.last().pose());
+                    armOffsetVec.mul(armStack.last().pose());
                     leftHandPos = new Vec3(armOffsetVec.x(), armOffsetVec.y(), armOffsetVec.z());
                     armStack.popPose();
 
                     PoseStack bodyStack = new PoseStack();
                     humanoidModel.body.translateAndRotate(bodyStack);
                     Vector4f bodyOffsetVec = new Vector4f(0.2F, 0.6F, 0.4F, 1.0F);
-                    bodyOffsetVec.transform(bodyStack.last().pose());
+                    bodyOffsetVec.mul(bodyStack.last().pose());
                     body = new Vec3(bodyOffsetVec.x(), bodyOffsetVec.y(), bodyOffsetVec.z());
                     bodyStack.popPose();
                 }

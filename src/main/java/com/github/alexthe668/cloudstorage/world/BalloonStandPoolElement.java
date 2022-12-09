@@ -108,7 +108,7 @@ public class BalloonStandPoolElement extends LegacySinglePoolElement {
     }
 
     public StructurePoolElementType<?> getType() {
-        return CSVillagerRegistry.BALLOON_STAND_TYPE;
+        return CSVillageStructureRegistry.BALLOON_STAND.get();
     }
 
     public String toString() {

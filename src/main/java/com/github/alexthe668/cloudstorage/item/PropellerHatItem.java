@@ -20,7 +20,7 @@ public class PropellerHatItem extends ArmorItem {
     public static final HatMaterial HAT_ARMOR_MATERIAL = new HatMaterial();
 
     public PropellerHatItem() {
-        super(HAT_ARMOR_MATERIAL, EquipmentSlot.HEAD, new Item.Properties().tab(CSCreativeTab.INSTANCE));
+        super(HAT_ARMOR_MATERIAL, EquipmentSlot.HEAD, new Item.Properties());
     }
 
     @Override

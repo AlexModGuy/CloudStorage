@@ -4,7 +4,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 import java.util.Locale;
-import java.util.Random;
 
 public enum BalloonFace {
     NEUTRAL(false, true),

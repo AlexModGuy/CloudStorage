@@ -1,6 +1,7 @@
 {
 	"parent": "block/block",
 	"texture_size": [64, 64],
+	"render_type": "cutout",
 	"textures": {
 		"0": "cloudstorage:block/balloon_stand",
 		"particle": "cloudstorage:block/balloon_stand_top"

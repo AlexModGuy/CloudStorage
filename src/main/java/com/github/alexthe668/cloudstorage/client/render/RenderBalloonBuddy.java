@@ -4,7 +4,7 @@ import com.github.alexthe668.cloudstorage.client.model.BalloonModel;
 import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonBuddyEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -87,9 +87,9 @@ public class RenderBalloonBuddy extends MobRenderer<BalloonBuddyEntity, BalloonM
 
         Pose pose = entity.getPose();
         if (pose != Pose.SLEEPING) {
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - yRotIn));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - yRotIn));
             float zRot = entity.prevRotZ + (entity.getRotZ() - entity.prevRotZ) * partialTicks;
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(zRot));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(zRot));
         }
 
         if (entity.deathTime > 0) {
@@ -99,13 +99,13 @@ public class RenderBalloonBuddy extends MobRenderer<BalloonBuddyEntity, BalloonM
                 f = 1.0F;
             }
 
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(f * this.getFlipDegrees(entity)));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(f * this.getFlipDegrees(entity)));
         } else if (entity.isAutoSpinAttack()) {
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F - entity.getXRot()));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(((float) entity.tickCount + partialTicks) * -75.0F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F - entity.getXRot()));
+            poseStack.mulPose(Axis.YP.rotationDegrees(((float) entity.tickCount + partialTicks) * -75.0F));
         } else if (isEntityUpsideDown(entity)) {
             poseStack.translate(0.0D, entity.getBbHeight() + 0.1F, 0.0D);
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
         }
 
     }

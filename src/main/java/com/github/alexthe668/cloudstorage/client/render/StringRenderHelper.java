@@ -2,17 +2,16 @@ package com.github.alexthe668.cloudstorage.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class StringRenderHelper {
 
@@ -113,8 +112,8 @@ public class StringRenderHelper {
         float f = Mth.sqrt(p_114188_ * p_114188_ + p_114190_ * p_114190_);
         float f1 = Mth.sqrt(p_114188_ * p_114188_ + p_114189_ * p_114189_ + p_114190_ * p_114190_);
         p_114193_.pushPose();
-        p_114193_.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(p_114190_, p_114188_)) + ((float) Math.PI / 2F)));
-        p_114193_.mulPose(Vector3f.XN.rotation((float) (-Math.atan2(f, p_114189_)) - ((float) Math.PI / 2F)));
+        p_114193_.mulPose(Axis.YP.rotation((float) (-Math.atan2(p_114190_, p_114188_)) + ((float) Math.PI / 2F)));
+        p_114193_.mulPose(Axis.XN.rotation((float) (-Math.atan2(f, p_114189_)) - ((float) Math.PI / 2F)));
         VertexConsumer vertexconsumer = p_114194_.getBuffer(BEAM);
         float f2 = ((float) p_114192_ + p_114191_) * -0.04F * intensity;
         float f3 = Mth.sqrt(p_114188_ * p_114188_ + p_114189_ * p_114189_ + p_114190_ * p_114190_) / 16.0F + ((float) p_114192_ + p_114191_) * -0.04F * intensity;
@@ -144,8 +143,8 @@ public class StringRenderHelper {
         float f = Mth.sqrt(p_114188_ * p_114188_ + p_114190_ * p_114190_);
         float f1 = Mth.sqrt(p_114188_ * p_114188_ + p_114189_ * p_114189_ + p_114190_ * p_114190_);
         p_114193_.pushPose();
-        p_114193_.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(p_114190_, p_114188_)) + ((float) Math.PI / 2F)));
-        p_114193_.mulPose(Vector3f.XN.rotation((float) (-Math.atan2(f, p_114189_)) - ((float) Math.PI / 2F)));
+        p_114193_.mulPose(Axis.YP.rotation((float) (-Math.atan2(p_114190_, p_114188_)) + ((float) Math.PI / 2F)));
+        p_114193_.mulPose(Axis.XN.rotation((float) (-Math.atan2(f, p_114189_)) - ((float) Math.PI / 2F)));
         VertexConsumer vertexconsumer = p_114194_.getBuffer(BEAM);
         float f2 = ((float) p_114192_ + p_114191_) * -0.04F * intensity;
         float f3 = Mth.sqrt(p_114188_ * p_114188_ + p_114189_ * p_114189_ + p_114190_ * p_114190_) / 16.0F + ((float) p_114192_ + p_114191_) * -0.04F * intensity;

@@ -1,6 +1,5 @@
 package com.github.alexthe668.cloudstorage.item;
 
-import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSCreativeTab;
@@ -21,7 +20,7 @@ public class BalloonArrowItem extends ArrowItem implements DyeableLeatherItem {
     }
 
     public BalloonArrowItem() {
-        this(new Properties().tab(CSCreativeTab.INSTANCE));
+        this(new Properties());
     }
 
     public static int getBalloonColor(ItemStack stack) {

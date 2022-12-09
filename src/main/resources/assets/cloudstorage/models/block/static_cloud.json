@@ -1,5 +1,6 @@
 {
     "parent": "cloudstorage:block/static_cloud_base",
+    "render_type": "translucent",
     "textures": {
         "cloud": "cloudstorage:block/static_cloud",
         "particle": "cloudstorage:block/static_cloud",

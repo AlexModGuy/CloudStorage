@@ -2,7 +2,7 @@ package com.github.alexthe668.cloudstorage.client.render;
 
 import com.github.alexthe668.cloudstorage.entity.BalloonCargoEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -31,7 +31,7 @@ public class RenderBalloonCargo extends EntityRenderer<BalloonCargoEntity> {
             if(blockstate.getRenderShape() == RenderShape.ENTITYBLOCK_ANIMATED && blockstate.hasProperty(HorizontalDirectionalBlock.FACING)){
                 float f = blockstate.getValue(HorizontalDirectionalBlock.FACING).toYRot();
                 stack.translate(0.5D, 0.5D, 0.5D);
-                stack.mulPose(Vector3f.YP.rotationDegrees(-f));
+                stack.mulPose(Axis.YP.rotationDegrees(-f));
                 stack.translate(-0.5D, -0.5D, -0.5D);
             }
             Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, stack, source, i, OverlayTexture.NO_OVERLAY);

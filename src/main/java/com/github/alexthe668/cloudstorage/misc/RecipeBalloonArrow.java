@@ -3,18 +3,20 @@ package com.github.alexthe668.cloudstorage.misc;
 import com.github.alexthe668.cloudstorage.item.BalloonArrowItem;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 public class RecipeBalloonArrow extends CustomRecipe {
 
-    public RecipeBalloonArrow(ResourceLocation id) {
-        super(id);
+    public RecipeBalloonArrow(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     public boolean matches(CraftingContainer container, Level level) {

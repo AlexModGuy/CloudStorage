@@ -4,7 +4,7 @@ import com.github.alexthe668.cloudstorage.client.model.BadloonHandModel;
 import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -28,13 +28,13 @@ public class RenderBadloonHand extends EntityRenderer<BadloonHandEntity> {
 
     public void render(BadloonHandEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
-        matrixStackIn.mulPose(Vector3f.YN.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot())));
+        matrixStackIn.mulPose(Axis.YN.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot())));
         matrixStackIn.translate(0F, 0.4F, 0F);
         float rotX = 0F;
         if(entityIn.getGesture().appliesXRot()){
             rotX = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
         }
-        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(180F + rotX));
+        matrixStackIn.mulPose(Axis.XP.rotationDegrees(180F + rotX));
         matrixStackIn.translate(0F, -0.1F, 0F);
         VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entityIn)));
         GLOVE_MODEL.setupAnim(entityIn, 0, 0, entityIn.tickCount + partialTicks, entityYaw, 0);

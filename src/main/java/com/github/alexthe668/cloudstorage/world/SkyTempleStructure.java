@@ -11,7 +11,10 @@ import com.mojang.serialization.Codec;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
@@ -25,11 +28,9 @@ import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
@@ -39,8 +40,8 @@ import java.util.Random;
 
 public class SkyTempleStructure extends Structure {
 
-    public static final Codec<SkyTempleStructure> BALLOON_CODEC = simpleCodec((settings) -> new SkyTempleStructure(true, settings));
-    public static final Codec<SkyTempleStructure> TEMPLE_CODEC = simpleCodec((settings) -> new SkyTempleStructure(false, settings));
+    public static final Codec<Structure> BALLOON_CODEC = simpleCodec((settings) -> new SkyTempleStructure(true, settings));
+    public static final Codec<Structure> TEMPLE_CODEC = simpleCodec((settings) -> new SkyTempleStructure(false, settings));
 
     private static final ResourceLocation[] TEMPLES = new ResourceLocation[]{
             new ResourceLocation("cloudstorage:sky_temple_0"),
@@ -106,12 +107,12 @@ public class SkyTempleStructure extends Structure {
         private long seed;
 
         public Piece(StructureTemplateManager manager, ResourceLocation resourceLocation, BlockPos pos, Rotation rotation, long seed) {
-            super(CSStructureRegistry.SKY_TEMPLE_PIECE.get(), 0, manager, resourceLocation, resourceLocation.toString(), makeSettings(rotation, seed), pos);
+            super(StructurePieceType.RUINED_PORTAL, 0, manager, resourceLocation, resourceLocation.toString(), makeSettings(rotation, seed), pos);
             this.seed = seed;
         }
 
         public Piece(StructureTemplateManager manager, CompoundTag tag) {
-            super(CSStructureRegistry.SKY_TEMPLE_PIECE.get(), tag, manager, (x) -> {
+            super(StructurePieceType.RUINED_PORTAL, tag, manager, (x) -> {
                 return makeSettings(Rotation.valueOf(tag.getString("Rotation")), tag.getLong("Seed"));
             });
         }
@@ -169,13 +170,13 @@ public class SkyTempleStructure extends Structure {
                 case "bloviator_spawner":
                     accessor.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 0);
                     if (accessor.getBlockEntity(pos) instanceof SpawnerBlockEntity spawner) {
-                        spawner.getSpawner().setEntityId(CSEntityRegistry.BLOVIATOR.get());
+                        spawner.setEntityId(CSEntityRegistry.BLOVIATOR.get(), random);
                     }
                     break;
                 case "badloon_spawner":
                     accessor.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 0);
                     if (accessor.getBlockEntity(pos) instanceof SpawnerBlockEntity spawner) {
-                        spawner.getSpawner().setEntityId(CSEntityRegistry.BADLOON.get());
+                        spawner.setEntityId(CSEntityRegistry.BADLOON.get(), random);
                     }
                     break;
                 case "observer_up":
