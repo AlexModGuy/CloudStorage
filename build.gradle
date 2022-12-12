@@ -107,8 +107,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.3-44.0.1'
-    minecraft 'net.minecraftforge:forge:1.19.3-44.0.1'
+    minecraft 'net.minecraftforge:forge:1.19.3-44.0.18'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly fg.deobf("curse.maven:citadel-331936:4147495")
     runtimeOnly fg.deobf("curse.maven:citadel-331936:4147495")

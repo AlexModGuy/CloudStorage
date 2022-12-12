@@ -24,6 +24,6 @@ description='''A simple storage solution without the hassle of tech mods - plus 
 [[dependencies.cloudstorage]]
     modId="forge"
     mandatory=true
-    versionRange="[44.0.1,)"
+    versionRange="[44.0.18,)"
     ordering="NONE"
     side="BOTH"

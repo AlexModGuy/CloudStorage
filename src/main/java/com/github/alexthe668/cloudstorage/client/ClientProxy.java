@@ -254,7 +254,7 @@ public class ClientProxy extends CommonProxy {
         CloudStorage.sendMSGToServer(new MessageLeftClickCloudBlower());
     }
 
-    private void bakeModels(final ModelEvent.BakingCompleted e) {
+    private void bakeModels(final ModelEvent.ModifyBakingResult e) {
         for (ResourceLocation id : e.getModels().keySet()) {
             if (FULLBRIGHTS.contains(id.toString())) {
                 e.getModels().put(id, new BakedModelFinalLayerFullbright(e.getModels().get(id)));
