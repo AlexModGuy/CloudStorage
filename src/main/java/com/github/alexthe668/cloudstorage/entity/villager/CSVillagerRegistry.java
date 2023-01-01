@@ -15,6 +15,8 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -42,8 +44,6 @@ public class CSVillagerRegistry {
 
     public static final DeferredRegister<VillagerProfession> DEF_REG = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, CloudStorage.MODID);
     public static final RegistryObject<VillagerProfession> BALLOON_SALESMAN = DEF_REG.register("balloon_salesman", () -> buildVillagerProfession());
-    public static final StructurePoolElementType<BalloonStandPoolElement> BALLOON_STAND_TYPE = Registry.register(Registry.STRUCTURE_POOL_ELEMENT, new ResourceLocation(CloudStorage.MODID, "balloon_stand"), () -> BalloonStandPoolElement.CODEC);
-    public static boolean registeredHouses = false;
 
     public static void initTrades(List<VillagerTrades.ItemListing> level1, List<VillagerTrades.ItemListing> level2, List<VillagerTrades.ItemListing> level3, List<VillagerTrades.ItemListing> level4, List<VillagerTrades.ItemListing> level5) {
         level1.add(new BuyingItemTrade(Items.STRING, 10, 3, 11, 2));
@@ -69,20 +69,6 @@ public class CSVillagerRegistry {
         level5.add(new SellingRandomlyDyedItem(CSItemRegistry.BALLOON.get(), 6, 2, 13, 5));
     }
 
-    public static void registerHouses() {
-        registeredHouses = true;
-        int weight = CloudStorage.CONFIG.balloonStandSpawnWeight.getDefault();
-        StructurePoolElement plains = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_plains"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/plains/houses", (pool) -> VillageHouseManager.addToPool(pool, plains, weight));
-        StructurePoolElement desert = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_desert"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/desert/houses", (pool) -> VillageHouseManager.addToPool(pool, desert, weight));
-        StructurePoolElement savanna = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_savanna"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/savanna/houses", (pool) -> VillageHouseManager.addToPool(pool, savanna, weight));
-        StructurePoolElement snowy = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_snowy"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/snowy/houses", (pool) -> VillageHouseManager.addToPool(pool, snowy, weight));
-        StructurePoolElement taiga = new BalloonStandPoolElement(new ResourceLocation(CloudStorage.MODID, "balloon_stand_taiga"), ProcessorLists.EMPTY);
-        VillageHouseManager.register("minecraft:village/taiga/houses", (pool) -> VillageHouseManager.addToPool(pool, taiga, weight));
-    }
 
     public static void onBalloonCelebrate(ServerLevel level, Villager villager) {
         RandomSource random = villager.getRandom();

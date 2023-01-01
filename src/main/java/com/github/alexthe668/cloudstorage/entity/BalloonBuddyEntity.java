@@ -449,22 +449,28 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
     }
 
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        InteractionResult interactionresult = super.mobInteract(player, hand);
+
         ItemStack itemstack = player.getItemInHand(hand);
-        if(itemstack.is(Items.STRING) && this.getHealth() < this.getMaxHealth()){
-            this.heal(6);
-        }else if (isOwnedBy(player)) {
-            if(player.isShiftKeyDown() && itemstack.isEmpty()){
-                ItemStack balloonStack = turnIntoItem();
-                if(!player.addItem(balloonStack)){
-                    this.spawnAtLocation(balloonStack);
+        if(interactionresult.consumesAction()){
+            return interactionresult;
+        }else{
+            if(itemstack.is(Items.STRING) && this.getHealth() < this.getMaxHealth()){
+                this.heal(6);
+            }else if (isOwnedBy(player)) {
+                if(player.isShiftKeyDown() && itemstack.isEmpty()){
+                    ItemStack balloonStack = turnIntoItem();
+                    if(!player.addItem(balloonStack)){
+                        this.spawnAtLocation(balloonStack);
+                    }
+                    this.remove(RemovalReason.DISCARDED);
+                }else{
+                    this.playerSetCommand(player, this);
                 }
-                this.remove(RemovalReason.DISCARDED);
-            }else{
-                this.playerSetCommand(player, this);
+                return InteractionResult.SUCCESS;
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.PASS;
         }
-        return InteractionResult.PASS;
     }
 
     public void sendCommandMessage(Player owner, int command, Component name) {
@@ -575,6 +581,10 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
             }
         }
         return super.isAlliedTo(entityIn);
+    }
+
+    public double getMyRidingOffset() {
+        return 1.75F + Math.sin(tickCount * 0.05F) * 0.25F;
     }
 
     @javax.annotation.Nullable

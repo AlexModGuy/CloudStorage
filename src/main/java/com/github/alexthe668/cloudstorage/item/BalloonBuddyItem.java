@@ -1,6 +1,5 @@
 package com.github.alexthe668.cloudstorage.item;
 
-import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.entity.BalloonBuddyEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonFace;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
@@ -26,10 +25,10 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BalloonBuddyItem extends BalloonItem {
+public class BalloonBuddyItem extends BalloonItem implements CustomTabBehavior {
 
     public BalloonBuddyItem() {
-        super(new Item.Properties().stacksTo(1).tab(CSCreativeTab.INSTANCE));
+        super(new Item.Properties().stacksTo(1));
     }
 
     public InteractionResult useOn(UseOnContext context) {
@@ -80,12 +79,9 @@ public class BalloonBuddyItem extends BalloonItem {
         super.appendHoverText(stack, level, components, flags);
     }
 
-    @Override
-    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list) {
-        if (this.allowedIn(tab)) {
-            for (int i = BalloonFace.HAPPY.ordinal(); i < BalloonFace.values().length; i++) {
-                list.add(createBalloon(DEFAULT_COLOR, BalloonFace.values()[i]));
-            }
+    public void fillItemCategory(CreativeModeTab.Output contents) {
+        for (int i = BalloonFace.HAPPY.ordinal(); i < BalloonFace.values().length; i++) {
+            contents.accept(createBalloon(DEFAULT_COLOR, BalloonFace.values()[i]));
         }
     }
 

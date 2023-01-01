@@ -4,26 +4,33 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public abstract class SlotCloudChest extends Slot {
+public class SlotCloudChest extends Slot {
 
-    public int slot = 0;
+    public int slotId = 0;
     private boolean isGray;
 
-    public SlotCloudChest(Container container, int i, int i1, int i2) {
+    private CloudChestMenu menu;
+
+    public SlotCloudChest(CloudChestMenu menu, Container container, int i, int i1, int i2) {
         super(container, i, i1, i2);
-        this.slot = i;
+        this.slotId = i;
+        this.menu = menu;
     }
 
-    public abstract int getScrollIndex();
+
+    public int getScrollIndex(){
+        return slotId + 9 * Math.max(getScrollAmount(), 0);
+    }
+
+    private int getScrollAmount() {
+        return menu.getScrollAmount();
+    }
 
     public ItemStack getItem() {
-        if(getScrollIndex() < container.getContainerSize()) {
-            return this.container.getItem(getScrollIndex());
-        }else{
-            return ItemStack.EMPTY;
-        }
+        return this.container.getItem(getScrollIndex());
     }
 
+    @Override
     public void set(ItemStack stack) {
         if(getScrollIndex() < container.getContainerSize()) {
             this.container.setItem(this.getScrollIndex(), stack);
@@ -31,6 +38,7 @@ public abstract class SlotCloudChest extends Slot {
         }
     }
 
+    @Override
     public ItemStack remove(int count) {
         if(getScrollIndex() < container.getContainerSize()) {
             return this.container.removeItem(getScrollIndex(), count);
@@ -38,8 +46,14 @@ public abstract class SlotCloudChest extends Slot {
         return ItemStack.EMPTY;
     }
 
+    @Override
+    public void initialize(ItemStack itemStack) {
+        this.container.setItem(getScrollIndex(), itemStack);
+        this.setChanged();
+    }
+
     public int getSlotIndex() {
-        return slot;
+        return getScrollIndex();
     }
 
     public int getContainerSlot() {

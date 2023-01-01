@@ -9,6 +9,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -133,4 +134,11 @@ public class CSWorldData extends SavedData {
         this.lootClouds.add(cloud);
     }
 
+    public Collection<CloudIndex> getAllPrivateCloudsFor(UUID uuid) {
+        return privateClouds.stream().filter((cloudIndex -> cloudIndex.getPlayerUUID().equals(uuid))).toList();
+    }
+
+    public Collection<CloudIndex> getAllPublicClouds() {
+        return publicClouds;
+    }
 }

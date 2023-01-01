@@ -22,8 +22,7 @@ public class GuideBookItem extends Item {
     public GuideBookItem(Properties properties) {
         super(properties);
     }
-
-
+    
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack itemStackIn = playerIn.getItemInHand(handIn);
         if (playerIn instanceof ServerPlayer) {

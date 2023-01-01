@@ -7,7 +7,7 @@ import com.github.alexthe668.cloudstorage.client.model.BalloonModel;
 import com.github.alexthe668.cloudstorage.client.model.CloudChestModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -58,7 +58,7 @@ public class RenderCloudChest<T extends AbstractCloudChestBlockEntity> implement
             matrixStackIn.scale(scale, scale, scale);
             matrixStackIn.translate(swingVec.x, 2.8F * emerge - 1.3F, swingVec.z);
             float rotX = 0F;
-            matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(180F + rotX));
+            matrixStackIn.mulPose(Axis.XP.rotationDegrees(180F + rotX));
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(BalloonTextures.BALLOON));
             BALLOON_MODEL.resetToDefaultPose();
             BALLOON_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder, combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1.0F);
@@ -81,7 +81,7 @@ public class RenderCloudChest<T extends AbstractCloudChestBlockEntity> implement
         }
         matrixStackIn.translate(0.0F, 0.0001F, 0.0F);
         matrixStackIn.mulPose(dir.getOpposite().getRotation());
-        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+        matrixStackIn.mulPose(Axis.XP.rotationDegrees(90.0F));
         matrixStackIn.pushPose();
         CHEST_MODEL.renderChest(tileEntityIn, partialTicks);
         CHEST_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1F, 1, 1.0F);

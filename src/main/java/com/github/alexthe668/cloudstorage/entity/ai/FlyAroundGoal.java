@@ -11,7 +11,6 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-import java.util.Random;
 
 public class FlyAroundGoal<T extends Mob & BalloonFlyer> extends Goal {
     private final T flyer;

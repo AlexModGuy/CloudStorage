@@ -28,7 +28,7 @@ public class CSBlockRegistry {
 
     public static RegistryObject<Block> registerBlockAndItem(String name, Supplier<Block> block){
         RegistryObject<Block> blockObj = DEF_REG.register(name, block);
-        CSItemRegistry.DEF_REG.register(name, () -> name.equals("cloud_chest") || name.equals("static_cloud_chest") ? new BlockItemSpecialRender(blockObj, new Item.Properties().tab(CSCreativeTab.INSTANCE)) : new CSBlockItem(blockObj, new Item.Properties().tab(CSCreativeTab.INSTANCE)));
+        CSItemRegistry.DEF_REG.register(name, () -> name.equals("cloud_chest") || name.equals("static_cloud_chest") ? new BlockItemSpecialRender(blockObj, new Item.Properties()) : new CSBlockItem(blockObj, new Item.Properties()));
         return blockObj;
     }
 }

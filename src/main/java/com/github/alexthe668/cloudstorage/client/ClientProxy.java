@@ -4,11 +4,9 @@ import com.github.alexthe666.citadel.client.event.EventPosePlayerHand;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.CommonProxy;
 import com.github.alexthe668.cloudstorage.block.CSBlockEntityRegistry;
-import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.client.gui.BalloonStandScreen;
 import com.github.alexthe668.cloudstorage.client.gui.CloudChestScreen;
 import com.github.alexthe668.cloudstorage.client.gui.GuideBookScreen;
-import com.github.alexthe668.cloudstorage.client.model.CloudBlowerBackpackModel;
 import com.github.alexthe668.cloudstorage.client.model.PropellerHatModel;
 import com.github.alexthe668.cloudstorage.client.model.baked.BakedModelFinalLayerFullbright;
 import com.github.alexthe668.cloudstorage.client.particle.*;
@@ -22,27 +20,19 @@ import com.github.alexthe668.cloudstorage.misc.CloudInfo;
 import com.github.alexthe668.cloudstorage.network.MessageLeftClickCloudBlower;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -153,10 +143,6 @@ public class ClientProxy extends CommonProxy {
         EntityRenderers.register(CSEntityRegistry.BALLOON_BUDDY.get(), RenderBalloonBuddy::new);
         //needs to be overwritten so that it renders falling tile entities
         EntityRenderers.register(EntityType.FALLING_BLOCK, RenderFallingBlockWithTE::new);
-        ItemBlockRenderTypes.setRenderLayer(CSBlockRegistry.CLOUD.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(CSBlockRegistry.STATIC_CLOUD.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(CSBlockRegistry.CLOUD_CHEST.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(CSBlockRegistry.STATIC_CLOUD_CHEST.get(), RenderType.translucent());
         BlockEntityRenderers.register(CSBlockEntityRegistry.CLOUD_CHEST.get(), RenderCloudChest::new);
         BlockEntityRenderers.register(CSBlockEntityRegistry.STATIC_CLOUD_CHEST.get(), RenderCloudChest::new);
         MenuScreens.register(CSMenuRegistry.CLOUD_CHEST_MENU.get(), CloudChestScreen::new);
@@ -251,7 +237,7 @@ public class ClientProxy extends CommonProxy {
                 if (blockstate.hasProperty(HorizontalDirectionalBlock.FACING)) {
                     float f = blockstate.getValue(HorizontalDirectionalBlock.FACING).toYRot();
                     stack.translate(0.5D, 0.5D, 0.5D);
-                    stack.mulPose(Vector3f.YP.rotationDegrees(-f));
+                    stack.mulPose(Axis.YP.rotationDegrees(-f));
                     stack.translate(-0.5D, -0.5D, -0.5D);
                 }
                 Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, stack, event.getMultiBufferSource(), event.getPackedLight(), OverlayTexture.NO_OVERLAY);
@@ -268,7 +254,7 @@ public class ClientProxy extends CommonProxy {
         CloudStorage.sendMSGToServer(new MessageLeftClickCloudBlower());
     }
 
-    private void bakeModels(final ModelEvent.BakingCompleted e) {
+    private void bakeModels(final ModelEvent.ModifyBakingResult e) {
         for (ResourceLocation id : e.getModels().keySet()) {
             if (FULLBRIGHTS.contains(id.toString())) {
                 e.getModels().put(id, new BakedModelFinalLayerFullbright(e.getModels().get(id)));
@@ -296,8 +282,10 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onRenderWorldLastEvent(RenderLevelLastEvent event) {
-        CSItemRenderer.incrementRenderTick();
+    public void onRenderWorldLastEvent(RenderLevelStageEvent event) {
+        if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS){
+            CSItemRenderer.incrementRenderTick();
+        }
     }
 
 

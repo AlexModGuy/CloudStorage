@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-public class BalloonItem extends Item implements DyeableLeatherItem {
+public class BalloonItem extends Item implements DyeableLeatherItem, CustomTabBehavior {
 
     public static final int DEFAULT_COLOR = 0XE72929;
     private static final int[] BALLOONCOLORS = new int[]{DEFAULT_COLOR};
@@ -50,7 +50,7 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
     }
 
     public BalloonItem() {
-        this(new Item.Properties().stacksTo(8).tab(CSCreativeTab.INSTANCE));
+        this(new Item.Properties().stacksTo(8));
     }
 
     public static int getBalloonColor(ItemStack stack) {
@@ -90,18 +90,15 @@ public class BalloonItem extends Item implements DyeableLeatherItem {
         consumer.accept((net.minecraftforge.client.extensions.common.IClientItemExtensions) CloudStorage.PROXY.getISTERProperties(false));
     }
 
-    @Override
-    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list) {
-        if (this.allowedIn(tab)) {
+    public void fillItemCategory(CreativeModeTab.Output contents) {
+        for (int i = 0; i < BALLOONCOLORS.length; i++) {
+            contents.accept(createBalloon(DEFAULT_COLOR, 0));
+        }
+        if(this == CSItemRegistry.BALLOON.get()){
             for (int i = 0; i < BALLOONCOLORS.length; i++) {
-                list.add(createBalloon(DEFAULT_COLOR, 0));
+                contents.accept(createBalloon(DEFAULT_COLOR, 1));
             }
-            if(this == CSItemRegistry.BALLOON.get()){
-                for (int i = 0; i < BALLOONCOLORS.length; i++) {
-                    list.add(createBalloon(DEFAULT_COLOR, 1));
-                }
-                list.add(createBalloon(-1, 2));
-            }
+            contents.accept(createBalloon(-1, 2));
         }
     }
 

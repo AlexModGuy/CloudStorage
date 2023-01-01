@@ -2,10 +2,12 @@ package com.github.alexthe668.cloudstorage.entity;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -19,6 +21,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -27,6 +30,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
 import javax.annotation.Nullable;
@@ -40,12 +44,12 @@ public class BalloonCargoEntity extends Entity {
     protected static final EntityDataAccessor<BlockPos> DATA_START_POS = SynchedEntityData.defineId(BalloonCargoEntity.class, EntityDataSerializers.BLOCK_POS);
     private static final EntityDataAccessor<Optional<UUID>> BALLOON_UUID = SynchedEntityData.defineId(BalloonCargoEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Optional<UUID>> PLAYER_UUID = SynchedEntityData.defineId(BalloonCargoEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(BalloonCargoEntity.class, EntityDataSerializers.BLOCK_STATE);
     private static final EntityDataAccessor<Integer> BALLOON_ID = SynchedEntityData.defineId(BalloonCargoEntity.class, EntityDataSerializers.INT);
     public int time;
     public boolean dropItem = true;
     @Nullable
     public CompoundTag blockData;
-    private BlockState blockState = Blocks.SAND.defaultBlockState();
     private boolean hurtEntities;
     private int fallDamageMax = 40;
     private float fallDamagePerDistance;
@@ -61,7 +65,7 @@ public class BalloonCargoEntity extends Entity {
 
     private BalloonCargoEntity(Level p_31953_, double p_31954_, double p_31955_, double p_31956_, BlockState p_31957_) {
         this(CSEntityRegistry.BALLOON_CARGO.get(), p_31953_);
-        this.blockState = p_31957_;
+        this.setBlockState(p_31957_);
         this.blocksBuilding = true;
         this.setPos(p_31954_, p_31955_, p_31956_);
         this.setDeltaMovement(Vec3.ZERO);
@@ -113,8 +117,8 @@ public class BalloonCargoEntity extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
         Entity balloon = this.getBalloon();
         if (!level.isClientSide) {
-            if(balloon == null || !balloon.isAlive()){
-                FallingBlockEntity fallingblockentity = FallingBlockEntity.fall(level, this.blockPosition(), this.blockState);
+            if((balloon == null || !balloon.isAlive())){
+                FallingBlockEntity fallingblockentity = FallingBlockEntity.fall(level, this.blockPosition(), this.getBlockState());
                 fallingblockentity.blockData = this.blockData;
                 this.remove(RemovalReason.DISCARDED);
             }else if(balloon instanceof BalloonEntity){
@@ -133,16 +137,21 @@ public class BalloonCargoEntity extends Entity {
 
     public void fillCrashReportCategory(CrashReportCategory p_31962_) {
         super.fillCrashReportCategory(p_31962_);
-        p_31962_.setDetail("Immitating BlockState", this.blockState.toString());
+        p_31962_.setDetail("Immitating BlockState", getBlockState());
     }
 
+    private void setBlockState(@Nullable BlockState state) {
+        this.entityData.set(BLOCK_STATE, Optional.ofNullable(state));
+    }
+
+    @Nullable
     public BlockState getBlockState() {
-        return this.blockState;
+        return this.entityData.get(BLOCK_STATE).orElse(null);
     }
 
     public void recreateFromPacket(ClientboundAddEntityPacket p_149654_) {
         super.recreateFromPacket(p_149654_);
-        this.blockState = Block.stateById(p_149654_.getData());
+        this.setBlockState(Block.stateById(p_149654_.getData()));
         this.blocksBuilding = true;
         double d0 = p_149654_.getX();
         double d1 = p_149654_.getY();
@@ -155,8 +164,9 @@ public class BalloonCargoEntity extends Entity {
         return true;
     }
 
-    public Packet<?> getAddEntityPacket() {
-        return new ClientboundAddEntityPacket(this, Block.getId(this.getBlockState()));
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
     }
 
     public boolean isPushable() {
@@ -168,6 +178,7 @@ public class BalloonCargoEntity extends Entity {
         this.entityData.define(DATA_START_POS, BlockPos.ZERO);
         this.entityData.define(PLAYER_UUID, Optional.empty());
         this.entityData.define(BALLOON_UUID, Optional.empty());
+        this.entityData.define(BLOCK_STATE, Optional.of(Blocks.CHEST.defaultBlockState()));
         this.entityData.define(BALLOON_ID, -1);
     }
 
@@ -218,15 +229,15 @@ public class BalloonCargoEntity extends Entity {
             this.setBalloonUUID(compound.getUUID("BalloonUUID"));
         }
         if (compound.hasUUID("PlayerUUID")) {
-            this.setBalloonUUID(compound.getUUID("PlayerUUID"));
+            this.setPlayerUUID(compound.getUUID("PlayerUUID"));
         }
-        this.blockState = NbtUtils.readBlockState(compound.getCompound("BlockState"));
+        this.setBlockState(NbtUtils.readBlockState(this.level.holderLookup(Registries.BLOCK), compound.getCompound("BlockState")));
         this.time = compound.getInt("Time");
         if (compound.contains("HurtEntities", 99)) {
             this.hurtEntities = compound.getBoolean("HurtEntities");
             this.fallDamagePerDistance = compound.getFloat("FallHurtAmount");
             this.fallDamageMax = compound.getInt("FallHurtMax");
-        } else if (this.blockState.is(BlockTags.ANVIL)) {
+        } else if (this.getBlockState() != null && this.getBlockState().is(BlockTags.ANVIL)) {
             this.hurtEntities = true;
         }
 
@@ -238,8 +249,8 @@ public class BalloonCargoEntity extends Entity {
             this.blockData = compound.getCompound("TileEntityData");
         }
 
-        if (this.blockState.isAir()) {
-            this.blockState = Blocks.CHEST.defaultBlockState();
+        if (this.getBlockState() == null || this.getBlockState().isAir()) {
+            this.setBlockState(Blocks.CHEST.defaultBlockState());
         }
         this.containerSize = compound.getInt("ContainerSize");
         ListTag tag = compound.getList("ContainerItems", 10);
@@ -259,7 +270,10 @@ public class BalloonCargoEntity extends Entity {
         if (this.getPlayerUUID() != null) {
             compound.putUUID("PlayerUUID", this.getPlayerUUID());
         }
-        compound.put("BlockState", NbtUtils.writeBlockState(this.blockState));
+        BlockState state = getBlockState();
+        if(state != null){
+            compound.put("BlockState", NbtUtils.writeBlockState(state));
+        }
         compound.putInt("Time", this.time);
         compound.putBoolean("DropItem", this.dropItem);
         compound.putBoolean("HurtEntities", this.hurtEntities);

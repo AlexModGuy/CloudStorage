@@ -10,9 +10,11 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Vector4f;
 
 public class BalloonModel<T extends Entity> extends AdvancedEntityModel<T> {
-    private final AdvancedModelBox balloonModel;
+    private final AdvancedModelBox root;
     private final AdvancedModelBox balloon;
     private final AdvancedModelBox face;
     private final AdvancedModelBox tie;
@@ -26,26 +28,26 @@ public class BalloonModel<T extends Entity> extends AdvancedEntityModel<T> {
         texWidth = 64;
         texHeight = 64;
 
-        balloonModel = new AdvancedModelBox(this);
-        balloonModel.setPos(0.0F, 24.0F, 0.0F);
+        root = new AdvancedModelBox(this, "root");
+        root.setPos(0.0F, 24.0F, 0.0F);
 
 
-        balloon = new AdvancedModelBox(this);
+        balloon = new AdvancedModelBox(this, "balloon");
         balloon.setPos(0.0F, 0.0F, 0.0F);
-        balloonModel.addChild(balloon);
+        root.addChild(balloon);
         balloon.setTextureOffset(0, 0).addBox(-5.0F, -15.0F, -5.0F, 10.0F, 10.0F, 10.0F, 0.0F, false);
 
-        face = new AdvancedModelBox(this);
+        face = new AdvancedModelBox(this, "face");
         face.setPos(0.0F, 0.0F, 0.0F);
         balloon.addChild(face);
         face.setTextureOffset(16, 20).addBox(-5.0F, -15.0F, -6.0F, 10.0F, 10.0F, 0.0F, 0.0F, false);
 
-        tie = new AdvancedModelBox(this);
+        tie = new AdvancedModelBox(this, "tie");
         tie.setPos(0.0F, 0.0F, 0.0F);
         balloon.addChild(tie);
         tie.setTextureOffset(0, 0).addBox(-1.0F, -5.0F, -1.0F, 2.0F, 1.0F, 2.0F, 0.0F, false);
 
-        below = new AdvancedModelBox(this);
+        below = new AdvancedModelBox(this, "below");
         below.setPos(0.0F, 0.0F, 0.0F);
         tie.addChild(below);
         below.setTextureOffset(0, 20).addBox(-2.0F, -4.0F, -2.0F, 4.0F, 2.0F, 4.0F, 0.0F, false);
@@ -55,12 +57,12 @@ public class BalloonModel<T extends Entity> extends AdvancedEntityModel<T> {
 
     @Override
     public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(balloonModel);
+        return ImmutableList.of(root);
     }
 
     @Override
     public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(balloonModel, balloon, face, tie, below);
+        return ImmutableList.of(root, balloon, face, tie, below);
     }
 
     @Override
@@ -100,6 +102,22 @@ public class BalloonModel<T extends Entity> extends AdvancedEntityModel<T> {
         this.b = b;
         this.a = 1.0F;
     }
+
+
+    public Vec3 translateToBottom(Vec3 in){
+        PoseStack modelTranslateStack = new PoseStack();
+        this.root.translateAndRotate(modelTranslateStack);
+        this.balloon.translateAndRotate(modelTranslateStack);
+        this.tie.translateAndRotate(modelTranslateStack);
+        this.below.translateAndRotate(modelTranslateStack);
+
+        Vector4f bodyOffsetVec = new Vector4f((float)in.x, (float)in.y, (float)in.z, 1.0F);
+        bodyOffsetVec.mul(modelTranslateStack.last().pose());
+        Vec3 offset = new Vec3(bodyOffsetVec.x(), bodyOffsetVec.y(), bodyOffsetVec.z());
+        modelTranslateStack.popPose();
+        return offset.add(0, -1.5F, 0);
+    }
+
 
     public void setAlpha(float a){
         this.a = a;

@@ -9,17 +9,18 @@ import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.entity.villager.CSVillagerRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CSMenuRegistry;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
+import com.github.alexthe668.cloudstorage.misc.CSCreativeTab;
+import com.github.alexthe668.cloudstorage.misc.CSLootRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSRecipeRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import com.github.alexthe668.cloudstorage.network.*;
 import com.github.alexthe668.cloudstorage.world.CSStructureRegistry;
+import com.github.alexthe668.cloudstorage.world.CSVillageStructureRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -71,6 +72,7 @@ public class CloudStorage
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::setupClient);
         bus.addListener(this::setup);
+        bus.addListener(CSCreativeTab::registerTab);
         final ModLoadingContext modLoadingContext = ModLoadingContext.get();
         modLoadingContext.registerConfig(ModConfig.Type.COMMON, CONFIG_SPEC, "cloud-storage.toml");
         CSBlockRegistry.DEF_REG.register(bus);
@@ -85,6 +87,8 @@ public class CloudStorage
         CSVillagerRegistry.DEF_REG.register(bus);
         CSRecipeRegistry.DEF_REG.register(bus);
         CSParticleRegistry.DEF_REG.register(bus);
+        CSLootRegistry.DEF_REG.register(bus);
+        CSVillageStructureRegistry.DEF_REG.register(bus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(PROXY);
         PROXY.init();
@@ -103,9 +107,11 @@ public class CloudStorage
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageScrollCloudChest.class, MessageScrollCloudChest::write, MessageScrollCloudChest::read, MessageScrollCloudChest.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageOpenCloudChest.class, MessageOpenCloudChest::write, MessageOpenCloudChest::read, MessageOpenCloudChest.Handler::handle);
         NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageLeftClickCloudBlower.class, MessageLeftClickCloudBlower::write, MessageLeftClickCloudBlower::read, MessageLeftClickCloudBlower.Handler::handle);
-        CSItemRegistry.registerDispenserBehavior();
+        event.enqueueWork(() ->{
+            CSItemRegistry.registerDispenserBehavior();
+            CSVillageStructureRegistry.registerHouses();
+        });
     }
-
     public static <MSG> void sendMSGToAll(MSG message) {
         for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
             sendNonLocal(message, player);

@@ -293,7 +293,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
         }
     }
     public void setHandGesture(GloveGesture gesture){
-        if(this.getChild() instanceof BadloonHandEntity hand){
+        if(this.getChild() instanceof BadloonHandEntity hand && !this.isPassenger()){
             hand.setGesture(gesture);
         }
     }
@@ -358,6 +358,10 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setBalloonColor(BalloonItem.DEFAULT_COLOR);
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    }
+
+    public double getMyRidingOffset() {
+        return 1.75F + Math.sin(tickCount * 0.05F) * 0.25F;
     }
 
     public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {

@@ -13,7 +13,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.*;
 
 public class CloudChestMenu extends AbstractContainerMenu {
-    private final DataSlot scrollAmount = DataSlot.standalone();
+    private int scrollAmount;
     private final Container container;
     private final int playerInvStart = 0;
     private final int playerInvEnd = 0;
@@ -40,15 +39,11 @@ public class CloudChestMenu extends AbstractContainerMenu {
         containerIn.startOpen(playerInv.player);
         int clampedSize = Math.min(containerIn.getContainerSize(), 54);
 
-        int ySlots = clampedSize / 9;
+        int ySlots = (int)Math.ceil(clampedSize / 9F);
         for (int k = 0; k < ySlots; ++k) {
             for (int l = 0; l < 9 && l + k * 9 < clampedSize; ++l) {
-                this.addSlot(new SlotCloudChest(this.container, l + k * 9, 8 + l * 18, 18 + k * 18) {
-                    @Override
-                    public int getScrollIndex() {
-                        return slot + 9 * Math.max(getScrollAmount(), 0);
-                    }
-                });
+                int slotId = l + k * 9;
+                this.addSlot(new SlotCloudChest(this, containerIn, slotId, 8 + l * 18, 18 + k * 18));
             }
         }
         for (int i1 = 0; i1 < 3; ++i1) {
@@ -61,7 +56,6 @@ public class CloudChestMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(playerInv, j1, 8 + j1 * 18, 198));
         }
         CloudStorage.PROXY.setVisibleCloudSlots(containerIn.getContainerSize());
-        this.addDataSlot(this.scrollAmount).set(0);
         scrollTo(0.0F, false);
     }
 
@@ -109,15 +103,15 @@ public class CloudChestMenu extends AbstractContainerMenu {
         if (sendPacket) {
             CloudStorage.NETWORK_WRAPPER.sendToServer(new MessageScrollCloudChest(i));
         }
-        scrollAmount.set(i);
+        scrollAmount = i;
     }
 
     public int getScrollAmount() {
-        return scrollAmount.get();
+        return scrollAmount;
     }
 
     public void setScrollAmount(int i) {
-        scrollAmount.set(i);
+        scrollAmount = i;
     }
 
     public boolean stillValid(Player player) {

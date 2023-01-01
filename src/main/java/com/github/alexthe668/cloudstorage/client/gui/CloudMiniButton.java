@@ -20,7 +20,7 @@ public class CloudMiniButton extends Button {
     private final Screen parent;
 
     public CloudMiniButton(Screen parent, int x, int y, int index, Button.OnPress onPress) {
-        super(x, y, 14, 14, CommonComponents.EMPTY, onPress);
+        super(x, y, 14, 14, CommonComponents.EMPTY, onPress, DEFAULT_NARRATION);
         this.index = index;
         this.parent = parent;
     }
@@ -44,7 +44,7 @@ public class CloudMiniButton extends Button {
                 i += 14;
             }
         }
-        this.blit(poseStack, this.x, this.y, i, j, 14, 14);
+        this.blit(poseStack, this.getX(), this.getY(), i, j, 14, 14);
         if (this.isHoveredOrFocused()) {
             this.renderToolTip(poseStack, x, y);
         }

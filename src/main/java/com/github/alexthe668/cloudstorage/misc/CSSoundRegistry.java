@@ -24,6 +24,6 @@ public class CSSoundRegistry {
     public static final RegistryObject<SoundEvent> CLOUD_BLOWER = createSoundEvent("cloud_blower");
 
     private static RegistryObject<SoundEvent> createSoundEvent(final String soundName) {
-        return DEF_REG.register(soundName, () -> new SoundEvent(new ResourceLocation(CloudStorage.MODID, soundName)));
+        return DEF_REG.register(soundName, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(CloudStorage.MODID, soundName)));
     }
 }

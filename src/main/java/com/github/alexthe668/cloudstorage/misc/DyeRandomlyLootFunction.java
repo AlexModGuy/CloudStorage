@@ -16,7 +16,6 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.List;
-import java.util.Random;
 
 public class DyeRandomlyLootFunction extends LootItemConditionalFunction {
 
@@ -25,7 +24,7 @@ public class DyeRandomlyLootFunction extends LootItemConditionalFunction {
     }
 
     public LootItemFunctionType getType() {
-        return CommonProxy.DYE_RANDOMLY_LOOT_FUNCTION;
+        return CSLootRegistry.DYE_RANDOMLY.get();
     }
 
     public ItemStack run(ItemStack stack, LootContext context) {

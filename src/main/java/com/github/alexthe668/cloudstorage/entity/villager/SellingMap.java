@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -44,11 +45,11 @@ public class SellingMap implements VillagerTrades.ItemListing {
 
     @Nullable
     public BlockPos findNearestMapFeature(ServerLevel level, BlockPos pos, int dist, boolean bool) {
-        if (!level.getServer().getWorldData().worldGenSettings().generateStructures()) {
+        if (!level.getServer().getWorldData().worldGenOptions().generateStructures()) {
             return null;
         } else {
             try{
-                Registry<Structure> registry = level.getLevel().registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY);
+                Registry<Structure> registry = level.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE);
                 Holder<Structure> holder = balloon ? registry.getHolderOrThrow(CSStructureRegistry.BIG_BALLOON_KEY) : registry.getHolderOrThrow(CSStructureRegistry.SKY_TEMPLE_KEY);
                 HolderSet<Structure> holderset = HolderSet.direct(holder);
                 Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level, holderset, pos, 100, false);

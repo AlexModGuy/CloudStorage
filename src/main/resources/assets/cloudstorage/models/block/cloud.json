@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:block/cube_all",
   "ambientocclusion": false,
+  "render_type": "translucent",
   "textures": {
     "all": "cloudstorage:block/cloud"
   }

@@ -8,8 +8,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Random;
-
 public class ParticleCloudChest extends TextureSheetParticle {
 
     private static final int[] POSSIBLE_COLORS = {0XEDF4F6, 0XD0DBE2, 0XC0C5C7, 0XB1CEE0};

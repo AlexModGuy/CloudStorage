@@ -1,5 +1,6 @@
 package com.github.alexthe668.cloudstorage;
 
+import com.github.alexthe668.cloudstorage.command.RetrieveBalloonsCommand;
 import com.github.alexthe668.cloudstorage.entity.*;
 import com.github.alexthe668.cloudstorage.entity.villager.CSVillagerRegistry;
 import com.github.alexthe668.cloudstorage.inventory.CloudChestMenu;
@@ -15,6 +16,8 @@ import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import com.github.alexthe668.cloudstorage.world.SkyMobSpawner;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,7 +37,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -56,7 +59,7 @@ public class CommonProxy {
 
     public static CSAdvancementTrigger UPLOAD_TRIGGER = new CSAdvancementTrigger(new ResourceLocation("cloudstorage:upload"));
     public static CSAdvancementTrigger LUFTBALLONS_TRIGGER = new CSAdvancementTrigger(new ResourceLocation("cloudstorage:luftballons"));
-    public static LootItemFunctionType DYE_RANDOMLY_LOOT_FUNCTION = net.minecraft.core.Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation("cloudstorage:dye_randomly"), new LootItemFunctionType(new DyeRandomlyLootFunction.Serializer()));
+
     private Random random = new Random();
     private static final Map<ServerLevel, SkyMobSpawner> SKY_MOB_SPAWNER_MAP = new HashMap<ServerLevel, SkyMobSpawner>();
     public void clientInit() {
@@ -172,6 +175,12 @@ public class CommonProxy {
                 }
             }
         }
+    }
+
+
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event){
+        RetrieveBalloonsCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent

@@ -21,11 +21,11 @@ public class BloviatorModel extends AdvancedEntityModel<BloviatorEntity> {
     public BloviatorModel(int cloudCount) {
         texWidth = 128;
         texHeight = 128;
-        root = new AdvancedModelBox(this);
+        root = new AdvancedModelBox(this, "root");
         root.setRotationPoint(0.0F, 24.0F, -6.0F);
 
 
-        body = new AdvancedModelBox(this);
+        body = new AdvancedModelBox(this, "body");
         body.setRotationPoint(0.0F, -10.0F, 0.0F);
         root.addChild(body);
         body.setTextureOffset(0, 0).addBox(-13.0F, -11.0F, -10.0F, 26.0F, 21.0F, 31.0F, 0.0F, false);
@@ -34,19 +34,19 @@ public class BloviatorModel extends AdvancedEntityModel<BloviatorEntity> {
         for (int i = 0; i < cloudCount; i++) {
             float f = cloudCount <= 1 ? 0F : ((i) / (float) (cloudCount - 1)) - 0.5F;
             float f2 = clouds.length <= 1 ? 0.25F : Mth.cos((float) (f * Math.PI));
-            AdvancedModelBox trail = new AdvancedModelBox(this);
+            AdvancedModelBox trail = new AdvancedModelBox(this, "cloud_" + i);
             trail.setRotationPoint(f * 48F, -2.5F, 19F + f2 * 22F);
             trail.setTextureOffset(41, 53).addBox(-5.5F, -5.5F, -5.5F, 11.0F, 11.0F, 11.0F, 0.0F, false);
             body.addChild(trail);
             clouds[i] = trail;
         }
 
-        left_cheek = new AdvancedModelBox(this);
+        left_cheek = new AdvancedModelBox(this, "left_cheek");
         left_cheek.setRotationPoint(14.5F, -1.0F, 1.5F);
         body.addChild(left_cheek);
         left_cheek.setTextureOffset(0, 53).addBox(-1.5F, -7.0F, -7.5F, 5.0F, 14.0F, 15.0F, 0.0F, false);
 
-        right_cheek = new AdvancedModelBox(this);
+        right_cheek = new AdvancedModelBox(this, "right_cheek");
         right_cheek.setRotationPoint(-14.5F, -1.0F, 1.5F);
         body.addChild(right_cheek);
         right_cheek.setTextureOffset(0, 53).addBox(-3.5F, -7.0F, -7.5F, 5.0F, 14.0F, 15.0F, 0.0F, true);
