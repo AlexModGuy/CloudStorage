@@ -54,7 +54,7 @@ public class BadloonFearCactusGoal extends Goal {
         float angle = (0.01745329251F * renderYawOffset) + 3.15F + (badloon.getRandom().nextFloat() * neg);
         double extraX = radius * Mth.sin((float) (Math.PI + angle));
         double extraZ = radius * Mth.cos(angle);
-        BlockPos pos = new BlockPos(fleePos.x() + extraX, badloon.getY(), fleePos.z() + extraZ);
+        BlockPos pos = BlockPos.containing(fleePos.x() + extraX, badloon.getY(), fleePos.z() + extraZ);
         return Vec3.atCenterOf(pos);
     }
 

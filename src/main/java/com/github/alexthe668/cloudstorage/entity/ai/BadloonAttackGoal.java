@@ -115,7 +115,7 @@ public class BadloonAttackGoal extends Goal {
             punchTicks++;
             this.badloon.setHandGesture(GloveGesture.PUNCH);
             if(punchTicks > 3){
-                this.badloon.getTarget().hurt(DamageSource.mobAttack(this.badloon), 2);
+                this.badloon.getTarget().hurt(badloon.damageSources().mobAttack(this.badloon), 2);
                 this.badloon.setHandGesture(GloveGesture.IDLE);
                 punchTicks = 0;
                 this.punchCooldown = 5 + badloon.getRandom().nextInt(10);

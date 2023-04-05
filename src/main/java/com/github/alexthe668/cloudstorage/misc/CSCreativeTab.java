@@ -30,7 +30,7 @@ public class CSCreativeTab {
     }
 
     public static void registerTab(CreativeModeTabEvent.Register event){
-        event.registerCreativeModeTab(TAB, builder -> builder.title(Component.translatable("itemGroup.cloudstorage")).icon(CSCreativeTab::makeIcon).displayItems((flags, output, isOp) -> {
+        event.registerCreativeModeTab(TAB, builder -> builder.title(Component.translatable("itemGroup.cloudstorage")).icon(CSCreativeTab::makeIcon).displayItems((parameters, output) -> {
             for(RegistryObject<Item> item : CSItemRegistry.DEF_REG.getEntries()){
                 if(item.get() instanceof CustomTabBehavior customTabBehavior){
                     customTabBehavior.fillItemCategory(output);

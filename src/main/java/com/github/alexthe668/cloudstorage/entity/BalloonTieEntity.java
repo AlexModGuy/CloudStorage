@@ -141,7 +141,7 @@ public class BalloonTieEntity extends Entity {
     public boolean skipAttackInteraction(Entity entity) {
         if (entity instanceof Player) {
             Player player = (Player)entity;
-            return !this.level.mayInteract(player, this.blockPosition()) ? true : this.hurt(DamageSource.playerAttack(player), 0.0F);
+            return !this.level.mayInteract(player, this.blockPosition()) ? true : this.hurt(damageSources().playerAttack(player), 0.0F);
         } else {
             return false;
         }

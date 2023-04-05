@@ -3,6 +3,7 @@ package com.github.alexthe668.cloudstorage.misc;
 import com.github.alexthe668.cloudstorage.item.BalloonArrowItem;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -37,7 +38,7 @@ public class RecipeBalloonArrow extends CustomRecipe {
         return false;
     }
 
-    public ItemStack assemble(CraftingContainer container) {
+    public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
         ItemStack balloon = getBalloon(container);
         ItemStack balloonArrow = getResultItem();
         ((BalloonArrowItem)balloonArrow.getItem()).setColor(balloonArrow, BalloonItem.getBalloonColor(balloon));

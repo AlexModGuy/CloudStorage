@@ -32,7 +32,7 @@ public class CloudMiniButton extends Button {
 
     }
 
-    public void renderButton(PoseStack poseStack, int x, int y, float partialTick) {
+    public void renderWidget(PoseStack poseStack, int x, int y, float partialTick) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, CloudChestScreen.TEXTURE);

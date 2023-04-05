@@ -69,7 +69,7 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
         this.searchBox.setMaxLength(50);
         this.searchBox.setBordered(false);
         this.searchBox.setVisible(mode == 2);
-        this.searchBox.setFocus(mode == 2);
+        this.searchBox.setFocused(mode == 2);
         this.searchBox.setTextColor(16777215);
         this.addWidget(this.searchBox);
         balloonButton.active = mode != 0;
@@ -87,7 +87,6 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
     }
 
     private void renderGraySlots(PoseStack poseStack, int x, int y) {
-        this.setBlitOffset(this.getBlitOffset() + 300);
         RenderSystem.enableDepthTest();
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.enableBlend();
@@ -106,7 +105,6 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
             }
         }
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        this.setBlitOffset(this.getBlitOffset() - 300);
     }
 
     public boolean charTyped(char p_98521_, int p_98522_) {

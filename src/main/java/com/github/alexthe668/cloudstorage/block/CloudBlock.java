@@ -47,7 +47,7 @@ public class CloudBlock extends Block {
     }
 
     public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float dist) {
-        entity.causeFallDamage(dist, 0.1F, DamageSource.FALL);
+        entity.causeFallDamage(dist, 0.1F, entity.damageSources().fall());
     }
 
 

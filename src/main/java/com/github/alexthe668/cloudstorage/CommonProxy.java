@@ -40,9 +40,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -160,7 +160,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void onMobAttemptSpawn(LivingSpawnEvent.CheckSpawn event){
+    public void onMobAttemptSpawn(MobSpawnEvent.FinalizeSpawn event){
         if(event.getEntity() instanceof Monster && random.nextFloat() < 0.5F){
             double dist = 64;
             AABB aabb = event.getEntity().getBoundingBox().inflate(dist);
@@ -168,6 +168,7 @@ public class CommonProxy {
             if(!balloonBuddies.isEmpty()){
                 for(BalloonBuddyEntity balloonBuddy : balloonBuddies){
                     if(balloonBuddy.getPersonality() == BalloonFace.HAPPY){
+                        event.setSpawnCancelled(true);
                         event.setResult(Event.Result.DENY);
                         balloonBuddy.getLevel().broadcastEntityEvent(balloonBuddy, (byte)68);
                         break;
@@ -290,8 +291,8 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void onEntitySetTarget(LivingSetAttackTargetEvent event) {
-        if(event.getEntity() instanceof Mob && event.getTarget() instanceof BalloonBuddyEntity && ((BalloonBuddyEntity)event.getTarget()).getPersonality() == BalloonFace.EYEPATCH){
+    public void onEntitySetTarget(LivingChangeTargetEvent event) {
+        if(event.getEntity() instanceof Mob && event.getNewTarget() instanceof BalloonBuddyEntity && ((BalloonBuddyEntity)event.getNewTarget()).getPersonality() == BalloonFace.EYEPATCH){
             ((Mob) event.getEntity()).setTarget(null);
         }
     }

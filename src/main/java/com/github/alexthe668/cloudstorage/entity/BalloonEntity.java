@@ -16,6 +16,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -412,7 +413,7 @@ public class BalloonEntity extends Entity {
     public boolean hurt(DamageSource source, float f) {
         if (this.isInvulnerableTo(source)) {
             return false;
-        } else if (!(source.isProjectile() && source.getDirectEntity() != null && this.getChildId() != null && source.getDirectEntity().getUUID().equals(this.getChildId()))) {
+        } else if (!(source.is(DamageTypeTags.IS_PROJECTILE) && source.getDirectEntity() != null && this.getChildId() != null && source.getDirectEntity().getUUID().equals(this.getChildId()))) {
             this.markHurt();
             this.setPopped(true);
             return true;
@@ -483,7 +484,7 @@ public class BalloonEntity extends Entity {
     public boolean skipAttackInteraction(Entity entity) {
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            return !this.level.mayInteract(player, this.blockPosition()) || this.hurt(DamageSource.playerAttack(player), 0.0F);
+            return !this.level.mayInteract(player, this.blockPosition()) || this.hurt(damageSources().playerAttack(player), 0.0F);
         } else {
             return false;
         }

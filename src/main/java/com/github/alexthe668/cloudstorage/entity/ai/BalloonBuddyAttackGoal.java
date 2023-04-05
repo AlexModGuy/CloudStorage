@@ -4,6 +4,7 @@ import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonBuddyEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonFace;
 import com.github.alexthe668.cloudstorage.entity.GloveGesture;
+import com.github.alexthe668.cloudstorage.misc.CSDamageTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -78,7 +79,7 @@ public class BalloonBuddyAttackGoal extends Goal {
                 punchTicks++;
                 this.badloon.setHandGesture(GloveGesture.PUNCH);
                 if(punchTicks > 3){
-                    this.badloon.getTarget().hurt(this.badloon.getPersonality() == BalloonFace.EYEPATCH ? new DamageSource("sneak_balloon_attack") : DamageSource.mobAttack(this.badloon), 2);
+                    this.badloon.getTarget().hurt(this.badloon.getPersonality() == BalloonFace.EYEPATCH ? CSDamageTypes.causeSneakBalloonDamage(this.badloon.level.registryAccess()) : badloon.damageSources().mobAttack(this.badloon), 2);
                     this.badloon.setHandGesture(GloveGesture.IDLE);
                     punchTicks = 0;
                     this.punchCooldown = this.badloon.getPersonality() == BalloonFace.CRAZY ? 3 : 5 + badloon.getRandom().nextInt(10);

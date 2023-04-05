@@ -15,10 +15,12 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -62,8 +64,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
         this.xpReward = 3;
         this.moveControl = new FlightMoveController(this, 1F, true);
         this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.DAMAGE_CACTUS, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.DANGER_CACTUS, -1.0F);
+        this.setPathfindingMalus(BlockPathTypes.DAMAGE_OTHER, -1.0F);
         this.setPathfindingMalus(BlockPathTypes.FENCE, -1.0F);
     }
 
@@ -299,7 +300,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
     }
 
     public boolean hurt(DamageSource source, float f) {
-        if(source == DamageSource.CACTUS || source.isProjectile()){
+        if(source.is(DamageTypes.CACTUS) || source.is(DamageTypeTags.IS_PROJECTILE)){
             f = 100;
         }
         return super.hurt(source, f);

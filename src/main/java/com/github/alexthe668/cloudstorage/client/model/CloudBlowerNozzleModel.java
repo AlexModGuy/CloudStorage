@@ -6,6 +6,7 @@ import com.github.alexthe666.citadel.client.model.basic.BasicModelPart;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemDisplayContext;
 
 public class CloudBlowerNozzleModel extends AdvancedEntityModel {
     private final AdvancedModelBox root;
@@ -37,7 +38,7 @@ public class CloudBlowerNozzleModel extends AdvancedEntityModel {
         this.resetToDefaultPose();
     }
 
-    public void animateInHand(float useTime, float leverForwards, ItemTransforms.TransformType transformType) {
+    public void animateInHand(float useTime, float leverForwards, ItemDisplayContext transformType) {
         resetToDefaultPose();
         float div = 5F;
         float useProgress = Math.min(div, useTime) / div;
