@@ -23,7 +23,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -206,15 +206,18 @@ public class CloudChestBlockEntity extends AbstractCloudChestBlockEntity {
 
     public void unpackLootTable(@Nullable Player player, Container toFill) {
         if (this.lootTable != null && this.level.getServer() != null) {
-            LootTable loottable = this.level.getServer().getLootTables().get(this.lootTable);
+            LootTable loottable = this.level.getServer().getLootData().getLootTable(this.lootTable);
             if (player instanceof ServerPlayer) {
                 CriteriaTriggers.GENERATE_LOOT.trigger((ServerPlayer)player, this.lootTable);
             }
-            LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerLevel)this.level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(this.worldPosition)).withOptionalRandomSeed(this.lootTableSeed);
+
+            this.lootTable = null;
+            LootParams.Builder lootparams$builder = (new LootParams.Builder((ServerLevel)this.level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(this.worldPosition));
             if (player != null) {
-                lootcontext$builder.withLuck(player.getLuck()).withParameter(LootContextParams.THIS_ENTITY, player);
+                lootparams$builder.withLuck(player.getLuck()).withParameter(LootContextParams.THIS_ENTITY, player);
             }
-            loottable.fill(toFill, lootcontext$builder.create(LootContextParamSets.CHEST));
+
+            loottable.fill(toFill, lootparams$builder.create(LootContextParamSets.CHEST), this.lootTableSeed);
         }
     }
 

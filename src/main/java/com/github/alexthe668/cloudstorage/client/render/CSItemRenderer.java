@@ -21,7 +21,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -34,7 +33,6 @@ import net.minecraftforge.client.ForgeRenderTypes;
 import org.joml.Vector4f;
 
 import java.util.Random;
-import java.util.logging.Level;
 
 public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
 
@@ -106,7 +104,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
         float f5 = (random.nextFloat() - 0.5F) * 0.5F;
         float f6 = (random.nextFloat() - 0.5F) * 0.5F;
         float f7 = 1.2F;
-        player.level.addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), d4 - swingVec.x + f4, d5 + f7 + f3 - swingVec.y + f5, d6 - swingVec.z + f5, f4 * 0.5F, f5 * 0.5F, f6 * 0.5F);
+        player.level().addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), d4 - swingVec.x + f4, d5 + f7 + f3 - swingVec.y + f5, d6 - swingVec.z + f5, f4 * 0.5F, f5 * 0.5F, f6 * 0.5F);
     }
 
     @Override

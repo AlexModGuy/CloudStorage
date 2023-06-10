@@ -105,12 +105,12 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
         this.prevRotZ = this.getRotZ();
         this.prevAbilityProgress = this.abilityProgress;
         this.setDeltaMovement(this.getDeltaMovement().multiply(0.8F, 0.6F, 0.8F));
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             Entity child = getChild();
             if (child == null) {
                 BadloonHandEntity hand = new BadloonHandEntity(this);
                 hand.setPos(this.position().add(0, 0.5F, 0));
-                level.addFreshEntity(hand);
+                level().addFreshEntity(hand);
                 this.setChildId(hand.getUUID());
                 this.entityData.set(CHILD_ID, hand.getId());
             } else {
@@ -130,7 +130,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
                 Vec3 add = randomMoveOffset.normalize().scale(0.01F + random.nextFloat() * 0.01F);
                 this.setDeltaMovement(this.getDeltaMovement().add(add));
             }
-            if (this.isOnGround()) {
+            if (this.onGround()) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08, 0));
             }
             if (fearOfBeingPoppedCooldown > 0) {
@@ -139,7 +139,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
         }
         Vec3 vector3d = this.getDeltaMovement();
         float f = Mth.sqrt((float) (vector3d.x * vector3d.x + vector3d.z * vector3d.z));
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             float xRotTarget = (float) (Mth.atan2(vector3d.y, f) * 0.05F * (double) (180F / (float) Math.PI));
             this.setXRot(BalloonFace.rotlerp(this.getXRot(), xRotTarget, 5F));
         }
@@ -154,7 +154,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
                 this.abilityProgress++;
             }
             if (this.getPersonality() == BalloonFace.SCARY) {
-                List<Monster> list = this.level.getEntitiesOfClass(Monster.class, this.getBoundingBox().inflate(16, 8, 16));
+                List<Monster> list = this.level().getEntitiesOfClass(Monster.class, this.getBoundingBox().inflate(16, 8, 16));
                 for (Monster e : list) {
                     e.setTarget(null);
                     e.setLastHurtByMob(null);
@@ -178,10 +178,10 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
         if (this.getAbilityTime() == 0 && this.abilityProgress > 0) {
             this.abilityProgress--;
         }
-        if (!this.level.isClientSide && this.getPersonality() == BalloonFace.CHARMING && this.getAbilityTime() == 0 && (this.tickCount + this.getId()) % 100 == 0) {
+        if (!this.level().isClientSide && this.getPersonality() == BalloonFace.CHARMING && this.getAbilityTime() == 0 && (this.tickCount + this.getId()) % 100 == 0) {
             AABB aabb = this.getBoundingBox().inflate(16, 8, 16);
-            Predicate<Entity> breedableAnimal = (animal) -> !(animal instanceof BalloonBuddyEntity) && animal instanceof Animal && !((Animal) animal).isBaby() && ((Animal) animal).getInLoveTime() == 0 && (((Animal) animal).getBreedOffspring((ServerLevel) level, ((Animal) animal))) != null;
-            List<Animal> list = this.level.getEntitiesOfClass(Animal.class, aabb, EntitySelector.NO_SPECTATORS.and(breedableAnimal));
+            Predicate<Entity> breedableAnimal = (animal) -> !(animal instanceof BalloonBuddyEntity) && animal instanceof Animal && !((Animal) animal).isBaby() && ((Animal) animal).getInLoveTime() == 0 && (((Animal) animal).getBreedOffspring((ServerLevel) level(), ((Animal) animal))) != null;
+            List<Animal> list = this.level().getEntitiesOfClass(Animal.class, aabb, EntitySelector.NO_SPECTATORS.and(breedableAnimal));
             Map<EntityType, List<Animal>> typeAnimalMap = new HashMap<>();
             for (Animal animal : list) {
                 if (typeAnimalMap.get(animal.getType()) == null) {
@@ -209,7 +209,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
             }
             this.setAbilityTime((flag ? 8000 : 200) + random.nextInt(200));
         }
-        if (this.getPersonality() == BalloonFace.COOL && !level.isClientSide) {
+        if (this.getPersonality() == BalloonFace.COOL && !level().isClientSide) {
             boolean flag = false;
             if (this.getTarget() != null && this.hasLineOfSight(this.getTarget())) {
                 if (this.getAbilityTime() == 0) {
@@ -225,7 +225,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
                     coolnessCooldown = 40 + random.nextInt(40);
                     flag = true;
                     this.lookAt(this.getTarget(), 360, 360);
-                    this.level.broadcastEntityEvent(this, (byte) 69);
+                    this.level().broadcastEntityEvent(this, (byte) 69);
                     this.getTarget().setLastHurtByMob(null);
                     if(this.getTarget() instanceof Mob mob){
                         mob.setTarget(null);
@@ -301,7 +301,7 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
     }
 
     public Entity getHandForRendering() {
-        return this.level.getEntity(this.entityData.get(CHILD_ID));
+        return this.level().getEntity(this.entityData.get(CHILD_ID));
     }
 
     @Override
@@ -311,8 +311,8 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
 
     public Entity getChild() {
         UUID id = getChildId();
-        if (id != null && !level.isClientSide) {
-            return ((ServerLevel) level).getEntity(id);
+        if (id != null && !level().isClientSide) {
+            return ((ServerLevel) level()).getEntity(id);
         }
         return null;
     }
@@ -385,8 +385,8 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
             }
         }
         ++this.deathTime;
-        if (this.deathTime == max && !this.level.isClientSide()) {
-            this.level.broadcastEntityEvent(this, (byte) 67);
+        if (this.deathTime == max && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte) 67);
             this.remove(Entity.RemovalReason.KILLED);
         }
     }
@@ -399,14 +399,14 @@ public class BalloonBuddyEntity extends TamableAnimal implements LivingBalloon, 
             float g = (float) (color >> 8 & 255) / 255.0F;
             float b = (float) (color & 255) / 255.0F;
             for (int i = 0; i < 5 + random.nextInt(2) + 5; i++) {
-                this.level.addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
+                this.level().addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
             }
         } else if (id == 68) {
             for (int i = 0; i < 5 + random.nextInt(2) + 2; i++) {
-                this.level.addParticle(CSParticleRegistry.STOP_SPAWN.get(), this.getRandomX(1.0F), this.getY(0.5F), this.getRandomZ(1.0F), 0, 0, 0);
+                this.level().addParticle(CSParticleRegistry.STOP_SPAWN.get(), this.getRandomX(1.0F), this.getY(0.5F), this.getRandomZ(1.0F), 0, 0, 0);
             }
         } else if (id == 69) {
-            this.level.addParticle(CSParticleRegistry.COOL.get(), this.getRandomX(0.8F), this.getY(0.75F), this.getRandomZ(0.8F), 0, 0, 0);
+            this.level().addParticle(CSParticleRegistry.COOL.get(), this.getRandomX(0.8F), this.getY(0.75F), this.getRandomZ(0.8F), 0, 0, 0);
         } else {
             super.handleEntityEvent(id);
         }

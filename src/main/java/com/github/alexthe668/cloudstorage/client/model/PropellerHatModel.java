@@ -33,7 +33,7 @@ public class PropellerHatModel extends HumanoidModel {
 
     public PropellerHatModel withAnimations(LivingEntity entity){
         float partialTick = Minecraft.getInstance().getFrameTime();
-        float speed = entity.level.isThundering() ? 0.5F : entity.level.isRaining() ? 0.2F : 0.1F;
+        float speed = entity.level().isThundering() ? 0.5F : entity.level().isRaining() ? 0.2F : 0.1F;
         float ageInTicks = (entity.tickCount + partialTick) * speed % ((float)Math.PI * 2F);
         this.spinner.yRot = ageInTicks;
         return this;

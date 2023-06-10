@@ -1,7 +1,6 @@
 package com.github.alexthe668.cloudstorage.inventory;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
-import net.minecraft.core.Registry;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.DeferredRegister;

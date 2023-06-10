@@ -154,12 +154,12 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
         super.tick();
         this.setDeltaMovement(this.getDeltaMovement().multiply(0.8F, 0.6F, 0.8F));
         this.prevRotZ = this.getRotZ();
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             Entity child = getChild();
             if (child == null) {
                 BadloonHandEntity hand = new BadloonHandEntity(this);
                 hand.setPos(this.position().add(0, 0.5F, 0));
-                level.addFreshEntity(hand);
+                level().addFreshEntity(hand);
                 this.setChildId(hand.getUUID());
                 this.entityData.set(CHILD_ID, hand.getId());
             }else{
@@ -173,7 +173,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
                 Vec3 add = randomMoveOffset.normalize().scale(0.01F + random.nextFloat() * 0.01F);
                 this.setDeltaMovement(this.getDeltaMovement().add(add));
             }
-            if(this.isOnGround()){
+            if(this.onGround()){
                 this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08, 0));
             }
             if(fearOfBeingPoppedCooldown > 0){
@@ -185,7 +185,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
         double d1 = this.getY() + vector3d.y;
         double d2 = this.getZ() + vector3d.z;
         float f = Mth.sqrt((float) (vector3d.x * vector3d.x + vector3d.z * vector3d.z));
-        if(!level.isClientSide){
+        if(!level().isClientSide){
             float xRotTarget = (float) (Mth.atan2(vector3d.y, f) * 0.05F * (double) (180F / (float) Math.PI));
             this.setXRot(BalloonFace.rotlerp(this.getXRot(), xRotTarget, 5F));
         }
@@ -207,8 +207,8 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
 
     public Entity getChild() {
         UUID id = getChildId();
-        if (id != null && !level.isClientSide) {
-            return ((ServerLevel) level).getEntity(id);
+        if (id != null && !level().isClientSide) {
+            return ((ServerLevel) level()).getEntity(id);
         }
         return null;
     }
@@ -223,7 +223,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
     }
 
     public Entity getHandForRendering() {
-        return this.level.getEntity(this.entityData.get(CHILD_ID));
+        return this.level().getEntity(this.entityData.get(CHILD_ID));
     }
 
     private void setFaceInt(int face) {
@@ -273,8 +273,8 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
             }
         }
         ++this.deathTime;
-        if (this.deathTime == max && !this.level.isClientSide()) {
-            this.level.broadcastEntityEvent(this, (byte) 67);
+        if (this.deathTime == max && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte) 67);
             this.remove(Entity.RemovalReason.KILLED);
         }
     }
@@ -287,7 +287,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
             float g = (float) (color >> 8 & 255) / 255.0F;
             float b = (float) (color & 255) / 255.0F;
             for (int i = 0; i < 5 + random.nextInt(2) + 5; i++) {
-                this.level.addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
+                this.level().addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
             }
         } else {
             super.handleEntityEvent(id);
@@ -314,7 +314,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
         this.captureDrops(new java.util.ArrayList<>());
 
         boolean flag = this.lastHurtByPlayerTime > 0;
-        if (this.shouldDropLoot() && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+        if (this.shouldDropLoot() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
             this.dropFromLootTable(source, flag);
             this.dropCustomDeathLoot(source, i, flag);
         }
@@ -331,7 +331,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
             for(int stackSize = 0; stackSize < drop.getItem().getCount(); stackSize++){
                 ItemStack single = drop.getItem().copy();
                 single.setCount(1);
-                ItemEntity split = new ItemEntity(level, getX(), getEyeY(), getZ(), single);
+                ItemEntity split = new ItemEntity(level(), getX(), getEyeY(), getZ(), single);
                 split.setDefaultPickUpDelay();
                 splitDrops.add(split);
             }
@@ -350,7 +350,7 @@ public class BadloonEntity extends Monster implements LivingBalloon, BalloonFlye
         Vec3 vec = new Vec3(extraX, 0.8F, extraZ).normalize().scale(0.2F);
         e.setDeltaMovement(vec);
         droppedItems++;
-        level.addFreshEntity(e);
+        level().addFreshEntity(e);
     }
 
 

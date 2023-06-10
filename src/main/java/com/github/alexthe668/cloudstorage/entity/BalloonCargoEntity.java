@@ -21,7 +21,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -116,9 +115,9 @@ public class BalloonCargoEntity extends Entity {
         this.zo = this.getZ();
         this.move(MoverType.SELF, this.getDeltaMovement());
         Entity balloon = this.getBalloon();
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if((balloon == null || !balloon.isAlive())){
-                FallingBlockEntity fallingblockentity = FallingBlockEntity.fall(level, this.blockPosition(), this.getBlockState());
+                FallingBlockEntity fallingblockentity = FallingBlockEntity.fall(level(), this.blockPosition(), this.getBlockState());
                 fallingblockentity.blockData = this.blockData;
                 this.remove(RemovalReason.DISCARDED);
             }else if(balloon instanceof BalloonEntity){
@@ -189,8 +188,8 @@ public class BalloonCargoEntity extends Entity {
 
     public Entity getBalloon() {
         UUID id = getBalloonUUID();
-        if (id != null && !level.isClientSide) {
-            return ((ServerLevel) level).getEntity(id);
+        if (id != null && !level().isClientSide) {
+            return ((ServerLevel) level()).getEntity(id);
         }
         return null;
     }
@@ -214,7 +213,7 @@ public class BalloonCargoEntity extends Entity {
     }
 
     public Entity getBalloonForRendering() {
-        return this.level.getEntity(this.entityData.get(BALLOON_ID));
+        return this.level().getEntity(this.entityData.get(BALLOON_ID));
     }
 
     public InteractionResult interact(Player player, InteractionHand hand) {
@@ -231,7 +230,7 @@ public class BalloonCargoEntity extends Entity {
         if (compound.hasUUID("PlayerUUID")) {
             this.setPlayerUUID(compound.getUUID("PlayerUUID"));
         }
-        this.setBlockState(NbtUtils.readBlockState(this.level.holderLookup(Registries.BLOCK), compound.getCompound("BlockState")));
+        this.setBlockState(NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compound.getCompound("BlockState")));
         this.time = compound.getInt("Time");
         if (compound.contains("HurtEntities", 99)) {
             this.hurtEntities = compound.getBoolean("HurtEntities");

@@ -4,6 +4,7 @@ import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.LevelReader;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.level.material.Material;
 
 import java.util.Map;
 
@@ -57,19 +57,19 @@ public class SkyTempleBlockProcessor extends StructureProcessor {
     }
 
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos pos1, BlockPos pos2, StructureTemplate.StructureBlockInfo info1, StructureTemplate.StructureBlockInfo info2, StructurePlaceSettings settings) {
-        RandomSource random = settings.getRandom(info2.pos);
-        if(info2.state.getBlock() == Blocks.WHITE_WOOL){
-            return new StructureTemplate.StructureBlockInfo(info2.pos, DYE_TO_BLOCK.get(woolColor1).defaultBlockState(), info2.nbt);
-        }else if(info2.state.getBlock() == Blocks.RED_WOOL){
-            return new StructureTemplate.StructureBlockInfo(info2.pos, DYE_TO_BLOCK.get(woolColor2).defaultBlockState(), info2.nbt);
-        }else if(info2.state.getBlock() instanceof SlabBlock && info2.state.getMaterial() == Material.WOOD){
-            return new StructureTemplate.StructureBlockInfo(info2.pos, getWoodSlab(info2.state), info2.nbt);
-        }else if(info2.state.getBlock() instanceof FenceBlock){
-            return new StructureTemplate.StructureBlockInfo(info2.pos, getWoodFence(info2.state), info2.nbt);
-        }else if(info2.state.getBlock() instanceof TrapDoorBlock){
-            return new StructureTemplate.StructureBlockInfo(info2.pos, getWoodTrapdoor(info2.state), info2.nbt);
-        }else if(info2.state.getBlock() == CSBlockRegistry.CLOUD.get() && random.nextFloat() < 0.1F){
-            return new StructureTemplate.StructureBlockInfo(info2.pos, CSBlockRegistry.STATIC_CLOUD.get().defaultBlockState(), info2.nbt);
+        RandomSource random = settings.getRandom(info2.pos());
+        if(info2.state().getBlock() == Blocks.WHITE_WOOL){
+            return new StructureTemplate.StructureBlockInfo(info2.pos(), DYE_TO_BLOCK.get(woolColor1).defaultBlockState(), info2.nbt());
+        }else if(info2.state().getBlock() == Blocks.RED_WOOL){
+            return new StructureTemplate.StructureBlockInfo(info2.pos(), DYE_TO_BLOCK.get(woolColor2).defaultBlockState(), info2.nbt());
+        }else if(info2.state().getBlock() instanceof SlabBlock && info2.state().is(BlockTags.WOODEN_SLABS)){
+            return new StructureTemplate.StructureBlockInfo(info2.pos(), getWoodSlab(info2.state()), info2.nbt());
+        }else if(info2.state().getBlock() instanceof FenceBlock){
+            return new StructureTemplate.StructureBlockInfo(info2.pos(), getWoodFence(info2.state()), info2.nbt());
+        }else if(info2.state().getBlock() instanceof TrapDoorBlock){
+            return new StructureTemplate.StructureBlockInfo(info2.pos(), getWoodTrapdoor(info2.state()), info2.nbt());
+        }else if(info2.state().getBlock() == CSBlockRegistry.CLOUD.get() && random.nextFloat() < 0.1F){
+            return new StructureTemplate.StructureBlockInfo(info2.pos(), CSBlockRegistry.STATIC_CLOUD.get().defaultBlockState(), info2.nbt());
         }
         return info2;
     }

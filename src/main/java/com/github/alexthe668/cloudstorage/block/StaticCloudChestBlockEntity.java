@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
@@ -88,7 +89,7 @@ public class StaticCloudChestBlockEntity extends AbstractCloudChestBlockEntity {
 
     @Override
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing) {
-        if (!this.remove && facing != null && balloonColor != -1 && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.remove && facing != null && balloonColor != -1 && capability == ForgeCapabilities.ITEM_HANDLER) {
             if(!this.hasNoInvSpace(null)){
                 if(!input.isPresent()){
                     Container cloudContainer = getCloudContainer();

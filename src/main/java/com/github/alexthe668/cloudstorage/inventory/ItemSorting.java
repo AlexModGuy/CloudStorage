@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ItemSorting {
 
     public static int defaultCompare(ItemStack stack1, ItemStack stack2) {
-        if (stack1.sameItem(stack2)) {
+        if (ItemStack.isSameItem(stack1, stack2)) {
             return 0;
         } else if (stack1.isEmpty()) {
             return 1;

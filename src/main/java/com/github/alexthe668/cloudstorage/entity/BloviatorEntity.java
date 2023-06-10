@@ -112,7 +112,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
         if (!this.isPushing()) {
             return null;
         } else {
-            return this.level.getEntity(this.entityData.get(PUSH_ENTITY));
+            return this.level().getEntity(this.entityData.get(PUSH_ENTITY));
         }
     }
 
@@ -121,7 +121,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
         if (!this.isShocking()) {
             return null;
         } else {
-            return this.level.getEntity(this.entityData.get(SHOCK_ENTITY));
+            return this.level().getEntity(this.entityData.get(SHOCK_ENTITY));
         }
     }
 
@@ -202,7 +202,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
 
     public void remove(Entity.RemovalReason reason) {
         float i = this.getCloudScale();
-        if (!this.level.isClientSide && i > 0.25F && this.isDeadOrDying()) {
+        if (!this.level().isClientSide && i > 0.25F && this.isDeadOrDying()) {
             Component component = this.getCustomName();
             boolean flag = this.isNoAi();
             float f = i / 4.0F;
@@ -212,7 +212,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
             for (int l = 0; l < k; ++l) {
                 float f1 = ((float) (l % 2) - 0.5F) * f;
                 float f2 = ((float) (l / 2) - 0.5F) * f;
-                BloviatorEntity mini = CSEntityRegistry.BLOVIATOR.get().create(this.level);
+                BloviatorEntity mini = CSEntityRegistry.BLOVIATOR.get().create(this.level());
                 if (this.isPersistenceRequired()) {
                     mini.setPersistenceRequired();
                 }
@@ -222,7 +222,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
                 mini.setCloudScale(j, true);
                 mini.setThundery(this.isThundery(), true);
                 mini.moveTo(this.getX() + (double) f1, this.getY(0.5D), this.getZ() + (double) f2, this.random.nextFloat() * 360.0F, 0.0F);
-                this.level.addFreshEntity(mini);
+                this.level().addFreshEntity(mini);
             }
         }
 
@@ -291,7 +291,7 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
             if (this.pushProgress > 0.0F) {
                 this.pushProgress -= 1.0F;
             }
-            if (!level.isClientSide && this.getTarget() != null && this.getTarget().isAlive() && canPush(this.getTarget())) {
+            if (!level().isClientSide && this.getTarget() != null && this.getTarget().isAlive() && canPush(this.getTarget())) {
                 this.entityData.set(PUSH_ENTITY, this.getTarget().getId());
             }
             blowingSoundTime = 0;
@@ -306,15 +306,15 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
             if (canPush(pushing)) {
                 Vec3 mouth = this.getMouthVec(1.0F);
                 Vec3 vec2 = pushing.position().subtract(this.position()).normalize().scale(0.1F * this.getCloudScale());
-                if (level.isClientSide) {
+                if (level().isClientSide) {
                     for (int i = 0; i < this.getCloudCount(); i++) {
                         Vec3 randomOffset = new Vec3(random.nextFloat() - 0.5F, random.nextFloat() - 0.5F, random.nextFloat() - 0.5F).scale(this.getCloudScale());
                         Vec3 vec3 = pushing.getEyePosition().add(randomOffset).subtract(mouth).normalize().add(this.getDeltaMovement()).scale(0.5F);
-                        this.level.addParticle(CSParticleRegistry.BLOVIATOR_BREATH.get(), mouth.x, mouth.y, mouth.z, vec3.x, vec3.y, vec3.z);
+                        this.level().addParticle(CSParticleRegistry.BLOVIATOR_BREATH.get(), mouth.x, mouth.y, mouth.z, vec3.x, vec3.y, vec3.z);
                     }
                 }
                 pushing.setDeltaMovement(pushing.getDeltaMovement().add(vec2));
-            } else if (!level.isClientSide) {
+            } else if (!level().isClientSide) {
                 this.entityData.set(PUSH_ENTITY, -1);
             }
         }
@@ -358,13 +358,13 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
                 double d3 = d0 * dist;
                 double d4 = d1 * dist;
                 double d5 = d2 * dist;
-                this.level.addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), this.getX() + d0, this.getY() + d1, this.getZ() + d2, d3, d4, d5);
+                this.level().addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), this.getX() + d0, this.getY() + d1, this.getZ() + d2, d3, d4, d5);
             }
         } else {
             if (this.transformProgress > 5.0F) {
                 this.transformProgress--;
             }
-            if ((this.level.isRaining() || this.level.isThundering()) && this.level.canSeeSky(this.blockPosition())) {
+            if ((this.level().isRaining() || this.level().isThundering()) && this.level().canSeeSky(this.blockPosition())) {
                 this.setThundery(true, false);
             }
         }
@@ -372,10 +372,10 @@ public class BloviatorEntity extends Monster implements BalloonFlyer {
 
     private void shock(Entity target) {
         float damage = Mth.clamp(this.getCloudCount() * 0.75F, 1, 10);
-        LightningBolt dummy = EntityType.LIGHTNING_BOLT.create(level);
+        LightningBolt dummy = EntityType.LIGHTNING_BOLT.create(level());
         dummy.setDamage(damage);
         if (!net.minecraftforge.event.ForgeEventFactory.onEntityStruckByLightning(target, dummy)) {
-            target.thunderHit((ServerLevel) this.level, dummy);
+            target.thunderHit((ServerLevel) this.level(), dummy);
         }
         if (target instanceof LivingEntity living) {
             living.setLastHurtByMob(this);

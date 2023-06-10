@@ -6,7 +6,6 @@ import com.github.alexthe668.cloudstorage.entity.BalloonFace;
 import com.github.alexthe668.cloudstorage.entity.GloveGesture;
 import com.github.alexthe668.cloudstorage.misc.CSDamageTypes;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
@@ -64,7 +63,7 @@ public class BalloonBuddyAttackGoal extends Goal {
             float speed = this.badloon.getPersonality() == BalloonFace.CRAZY ? 1.5F : 1F;
             double targetX = badloon.getTarget().getX();
             double targetZ = badloon.getTarget().getZ();
-            if (badloon.verticalCollision && !badloon.isOnGround() && !badloon.hasLineOfSight(badloon.getTarget())) {
+            if (badloon.verticalCollision && !badloon.onGround() && !badloon.hasLineOfSight(badloon.getTarget())) {
                 Vec3 lookRotated = new Vec3(0F, 0F, 2F).yRot(-badloon.getYRot() * (float)(Math.PI / 180F));
                 targetX = badloon.getX() + lookRotated.x;
                 targetZ = badloon.getZ() + lookRotated.z;
@@ -72,14 +71,14 @@ public class BalloonBuddyAttackGoal extends Goal {
             this.badloon.getMoveControl().setWantedPosition(targetX, badloon.getTarget().getEyeY() + extraY, targetZ, speed);
         }
         if(this.punchCooldown == 0 && (hand.distanceTo(this.badloon.getTarget()) < this.badloon.getTarget().getBbWidth() + distExtra || hand.getBoundingBox().intersects(this.badloon.getTarget().getBoundingBox())) && badloon.doesDealDamage()){
-            if(this.badloon.getPersonality() == BalloonFace.TROLL && !this.badloon.getTarget().isPassenger() && this.badloon.getTarget().isOnGround()){
+            if(this.badloon.getPersonality() == BalloonFace.TROLL && !this.badloon.getTarget().isPassenger() && this.badloon.getTarget().onGround()){
                 this.badloon.getTarget().startRiding(hand, true);
                 this.badloon.setAbilityTime(100 + badloon.getRandom().nextInt(50));
             }else{
                 punchTicks++;
                 this.badloon.setHandGesture(GloveGesture.PUNCH);
                 if(punchTicks > 3){
-                    this.badloon.getTarget().hurt(this.badloon.getPersonality() == BalloonFace.EYEPATCH ? CSDamageTypes.causeSneakBalloonDamage(this.badloon.level.registryAccess()) : badloon.damageSources().mobAttack(this.badloon), 2);
+                    this.badloon.getTarget().hurt(this.badloon.getPersonality() == BalloonFace.EYEPATCH ? CSDamageTypes.causeSneakBalloonDamage(this.badloon.level().registryAccess()) : badloon.damageSources().mobAttack(this.badloon), 2);
                     this.badloon.setHandGesture(GloveGesture.IDLE);
                     punchTicks = 0;
                     this.punchCooldown = this.badloon.getPersonality() == BalloonFace.CRAZY ? 3 : 5 + badloon.getRandom().nextInt(10);

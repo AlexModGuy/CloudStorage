@@ -2,7 +2,6 @@ package com.github.alexthe668.cloudstorage.item;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
-import com.github.alexthe668.cloudstorage.misc.CSCreativeTab;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;

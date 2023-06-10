@@ -25,7 +25,7 @@ public class BalloonBuddyFollowGoal extends Goal {
 
     public BalloonBuddyFollowGoal(BalloonBuddyEntity tameable, double speed, float minDist, float maxDist, boolean teleportToLeaves) {
         this.balloon = tameable;
-        this.world = tameable.level;
+        this.world = tameable.level();
         this.followSpeed = speed;
         this.minDist = minDist;
         this.maxDist = maxDist;

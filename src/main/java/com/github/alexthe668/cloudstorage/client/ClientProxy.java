@@ -116,12 +116,12 @@ public class ClientProxy extends CommonProxy {
 
     public static void setupParticles(RegisterParticleProvidersEvent event) {
         CloudStorage.LOGGER.debug("Registered particle factories");
-        event.register(CSParticleRegistry.BALLOON_SHARD.get(), ParticleBalloonShard.Factory::new);
-        event.register(CSParticleRegistry.CLOUD_CHEST.get(), ParticleCloudChest.Factory::new);
-        event.register(CSParticleRegistry.STATIC_LIGHTNING.get(), new ParticleStaticLightning.Factory());
-        event.register(CSParticleRegistry.BLOVIATOR_BREATH.get(), ParticleBloviatorBreath.Factory::new);
-        event.register(CSParticleRegistry.STOP_SPAWN.get(), ParticleBuddyEffect.StopSpawn::new);
-        event.register(CSParticleRegistry.COOL.get(), ParticleBuddyEffect.Cool::new);
+        event.registerSpriteSet(CSParticleRegistry.BALLOON_SHARD.get(), ParticleBalloonShard.Factory::new);
+        event.registerSpriteSet(CSParticleRegistry.CLOUD_CHEST.get(), ParticleCloudChest.Factory::new);
+        event.registerSpecial(CSParticleRegistry.STATIC_LIGHTNING.get(), new ParticleStaticLightning.Factory());
+        event.registerSpriteSet(CSParticleRegistry.BLOVIATOR_BREATH.get(), ParticleBloviatorBreath.Factory::new);
+        event.registerSpriteSet(CSParticleRegistry.STOP_SPAWN.get(), ParticleBuddyEffect.StopSpawn::new);
+        event.registerSpriteSet(CSParticleRegistry.COOL.get(), ParticleBuddyEffect.Cool::new);
     }
 
     public static void bakeEntityModels(EntityRenderersEvent.RegisterLayerDefinitions event) {

@@ -4,7 +4,6 @@ import com.github.alexthe668.cloudstorage.item.BalloonArrowItem;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;

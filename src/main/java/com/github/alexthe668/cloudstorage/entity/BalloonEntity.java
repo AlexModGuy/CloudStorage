@@ -79,7 +79,7 @@ public class BalloonEntity extends Entity {
         this.zo = this.getZ();
         this.prevUploadProgress = uploadProgress;
         Entity child = getChild();
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             this.setDeltaMovement(this.getDeltaMovement().add(0, 0.05F, 0));
             if (child != null) {
                 this.entityData.set(CHILD_ID, child.getId());
@@ -100,7 +100,7 @@ public class BalloonEntity extends Entity {
                 Vec3 add = randomMoveOffset.scale(0.003F);
                 this.setDeltaMovement(this.getDeltaMovement().add(add));
             }
-            if (!this.level.noCollision(this, this.getBoundingBox())) {
+            if (!this.level().noCollision(this, this.getBoundingBox())) {
                 this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D, this.getZ());
             }
             this.setDeltaMovement(this.getDeltaMovement().multiply(0.8F, 0.6F, 0.8F));
@@ -113,11 +113,11 @@ public class BalloonEntity extends Entity {
                 double d3 = d0 * dist;
                 double d4 = d1 * dist;
                 double d5 = d2 * dist;
-                this.level.addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), this.getX() + d0, this.getY(1.0F) + d1, this.getZ() + d2, d3, d4, d5);
+                this.level().addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), this.getX() + d0, this.getY(1.0F) + d1, this.getZ() + d2, d3, d4, d5);
             }
         }
         this.move(MoverType.SELF, this.getDeltaMovement());
-        if (!level.isClientSide && !isUploading() && this.getY() > this.level.getMaxBuildHeight() + 2 && random.nextInt(20) == 0) {
+        if (!level().isClientSide && !isUploading() && this.getY() > this.level().getMaxBuildHeight() + 2 && random.nextInt(20) == 0) {
             if (child instanceof BalloonCargoEntity) {
                 this.setUploading(true);
             } else {
@@ -131,12 +131,12 @@ public class BalloonEntity extends Entity {
             this.uploadProgress--;
         }
         if (isUploading()) {
-            if (level.isClientSide) {
+            if (level().isClientSide) {
                 for (int i = 0; i < 4; i++) {
                     Vec3 vec = this.position().add(0, -1F - this.getStringLength(), 0);
                     Vec3 vec1 = new Vec3(random.nextFloat() - 0.5F, random.nextFloat() - 0.5F, random.nextFloat() - 0.5F).scale(2F).add(vec);
                     Vec3 vec32 = vec.subtract(vec1).normalize().scale(0.3F);
-                    this.level.addParticle(CSParticleRegistry.BLOVIATOR_BREATH.get(), vec1.x, vec1.y, vec1.z, vec32.x, vec32.y, vec32.z);
+                    this.level().addParticle(CSParticleRegistry.BLOVIATOR_BREATH.get(), vec1.x, vec1.y, vec1.z, vec32.x, vec32.y, vec32.z);
                 }
             }
             if (uploadProgress >= 10.0F) {
@@ -155,8 +155,8 @@ public class BalloonEntity extends Entity {
             }
             this.popTick++;
             if (popTick > 3.0F) {
-                if (!level.isClientSide) {
-                    this.level.broadcastEntityEvent(this, (byte) 67);
+                if (!level().isClientSide) {
+                    this.level().broadcastEntityEvent(this, (byte) 67);
                     if (this.getStringLength() > DEFAULT_STRING_LENGTH) {
                         this.spawnAtLocation(new ItemStack(Items.STRING, this.getStringLength() - DEFAULT_STRING_LENGTH));
                     }
@@ -169,7 +169,7 @@ public class BalloonEntity extends Entity {
                     float g = (float) (color >> 8 & 255) / 255.0F;
                     float b = (float) (color & 255) / 255.0F;
                     for (int i = 0; i < 5 + random.nextInt(2) + 5; i++) {
-                        this.level.addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
+                        this.level().addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
                     }
                 }
                 if (child instanceof BalloonTieEntity tie) {
@@ -202,7 +202,7 @@ public class BalloonEntity extends Entity {
 
     private void moveChild() {
         Entity child = this.getChild();
-        if(level.isClientSide && child == null){
+        if(level().isClientSide && child == null){
             child = getTieForRendering();
         }
         if(child != null){
@@ -220,7 +220,7 @@ public class BalloonEntity extends Entity {
         if (this.getChild() instanceof BalloonCargoEntity cargo) {
             if (cargo.getPlayerUUID() != null) {
                 if (cargo.getContainerSize() > 0) {
-                    CSWorldData data = CSWorldData.get(level);
+                    CSWorldData data = CSWorldData.get(level());
                     if (data != null) {
                         int maximum = isCharged() ? CloudStorage.CONFIG.maxStaticCloudSlots.get() : CloudStorage.CONFIG.maxCloudSlots.get();
                         CloudIndex prev = isCharged() ? data.getPublicCloud(getBalloonColor()) : data.getPrivateCloud(cargo.getPlayerUUID(), getBalloonColor());
@@ -246,8 +246,8 @@ public class BalloonEntity extends Entity {
                                 data.addPrivateCloud(cloud);
                             }
                         }
-                        if (this.level instanceof ServerLevel) {
-                            Player player = level.getPlayerByUUID(cargo.getPlayerUUID());
+                        if (this.level() instanceof ServerLevel) {
+                            Player player = level().getPlayerByUUID(cargo.getPlayerUUID());
                             if (player instanceof ServerPlayer) {
                                 CommonProxy.UPLOAD_TRIGGER.trigger((ServerPlayer) player);
                             }
@@ -265,7 +265,7 @@ public class BalloonEntity extends Entity {
     }
 
     protected boolean pushEntities() {
-        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate(0.5F, 0, 0.5F), EntitySelector.pushableBy(this));
+        List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.5F, 0, 0.5F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
             for (int l = 0; l < list.size(); ++l) {
                 Entity entity = list.get(l);
@@ -384,8 +384,8 @@ public class BalloonEntity extends Entity {
 
     public Entity getChild() {
         UUID id = getChildId();
-        if (id != null && !level.isClientSide) {
-            return ((ServerLevel) level).getEntity(id);
+        if (id != null && !level().isClientSide) {
+            return ((ServerLevel) level()).getEntity(id);
         }
         return null;
     }
@@ -400,7 +400,7 @@ public class BalloonEntity extends Entity {
     }
 
     public Entity getTieForRendering() {
-        return this.level.getEntity(this.entityData.get(CHILD_ID));
+        return this.level().getEntity(this.entityData.get(CHILD_ID));
     }
 
     public boolean isPickable() {
@@ -441,7 +441,7 @@ public class BalloonEntity extends Entity {
             float g = (float) (color >> 8 & 255) / 255.0F;
             float b = (float) (color & 255) / 255.0F;
             for (int i = 0; i < 5 + random.nextInt(2) + 5; i++) {
-                this.level.addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
+                this.level().addParticle(CSParticleRegistry.BALLOON_SHARD.get(), this.getX(), this.getY(0.5F), this.getZ(), r, g, b);
             }
         } else {
             super.handleEntityEvent(id);
@@ -484,7 +484,7 @@ public class BalloonEntity extends Entity {
     public boolean skipAttackInteraction(Entity entity) {
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            return !this.level.mayInteract(player, this.blockPosition()) || this.hurt(damageSources().playerAttack(player), 0.0F);
+            return !this.level().mayInteract(player, this.blockPosition()) || this.hurt(damageSources().playerAttack(player), 0.0F);
         } else {
             return false;
         }

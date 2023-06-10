@@ -57,7 +57,7 @@ public class BalloonStandMenu extends AbstractContainerMenu {
             public void onTake(Player player, ItemStack stack) {
                 BalloonStandMenu.this.slots.get(0).remove(1);
                 BalloonStandMenu.this.slots.get(1).remove(1);
-                stack.getItem().onCraftedBy(stack, player.level, player);
+                stack.getItem().onCraftedBy(stack, player.level(), player);
                 access.execute((level, pos) -> {
                     long l = level.getGameTime();
                     if (BalloonStandMenu.this.lastSoundTime != l) {
@@ -124,7 +124,7 @@ public class BalloonStandMenu extends AbstractContainerMenu {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (slotIndex == 2) {
-                itemstack1.getItem().onCraftedBy(itemstack1, player.level, player);
+                itemstack1.getItem().onCraftedBy(itemstack1, player.level(), player);
                 if (!this.moveItemStackTo(itemstack1, 3, 39, true)) {
                     return ItemStack.EMPTY;
                 }

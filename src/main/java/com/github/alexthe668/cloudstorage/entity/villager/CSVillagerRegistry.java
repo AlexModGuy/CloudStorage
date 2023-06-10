@@ -1,7 +1,6 @@
 package com.github.alexthe668.cloudstorage.entity.villager;
 
 
-import com.github.alexthe666.citadel.server.generation.VillageHouseManager;
 import com.github.alexthe668.cloudstorage.CloudStorage;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.block.CSPOIRegistry;
@@ -10,15 +9,9 @@ import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
 import com.github.alexthe668.cloudstorage.item.BalloonItem;
 import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSSoundRegistry;
-import com.github.alexthe668.cloudstorage.world.BalloonStandPoolElement;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.ProcessorLists;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.MoveToSkySeeingSpot;
@@ -28,8 +21,6 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.VillagerType;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
@@ -78,11 +69,11 @@ public class CSVillagerRegistry {
                 int[] colors = getBalloonColorsForVillager(villager.getVillagerData().getType());
                 for (int i = 0; i < random.nextInt(2) + 1; i++) {
                     int color = colors[colors.length <= 1 ? 0 : random.nextInt(colors.length)];
-                    BalloonEntity balloon = CSEntityRegistry.BALLOON.get().create(villager.level);
+                    BalloonEntity balloon = CSEntityRegistry.BALLOON.get().create(villager.level());
                     balloon.copyPosition(villager);
                     balloon.setStringLength(BalloonEntity.DEFAULT_STRING_LENGTH + random.nextInt(1));
                     balloon.setBalloonColor(color);
-                    villager.level.addFreshEntity(balloon);
+                    villager.level().addFreshEntity(balloon);
                 }
             }
         }

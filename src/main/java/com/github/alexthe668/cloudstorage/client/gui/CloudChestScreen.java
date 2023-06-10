@@ -7,7 +7,7 @@ import com.github.alexthe668.cloudstorage.network.MessageSortCloudChest;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -78,17 +78,16 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
     }
 
     @Override
-    public void render(PoseStack stack, int x, int y, float partialTicks) {
-        this.renderBackground(stack);
-        this.renderBg(stack, partialTicks, x, y);
-        super.render(stack, x, y, partialTicks);
-        this.renderGraySlots(stack, x, y);
-        this.renderTooltip(stack, x, y);
+    public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+        this.renderBackground(guiGraphics);
+        this.renderBg(guiGraphics, partialTicks, x, y);
+        super.render(guiGraphics, x, y, partialTicks);
+        this.renderGraySlots(guiGraphics, x, y);
+        this.renderTooltip(guiGraphics, x, y);
     }
 
-    private void renderGraySlots(PoseStack poseStack, int x, int y) {
+    private void renderGraySlots(GuiGraphics guiGraphics, int x, int y) {
         RenderSystem.enableDepthTest();
-        RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -100,7 +99,7 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
         for (int k = 0; k < ySlots; ++k) {
             for (int l = 0; l < 9 && l + k * 9 < clampedSize; ++l) {
                 if(menu.isSlotGray(l + k * 9)){
-                    this.blit(poseStack, i + 7 + l * 18, j + 17 + k * 18, 126, 222, 18, 18);
+                    guiGraphics.blit(TEXTURE, i + 7 + l * 18, j + 17 + k * 18, 126, 222, 18, 18);
                 }
             }
         }
@@ -137,13 +136,13 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
         this.menu.updateGrays(minecraft.player, s);
     }
 
-    protected void renderLabels(PoseStack stack, int x, int y) {
+    protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
         if(mode == 2){
-            this.font.draw(stack, Component.translatable("cloudstorage.container.cloud_chest.searchbar"), (float)this.titleLabelX + 20, (float)this.titleLabelY, 4210752);
+            guiGraphics.drawString(font, Component.translatable("cloudstorage.container.cloud_chest.searchbar"), this.titleLabelX + 20, this.titleLabelY, 4210752, false);
         }else{
-            this.font.draw(stack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
+            guiGraphics.drawString(font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
         }
-        this.font.draw(stack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
+        guiGraphics.drawString(font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
     }
 
     public boolean keyPressed(int p_98547_, int p_98548_, int p_98549_) {
@@ -224,28 +223,27 @@ public class CloudChestScreen extends AbstractContainerScreen<CloudChestMenu> {
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float partialTicks, int x, int y) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int x, int y) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
         int i = this.leftPos;
         int j = this.topPos;
-        this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight);
         int clampedSize = Math.min(this.slots, 54);
         int ySlots = (int)Math.ceil(clampedSize / 9F);
         for (int k = 0; k < ySlots; ++k) {
             for (int l = 0; l < 9 && l + k * 9 < clampedSize; ++l) {
                 boolean hidden = menu.isSlotGray(l + k * 9);
-                this.blit(poseStack, i + 7 + l * 18, j + 17 + k * 18, hidden ? 18 : 0, 222, 18, 18);
+                guiGraphics.blit(TEXTURE, i + 7 + l * 18, j + 17 + k * 18, hidden ? 18 : 0, 222, 18, 18);
             }
         }
         int k = j + 18;
         int l = j + 130;
         float scrollOffsForRender = this.prevScrollOffs + (this.scrollOffs - this.prevScrollOffs) * partialTicks;
-        this.blit(poseStack, i + 175, k + (int) ((float) (l - k - 17) * scrollOffsForRender), 232 + (this.canScroll() ? 0 : 12), 0, 12, 15);
+        guiGraphics.blit(TEXTURE, i + 175, k + (int) ((float) (l - k - 17) * scrollOffsForRender), 232 + (this.canScroll() ? 0 : 12), 0, 12, 15);
         if(this.mode == 2){
-            this.blit(poseStack, i + 79, k - 14, 36, 222, 90, 12);
-            this.searchBox.render(poseStack, x, y, partialTicks);
+            guiGraphics.blit(TEXTURE, i + 79, k - 14, 36, 222, 90, 12);
+            this.searchBox.render(guiGraphics, x, y, partialTicks);
         }
     }
 

@@ -39,7 +39,7 @@ public class BloviatorAttackGoal extends Goal {
             if(cloud.isThundery()){
                 double targetX = cloud.getTarget().getX();
                 double targetZ = cloud.getTarget().getZ();
-                if (cloud.verticalCollision && !cloud.isOnGround() && !cloud.hasLineOfSight(target)) {
+                if (cloud.verticalCollision && !cloud.onGround() && !cloud.hasLineOfSight(target)) {
                     Vec3 lookRotated = new Vec3(0F, 0F, 1F).yRot(-cloud.getYRot() * (float)(Math.PI / 180F));
                     targetX = cloud.getX() + lookRotated.x;
                     targetZ = cloud.getZ() + lookRotated.z;
@@ -49,7 +49,7 @@ public class BloviatorAttackGoal extends Goal {
                 if(dist > stayBackSize || !cloud.canPush(target)){
                     double targetX = cloud.getTarget().getX();
                     double targetZ = cloud.getTarget().getZ();
-                    if (cloud.verticalCollision && !cloud.isOnGround() && !cloud.hasLineOfSight(target)) {
+                    if (cloud.verticalCollision && !cloud.onGround() && !cloud.hasLineOfSight(target)) {
                         Vec3 lookRotated = new Vec3(0F, 0F, 2F).yRot(-cloud.getYRot() * (float)(Math.PI / 180F));
                         targetX = cloud.getX() + lookRotated.x;
                         targetZ = cloud.getZ() + lookRotated.z;

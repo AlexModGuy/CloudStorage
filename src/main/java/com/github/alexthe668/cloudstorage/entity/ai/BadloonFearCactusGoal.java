@@ -29,7 +29,7 @@ public class BadloonFearCactusGoal extends Goal {
     }
 
     public boolean canContinueToUse() {
-        return destinationBlock != null && isCactus(badloon.level, destinationBlock.mutable()) && isCloseToCactus(10);
+        return destinationBlock != null && isCactus(badloon.level(), destinationBlock.mutable()) && isCloseToCactus(10);
     }
 
     public boolean isCloseToCactus(double dist) {
@@ -100,7 +100,7 @@ public class BadloonFearCactusGoal extends Goal {
                 for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
                     for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
                         blockpos$mutableblockpos.setWithOffset(blockpos, i1, k, j1);
-                        if (this.badloon.isWithinRestriction(blockpos$mutableblockpos) && this.isCactus(this.badloon.level, blockpos$mutableblockpos)) {
+                        if (this.badloon.isWithinRestriction(blockpos$mutableblockpos) && this.isCactus(this.badloon.level(), blockpos$mutableblockpos)) {
                             this.destinationBlock = blockpos$mutableblockpos;
                             return true;
                         }
