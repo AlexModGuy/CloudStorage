@@ -2,12 +2,10 @@ package com.github.alexthe668.cloudstorage.world;
 
 import com.github.alexthe666.citadel.server.generation.VillageHouseManager;
 import com.github.alexthe668.cloudstorage.CloudStorage;
-import com.github.alexthe668.cloudstorage.misc.DyeRandomlyLootFunction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 

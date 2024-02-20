@@ -1,6 +1,5 @@
 package com.github.alexthe668.cloudstorage.misc;
 
-import com.github.alexthe668.cloudstorage.CommonProxy;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;

@@ -59,7 +59,7 @@ public class FlyAroundGoal<T extends Mob & BalloonFlyer> extends Goal {
         BlockPos origin = flyer.hasRestriction() ? this.flyer.getRestrictCenter() : flyer.blockPosition();
         for (int i = 0; i < 15; i++) {
             BlockPos blockpos1 = origin.offset(random.nextInt(rangeXZ * 2) - rangeXZ, random.nextInt(rangeY * 2) - rangeY, random.nextInt(rangeXZ * 2) - rangeXZ);
-            if (canBlockPosBeSeen(blockpos1) && this.flyer.level.isEmptyBlock(blockpos1)) {
+            if (canBlockPosBeSeen(blockpos1) && this.flyer.level().isEmptyBlock(blockpos1)) {
                 blockpos = blockpos1;
             }
         }
@@ -70,7 +70,7 @@ public class FlyAroundGoal<T extends Mob & BalloonFlyer> extends Goal {
         double x = pos.getX() + 0.5F;
         double y = pos.getY() + 0.5F;
         double z = pos.getZ() + 0.5F;
-        HitResult result = flyer.level.clip(new ClipContext(new Vec3(flyer.getX(), flyer.getY() + (double) flyer.getEyeHeight(), flyer.getZ()), new Vec3(x, y, z), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, flyer));
+        HitResult result = flyer.level().clip(new ClipContext(new Vec3(flyer.getX(), flyer.getY() + (double) flyer.getEyeHeight(), flyer.getZ()), new Vec3(x, y, z), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, flyer));
         double dist = result.getLocation().distanceToSqr(x, y, z);
         return dist <= 1.0D || result.getType() == HitResult.Type.MISS;
     }

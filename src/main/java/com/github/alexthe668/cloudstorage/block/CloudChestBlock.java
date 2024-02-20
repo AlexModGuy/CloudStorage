@@ -23,7 +23,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -39,7 +40,7 @@ public class CloudChestBlock extends BaseEntityBlock {
     private final boolean lightning;
 
     public CloudChestBlock(boolean lightning) {
-        super(Properties.of(Material.GLASS).noOcclusion().sound(SoundType.WOOL).strength(1.5F));
+        super(Properties.of().pushReaction(PushReaction.BLOCK).mapColor(MapColor.COLOR_LIGHT_BLUE).noOcclusion().sound(SoundType.WOOL).strength(1.5F));
         this.lightning = lightning;
     }
 

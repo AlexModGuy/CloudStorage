@@ -5,7 +5,6 @@ import com.github.alexthe668.cloudstorage.entity.BadloonHandEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonFace;
 import com.github.alexthe668.cloudstorage.entity.GloveGesture;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.Mob;
@@ -104,7 +103,7 @@ public class BadloonAttackGoal extends Goal {
             double targetX = badloon.getTarget().getX();
             double targetZ = badloon.getTarget().getZ();
 
-            if (badloon.verticalCollision && !badloon.isOnGround() && !badloon.hasLineOfSight(badloon.getTarget())) {
+            if (badloon.verticalCollision && !badloon.onGround() && !badloon.hasLineOfSight(badloon.getTarget())) {
                 Vec3 lookRotated = new Vec3(0F, 0F, 2F).yRot(-badloon.getYRot() * (float)(Math.PI / 180F));
                 targetX = badloon.getX() + lookRotated.x;
                 targetZ = badloon.getZ() + lookRotated.z;
@@ -115,7 +114,7 @@ public class BadloonAttackGoal extends Goal {
             punchTicks++;
             this.badloon.setHandGesture(GloveGesture.PUNCH);
             if(punchTicks > 3){
-                this.badloon.getTarget().hurt(DamageSource.mobAttack(this.badloon), 2);
+                this.badloon.getTarget().hurt(badloon.damageSources().mobAttack(this.badloon), 2);
                 this.badloon.setHandGesture(GloveGesture.IDLE);
                 punchTicks = 0;
                 this.punchCooldown = 5 + badloon.getRandom().nextInt(10);
@@ -127,7 +126,7 @@ public class BadloonAttackGoal extends Goal {
 
     public void findMobToPickup(){
         Predicate<Entity> monsterAway = (animal) -> animal instanceof Monster && !(animal instanceof BadloonEntity) && animal.distanceTo(badloon.getTarget()) > 5 && !animal.isPassenger();
-        List<Mob> list = badloon.level.getEntitiesOfClass(Mob.class, badloon.getTarget().getBoundingBox().inflate(30, 12, 30), EntitySelector.NO_SPECTATORS.and(monsterAway));
+        List<Mob> list = badloon.level().getEntitiesOfClass(Mob.class, badloon.getTarget().getBoundingBox().inflate(30, 12, 30), EntitySelector.NO_SPECTATORS.and(monsterAway));
         list.sort(Comparator.comparingDouble(badloon::distanceToSqr));
         if (!list.isEmpty()) {
             pickupMonster = list.get(0);

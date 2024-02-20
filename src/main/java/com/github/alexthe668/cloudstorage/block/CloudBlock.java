@@ -4,7 +4,6 @@ import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
@@ -47,7 +46,7 @@ public class CloudBlock extends Block {
     }
 
     public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float dist) {
-        entity.causeFallDamage(dist, 0.1F, DamageSource.FALL);
+        entity.causeFallDamage(dist, 0.1F, entity.damageSources().fall());
     }
 
 

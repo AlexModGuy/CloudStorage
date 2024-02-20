@@ -24,7 +24,7 @@ public class RenderBalloonCargo extends EntityRenderer<BalloonCargoEntity> {
 
     public void render(BalloonCargoEntity cargo, float f1, float f2, PoseStack stack, MultiBufferSource source, int i) {
         BlockState blockstate = cargo.getBlockState();
-        Level level = cargo.getLevel();
+        Level level = cargo.level();
         if (blockstate != level.getBlockState(cargo.blockPosition()) && blockstate.getRenderShape() != RenderShape.INVISIBLE) {
             stack.pushPose();
             stack.translate(-0.5D, 0, -0.5D);

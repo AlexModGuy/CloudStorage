@@ -12,7 +12,7 @@ public class CSAdvancementTrigger extends SimpleCriterionTrigger<CSAdvancementTr
         this.resourceLocation = resourceLocation;
     }
 
-    public CSAdvancementTrigger.Instance createInstance(JsonObject p_230241_1_, EntityPredicate.Composite p_230241_2_, DeserializationContext p_230241_3_) {
+    public CSAdvancementTrigger.Instance createInstance(JsonObject p_230241_1_, ContextAwarePredicate p_230241_2_, DeserializationContext p_230241_3_) {
         return new CSAdvancementTrigger.Instance(p_230241_2_, resourceLocation);
     }
 
@@ -30,7 +30,7 @@ public class CSAdvancementTrigger extends SimpleCriterionTrigger<CSAdvancementTr
 
     public static class Instance extends AbstractCriterionTriggerInstance {
 
-        public Instance(EntityPredicate.Composite p_i231507_1_, ResourceLocation res) {
+        public Instance(ContextAwarePredicate p_i231507_1_, ResourceLocation res) {
             super(res, p_i231507_1_);
         }
 

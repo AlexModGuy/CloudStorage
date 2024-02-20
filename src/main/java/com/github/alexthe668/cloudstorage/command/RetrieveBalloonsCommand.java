@@ -11,6 +11,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -48,12 +49,16 @@ public class RetrieveBalloonsCommand {
             }
         }
         if(count > 0){
-            command.sendSuccess(Component.translatable("commands.retrieveballoons.success", count, lastEntity.getDisplayName()), true);
+            command.source.sendSystemMessage(Component.translatable("commands.retrieveballoons.success", count, lastEntity.getDisplayName()));
         }else{
             command.sendFailure(Component.translatable("commands.retrieveballoons.failure", count,  lastEntity.getDisplayName()));
         }
 
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static MutableComponent createMessage(int count, Component displayName) {
+        return Component.translatable("commands.retrieveballoons.success", count, displayName);
     }
 
     private static int executePublic(CommandSourceStack command){
@@ -68,7 +73,7 @@ public class RetrieveBalloonsCommand {
             }
         }
         if(count > 0){
-            command.sendSuccess(Component.translatable("commands.retrievestaticballoons.success", count), true);
+            command.source.sendSystemMessage(Component.translatable("commands.retrievestaticballoons.success", count));
         }else{
             command.sendFailure(Component.translatable("commands.retrievestaticballoons.failure", count));
         }

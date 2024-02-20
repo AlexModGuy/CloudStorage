@@ -17,15 +17,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeRenderTypes;
@@ -103,12 +104,13 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
         float f5 = (random.nextFloat() - 0.5F) * 0.5F;
         float f6 = (random.nextFloat() - 0.5F) * 0.5F;
         float f7 = 1.2F;
-        player.level.addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), d4 - swingVec.x + f4, d5 + f7 + f3 - swingVec.y + f5, d6 - swingVec.z + f5, f4 * 0.5F, f5 * 0.5F, f6 * 0.5F);
+        player.level().addParticle(CSParticleRegistry.STATIC_LIGHTNING.get(), d4 - swingVec.x + f4, d5 + f7 + f3 - swingVec.y + f5, d6 - swingVec.z + f5, f4 * 0.5F, f5 * 0.5F, f6 * 0.5F);
     }
 
     @Override
-    public void renderByItem(ItemStack itemStackIn, ItemTransforms.TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void renderByItem(ItemStack itemStackIn, ItemDisplayContext transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         float partialTick = Minecraft.getInstance().getFrameTime();
+        ClientLevel level = Minecraft.getInstance().level;
         if (!Minecraft.getInstance().isPaused() && Minecraft.getInstance().player != null) {
             tickForRender = Minecraft.getInstance().player.tickCount;
             ageInTicks = tickForRender + partialTick;
@@ -119,7 +121,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
         }
         if (itemStackIn.getItem() instanceof BalloonItem) {
             matrixStackIn.translate(0.5F, 0.5f, 0.5f);
-            if (BalloonItem.get3DRender(itemStackIn) != 0 || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND) {
+            if (BalloonItem.get3DRender(itemStackIn) != 0 || transformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || transformType == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND || transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
                 int colorIn = ((DyeableLeatherItem) itemStackIn.getItem()).getColor(itemStackIn);
                 int color = colorIn < 0 ? getRainbowBalloonColor() : colorIn;
                 float r = (float) (color >> 16 & 255) / 255.0F;
@@ -128,7 +130,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
                 Vec3 swingVec = new Vec3(Math.sin(ageInTicks * 0.1F) * 0.2F, Math.cos(ageInTicks * 0.1F + 2F) * 0.3F, Math.cos(ageInTicks * 0.1F) * 0.2F);
                 Vec3 to = new Vec3(0, 2F, 0);
                 BALLOON_MODEL.setColor(r, g, b);
-                if (transformType == ItemTransforms.TransformType.GUI) {
+                if (transformType == ItemDisplayContext.GUI) {
                     if (BalloonItem.get3DRender(itemStackIn) == 1) {
                         matrixStackIn.mulPose(Axis.YP.rotationDegrees(-135F));
                         matrixStackIn.mulPose(Axis.XP.rotationDegrees(-15F));
@@ -171,7 +173,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
             } else {
                 ItemStack copyColorData = new ItemStack(itemStackIn.is(CSItemRegistry.BALLOON_BUDDY.get()) ? CSItemRegistry.BALLOON_BUDDY_INVENTORY.get() : CSItemRegistry.BALLOON_INVENTORY.get());
                 copyColorData.setTag(itemStackIn.getTag());
-                Minecraft.getInstance().getItemRenderer().renderStatic(copyColorData, transformType, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn, 0);
+                Minecraft.getInstance().getItemRenderer().renderStatic(copyColorData, transformType, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn, level, 0);
 
             }
         }
@@ -205,7 +207,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
             matrixStackIn.popPose();
         }
         if(itemStackIn.is(CSItemRegistry.CLOUD_BLOWER.get())) {
-            if (transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND) {
+            if (transformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || transformType == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND || transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(0.45F, 1.8F, 0.5F);
                 matrixStackIn.mulPose(Axis.XP.rotationDegrees(-180F));
@@ -232,7 +234,7 @@ public class CSItemRenderer extends BlockEntityWithoutLevelRenderer {
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(0.5F, 0.5f, 0.5f);
                 ItemStack cloudBlower = new ItemStack(CSItemRegistry.CLOUD_BLOWER_INVENTORY.get());
-                Minecraft.getInstance().getItemRenderer().renderStatic(cloudBlower, transformType, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn, 0);
+                Minecraft.getInstance().getItemRenderer().renderStatic(cloudBlower, transformType, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn, level, 0);
                 matrixStackIn.popPose();
 
             }

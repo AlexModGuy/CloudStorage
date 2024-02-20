@@ -2,7 +2,6 @@ package com.github.alexthe668.cloudstorage.item;
 
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
 import com.github.alexthe668.cloudstorage.entity.CSEntityRegistry;
-import com.github.alexthe668.cloudstorage.misc.CSCreativeTab;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;

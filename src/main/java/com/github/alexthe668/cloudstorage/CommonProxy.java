@@ -10,14 +10,10 @@ import com.github.alexthe668.cloudstorage.item.CSItemRegistry;
 import com.github.alexthe668.cloudstorage.misc.CSAdvancementTrigger;
 import com.github.alexthe668.cloudstorage.misc.CloudIndex;
 import com.github.alexthe668.cloudstorage.misc.CloudInfo;
-import com.github.alexthe668.cloudstorage.misc.DyeRandomlyLootFunction;
 import com.github.alexthe668.cloudstorage.network.MessageUpdateCloudInfo;
 import com.github.alexthe668.cloudstorage.world.CSWorldData;
 import com.github.alexthe668.cloudstorage.world.SkyMobSpawner;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,16 +29,15 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -142,7 +137,7 @@ public class CommonProxy {
             }else if(!flag && event.getProjectile() instanceof AbstractArrow arrow){
                 AABB aabb = arrow.getBoundingBox().inflate(15);
                 BalloonEntity tied = null;
-                List<BalloonEntity> balloons = arrow.level.getEntitiesOfClass(BalloonEntity.class, aabb);
+                List<BalloonEntity> balloons = arrow.level().getEntitiesOfClass(BalloonEntity.class, aabb);
                 for(BalloonEntity balloon : balloons){
                     if(balloon.isArrow() && balloon.getChildId() != null && balloon.getChildId().equals(arrow.getUUID())){
                         tied = balloon;
@@ -160,7 +155,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void onMobAttemptSpawn(LivingSpawnEvent.CheckSpawn event){
+    public void onMobAttemptSpawn(MobSpawnEvent.FinalizeSpawn event){
         if(event.getEntity() instanceof Monster && random.nextFloat() < 0.5F){
             double dist = 64;
             AABB aabb = event.getEntity().getBoundingBox().inflate(dist);
@@ -168,8 +163,9 @@ public class CommonProxy {
             if(!balloonBuddies.isEmpty()){
                 for(BalloonBuddyEntity balloonBuddy : balloonBuddies){
                     if(balloonBuddy.getPersonality() == BalloonFace.HAPPY){
+                        event.setSpawnCancelled(true);
                         event.setResult(Event.Result.DENY);
-                        balloonBuddy.getLevel().broadcastEntityEvent(balloonBuddy, (byte)68);
+                        balloonBuddy.level().broadcastEntityEvent(balloonBuddy, (byte)68);
                         break;
                     }
                 }
@@ -188,7 +184,7 @@ public class CommonProxy {
         if(event.getEntity() instanceof Player){
             double dist = 16;
             AABB aabb = event.getEntity().getBoundingBox().inflate(dist);
-            List<BalloonBuddyEntity> balloonBuddies = event.getEntity().getLevel().getEntitiesOfClass(BalloonBuddyEntity.class, aabb);
+            List<BalloonBuddyEntity> balloonBuddies = event.getEntity().level().getEntitiesOfClass(BalloonBuddyEntity.class, aabb);
             if(!balloonBuddies.isEmpty()){
                 for(BalloonBuddyEntity balloonBuddy : balloonBuddies){
                     if(balloonBuddy.getPersonality() == BalloonFace.EYEPATCH){
@@ -218,8 +214,8 @@ public class CommonProxy {
     }
 
     public void processCloudInfoRequest(Player player, int balloonColor) {
-        if(!player.getLevel().isClientSide){
-            CSWorldData data = CSWorldData.get(player.getLevel());
+        if(!player.level().isClientSide){
+            CSWorldData data = CSWorldData.get(player.level());
             int usedSlots = 0;
             int allSlots = 0;
             int staticUsedSlots = 0;
@@ -290,8 +286,8 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void onEntitySetTarget(LivingSetAttackTargetEvent event) {
-        if(event.getEntity() instanceof Mob && event.getTarget() instanceof BalloonBuddyEntity && ((BalloonBuddyEntity)event.getTarget()).getPersonality() == BalloonFace.EYEPATCH){
+    public void onEntitySetTarget(LivingChangeTargetEvent event) {
+        if(event.getEntity() instanceof Mob && event.getNewTarget() instanceof BalloonBuddyEntity && ((BalloonBuddyEntity)event.getNewTarget()).getPersonality() == BalloonFace.EYEPATCH){
             ((Mob) event.getEntity()).setTarget(null);
         }
     }

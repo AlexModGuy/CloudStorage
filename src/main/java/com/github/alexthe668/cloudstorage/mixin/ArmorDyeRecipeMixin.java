@@ -15,7 +15,7 @@ import java.util.List;
 public class ArmorDyeRecipeMixin {
 
     @Redirect(
-            method = {"Lnet/minecraft/world/item/crafting/ArmorDyeRecipe;assemble(Lnet/minecraft/world/inventory/CraftingContainer;)Lnet/minecraft/world/item/ItemStack;"},
+            method = {"Lnet/minecraft/world/item/crafting/ArmorDyeRecipe;assemble(Lnet/minecraft/world/inventory/CraftingContainer;Lnet/minecraft/core/RegistryAccess;)Lnet/minecraft/world/item/ItemStack;"},
             remap = true,
             at = @At(
                     value = "INVOKE",

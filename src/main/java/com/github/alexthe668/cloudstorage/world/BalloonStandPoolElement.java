@@ -45,7 +45,7 @@ public class BalloonStandPoolElement extends LegacySinglePoolElement {
 
     @Override
     public void handleDataMarker(LevelAccessor accessor, StructureTemplate.StructureBlockInfo structureBlockInfo, BlockPos pos, Rotation rotation, RandomSource random, BoundingBox box) {
-        String contents = structureBlockInfo.nbt.getString("metadata");
+        String contents = structureBlockInfo.nbt().getString("metadata");
         if (contents.startsWith("balloons")) {
             int secondary = 0;
             try {
@@ -53,9 +53,9 @@ public class BalloonStandPoolElement extends LegacySinglePoolElement {
             } catch (Exception e) {
                 CloudStorage.LOGGER.warn("could not parse balloon NBT");
             }
-            if (accessor instanceof ServerLevelAccessor serverLevel && !accessor.getBlockState(structureBlockInfo.pos).isAir()) {
-                BalloonTieEntity tie = new BalloonTieEntity(serverLevel.getLevel(), structureBlockInfo.pos.below());
-                if (accessor.getBlockState(structureBlockInfo.pos.below()).getBlock() == CSBlockRegistry.BALLOON_STAND.get()) {
+            if (accessor instanceof ServerLevelAccessor serverLevel && !accessor.getBlockState(structureBlockInfo.pos()).isAir()) {
+                BalloonTieEntity tie = new BalloonTieEntity(serverLevel.getLevel(), structureBlockInfo.pos().below());
+                if (accessor.getBlockState(structureBlockInfo.pos().below()).getBlock() == CSBlockRegistry.BALLOON_STAND.get()) {
                     tie.setPos(tie.getX(), tie.getY() + 0.3F, tie.getZ());
                 }
                 int balloons = 1 + random.nextInt(3);
@@ -64,14 +64,14 @@ public class BalloonStandPoolElement extends LegacySinglePoolElement {
                 int[] colors = getBalloonColors(secondary);
                 for (int i = 0; i < balloons; i++) {
                     BalloonEntity balloon = CSEntityRegistry.BALLOON.get().create(serverLevel.getLevel());
-                    balloon.setPos(structureBlockInfo.pos.getX() + 0.5F, structureBlockInfo.pos.getY() + 0.1F, structureBlockInfo.pos.getZ() + 0.5F);
+                    balloon.setPos(structureBlockInfo.pos().getX() + 0.5F, structureBlockInfo.pos().getY() + 0.1F, structureBlockInfo.pos().getZ() + 0.5F);
                     balloon.setStringLength(BalloonEntity.DEFAULT_STRING_LENGTH + random.nextInt(2));
                     balloon.setBalloonColor(colors[Mth.clamp(random.nextInt(colors.length), 0, colors.length - 1)]);
                     balloon.setChildId(tie.getUUID());
                     ((ServerLevelAccessor) accessor).addFreshEntityWithPassengers(balloon);
                 }
             }
-            accessor.setBlock(structureBlockInfo.pos, Blocks.AIR.defaultBlockState(), 2);
+            accessor.setBlock(structureBlockInfo.pos(), Blocks.AIR.defaultBlockState(), 2);
         }
     }
 

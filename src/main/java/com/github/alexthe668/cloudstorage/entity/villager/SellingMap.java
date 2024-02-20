@@ -62,10 +62,10 @@ public class SellingMap implements VillagerTrades.ItemListing {
 
     @Nullable
     public MerchantOffer getOffer(Entity entity, RandomSource random) {
-        if (!(entity.level instanceof ServerLevel)) {
+        if (!(entity.level() instanceof ServerLevel)) {
             return null;
         } else {
-            ServerLevel serverlevel = (ServerLevel)entity.level;
+            ServerLevel serverlevel = (ServerLevel)entity.level();
             BlockPos blockpos = findNearestMapFeature(serverlevel, entity.blockPosition(), 100, true);
             if (blockpos != null) {
                 ItemStack itemstack = MapItem.create(serverlevel, blockpos.getX(), blockpos.getZ(), (byte)2, true, true);

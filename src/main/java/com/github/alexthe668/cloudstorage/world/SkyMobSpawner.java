@@ -49,7 +49,7 @@ public class SkyMobSpawner {
         } else if (random.nextDouble() < CloudStorage.CONFIG.skyMobSpawningChance.get()) {
             return false;
         } else {
-            BlockPos blockpos = new BlockPos(playerentity.position());
+            BlockPos blockpos = BlockPos.containing(playerentity.position());
             double minDist = CloudStorage.CONFIG.skyMobMinSpawnDistance.get();
             double maxDist = CloudStorage.CONFIG.skyMobMaxSpawnDistance.get();
             BlockPos blockpos2 = this.generateFarAwayPos(blockpos, (int) minDist, (int) Math.max(maxDist, minDist + 1));

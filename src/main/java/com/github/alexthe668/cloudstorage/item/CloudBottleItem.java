@@ -1,7 +1,6 @@
 package com.github.alexthe668.cloudstorage.item;
 
 import com.github.alexthe668.cloudstorage.client.particle.CSParticleRegistry;
-import com.github.alexthe668.cloudstorage.misc.CSCreativeTab;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;

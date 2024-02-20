@@ -46,12 +46,6 @@ public class SlotCloudChest extends Slot {
         return ItemStack.EMPTY;
     }
 
-    @Override
-    public void initialize(ItemStack itemStack) {
-        this.container.setItem(getScrollIndex(), itemStack);
-        this.setChanged();
-    }
-
     public int getSlotIndex() {
         return getScrollIndex();
     }

@@ -50,7 +50,7 @@ public class BadloonHandEntity extends Entity {
     }
 
     public BadloonHandEntity(LivingEntity parent) {
-        super(CSEntityRegistry.BADLOON_HAND.get(), parent.level);
+        super(CSEntityRegistry.BADLOON_HAND.get(), parent.level());
         this.setParent(parent);
     }
 
@@ -83,7 +83,7 @@ public class BadloonHandEntity extends Entity {
             gestureProgress = 0.0F;
         }
         prevGestureProgress = gestureProgress;
-        if(!level.isClientSide){
+        if(!level().isClientSide){
             Entity parent = this.getParent();
             if(parent == null || parent instanceof LivingBalloon && !((LivingBalloon) parent).getChildId().equals(this.getUUID())){
                 this.remove(RemovalReason.DISCARDED);
@@ -140,7 +140,7 @@ public class BadloonHandEntity extends Entity {
         if (this.getPrevGesture() == this.getGesture() && gestureProgress > 0F) {
             gestureProgress -= 0.25F;
         }
-        if(!this.level.isClientSide && this.isVehicle()){
+        if(!this.level().isClientSide && this.isVehicle()){
             setGesture(GloveGesture.GRAB);
         }
     }
@@ -149,26 +149,26 @@ public class BadloonHandEntity extends Entity {
     protected void checkInsideBlocks() {
         Entity parent = getParent();
         AABB aabb = this.getBoundingBox();
-        BlockPos blockpos = new BlockPos(aabb.minX + 0.001D, aabb.minY + 0.001D, aabb.minZ + 0.001D);
-        BlockPos blockpos1 = new BlockPos(aabb.maxX - 0.001D, aabb.maxY - 0.001D, aabb.maxZ - 0.001D);
-        if (this.level.hasChunksAt(blockpos, blockpos1)) {
+        BlockPos blockpos = BlockPos.containing(aabb.minX + 0.001D, aabb.minY + 0.001D, aabb.minZ + 0.001D);
+        BlockPos blockpos1 = BlockPos.containing(aabb.maxX - 0.001D, aabb.maxY - 0.001D, aabb.maxZ - 0.001D);
+        if (this.level().hasChunksAt(blockpos, blockpos1)) {
             BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
             for(int i = blockpos.getX(); i <= blockpos1.getX(); ++i) {
                 for(int j = blockpos.getY(); j <= blockpos1.getY(); ++j) {
                     for(int k = blockpos.getZ(); k <= blockpos1.getZ(); ++k) {
                         blockpos$mutableblockpos.set(i, j, k);
-                        BlockState blockstate = this.level.getBlockState(blockpos$mutableblockpos);
+                        BlockState blockstate = this.level().getBlockState(blockpos$mutableblockpos);
 
                         try {
-                            blockstate.entityInside(this.level, blockpos$mutableblockpos, this);
+                            blockstate.entityInside(this.level(), blockpos$mutableblockpos, this);
                             this.onInsideBlock(blockstate);
                             if(parent != null){
-                                blockstate.entityInside(this.level, blockpos$mutableblockpos, parent);
+                                blockstate.entityInside(this.level(), blockpos$mutableblockpos, parent);
                             }
                         } catch (Throwable throwable) {
                             CrashReport crashreport = CrashReport.forThrowable(throwable, "Colliding entity with block");
                             CrashReportCategory crashreportcategory = crashreport.addCategory("Block being collided with");
-                            CrashReportCategory.populateBlockDetails(crashreportcategory, this.level, blockpos$mutableblockpos, blockstate);
+                            CrashReportCategory.populateBlockDetails(crashreportcategory, this.level(), blockpos$mutableblockpos, blockstate);
                             throw new ReportedException(crashreport);
                         }
                     }
@@ -206,8 +206,8 @@ public class BadloonHandEntity extends Entity {
     }
 
     @Override
-    public void positionRider(Entity entity) {
-        entity.setPos(this.getX(), this.getY() + 0.4F - entity.getBbHeight(), this.getZ());
+    public void positionRider(Entity entity, MoveFunction moveFunction) {
+        moveFunction.accept(entity, this.getX(), this.getY() + 0.4F - entity.getBbHeight(), this.getZ());
     }
 
     @Nullable
@@ -221,8 +221,8 @@ public class BadloonHandEntity extends Entity {
 
     public Entity getParent() {
         UUID id = getParentId();
-        if (id != null && !level.isClientSide) {
-            return ((ServerLevel) level).getEntity(id);
+        if (id != null && !level().isClientSide) {
+            return ((ServerLevel) level()).getEntity(id);
         }
         return null;
     }

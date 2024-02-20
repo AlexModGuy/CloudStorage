@@ -48,7 +48,7 @@ public class BalloonTieEntity extends Entity {
         this.xo = this.getX();
         this.yo = this.getY();
         this.zo = this.getZ();
-        if(!level.isClientSide && tickCount > 5 && (this.getBalloonCount() <= 0 || !this.getBlockStateOn().is(BlockTags.FENCES) && !this.getBlockStateOn().is(CSBlockRegistry.BALLOON_STAND.get()))){
+        if(!level().isClientSide && tickCount > 5 && (this.getBalloonCount() <= 0 || !this.getBlockStateOn().is(BlockTags.FENCES) && !this.getBlockStateOn().is(CSBlockRegistry.BALLOON_STAND.get()))){
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -59,7 +59,7 @@ public class BalloonTieEntity extends Entity {
     }
 
     protected void pushEntities() {
-        List<Entity> list = this.level.getEntities(this, this.getBoundingBox(), EntitySelector.pushableBy(this));
+        List<Entity> list = this.level().getEntities(this, this.getBoundingBox(), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
             for(int l = 0; l < list.size(); ++l) {
                 Entity entity = list.get(l);
@@ -141,7 +141,7 @@ public class BalloonTieEntity extends Entity {
     public boolean skipAttackInteraction(Entity entity) {
         if (entity instanceof Player) {
             Player player = (Player)entity;
-            return !this.level.mayInteract(player, this.blockPosition()) ? true : this.hurt(DamageSource.playerAttack(player), 0.0F);
+            return !this.level().mayInteract(player, this.blockPosition()) ? true : this.hurt(damageSources().playerAttack(player), 0.0F);
         } else {
             return false;
         }

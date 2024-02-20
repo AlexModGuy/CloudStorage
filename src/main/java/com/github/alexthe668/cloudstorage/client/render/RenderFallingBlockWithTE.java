@@ -21,7 +21,7 @@ public class RenderFallingBlockWithTE  extends FallingBlockRenderer {
 
     public void render(FallingBlockEntity cargo, float f1, float f2, PoseStack stack, MultiBufferSource source, int i) {
         BlockState blockstate = cargo.getBlockState();
-        Level level = cargo.getLevel();
+        Level level = cargo.level();
         if (blockstate != level.getBlockState(cargo.blockPosition()) && blockstate.getRenderShape() == RenderShape.ENTITYBLOCK_ANIMATED) {
             stack.pushPose();
             stack.translate(-0.5D, 0, -0.5D);
