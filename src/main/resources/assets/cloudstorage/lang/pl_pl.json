@@ -70,6 +70,10 @@
   "message.cloudstorage.no_inventory_space": "Brak ekwipunku chmury w tym kolorze balonu",
   "message.cloudstorage.no_static": "Skrzynia Chmura nie może przyjmować balonów statycznych",
   "death.attack.sneak_balloon_attack": "%s został zabity przez podstępny balon",
+  "commands.retrieveballoons.success": "Pobrano %s kolorów balonów dla %s",
+  "commands.retrieveballoons.failure": "%s kolorów balonów przypisanych do %s",
+  "commands.retrievestaticballoons.success": "Pobrano %s statycznych kolorów balonów",
+  "commands.retrievestaticballoons.failure": "%s statycznych kolorów balonów znaleziono"
   "advancements.cloudstorage.root.title": "Cloud Storage",
   "advancements.cloudstorage.root.desc": "Sięgnijmy gwiazd",
   "advancements.cloudstorage.badloon.title": "Deflacja",
