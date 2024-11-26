@@ -1,0 +1,31 @@
+<NEWLINE>
+<NEWLINE>
+Całe to zainteresowanie balonami sprawia, że czujesz się dość samotny, co jest zrozumiałe.
+Na szczęście możesz stworzyć sobie przyjaciela, którego nie można stworzyć organicznie.
+Łapiąc małego dmuchatora do butelki, możesz otrzymać Butelkę wściekłej Chmury. Karmiąc tę złą małą chmurkę ciastkiem,
+możesz uzyskać Butelkę zadowolonej chmury. Tej szczęśliwej małej chmurce może być nadana materialna forma poprzez stworzenie z niej Ziomka Balona:
+<NEWLINE>
+Po stworzeniu, Ziomek balon będzie miał przypisaną osobowość. Ta osobowość determinuje wyraz twarzy i zachowanie Ziomka balona.
+Wszystkie Ziomki balony funkcjonują jak wilki lub koty i mogą być ustawieni na tryby: zostań, podążaj lub wędruj. Mogą być podnoszeni i traktowani na przedmioty, gdy skradamy się z otwartą ręką.
+<NEWLINE>
+Osobowośći:
+<NEWLINE>
+Szczęśliwy - Ten balon nie będzie brał udziału w walce, ale zmniejszy liczbę potworów pojawiających się w pobliżu. Ta zdolność jest oznaczona efektami słonecznymi wychodzącymi z balonu.
+<NEWLINE>
+Zuchwały - Ten balon weźmie udział w walce wręcz, ale potrafi unikać strzał i innych pocisków.
+<NEWLINE>
+Przerażający - Ten balon ma przerażający wygląd i potrafi przepłoszyć pobliskie potwory - chociaż nie może ich atakować.
+<NEWLINE>
+Ukarany - Ten balon z opaską na oku wejdzie w tryb "stealth" i nie przyciąga uwagi mobów swoimi atakami. Zmniejsza również zasięg wykrywania swojego właściciela, gdy jest w pobliżu.
+<NEWLINE>
+Zwariowany - Ten balon weźmie udział w walce wręcz i atakuje znacznie szybciej niż inne balony.
+<NEWLINE>
+Śmieszek - Ten balon podnosi swoje cele i zrzuca je z dużej wysokości.
+<NEWLINE>
+Uroczy - Ten balon nie będzie brał udziału w walce, ale jego sama obecność może wprowadzić pobliskie potwory w tryb miłości.
+<NEWLINE>
+Spoko - Czadowe okulary tego balona rozpraszają wrogie cele, przez co nie poruszają się ani nie atakują przez krótki okres czasu.
+<NEWLINE>
+Butelki zadowolonej chmury można również używać do tworzenia Dmuchawca chmur, przydatnego narzędzia, które można ustawić na dmuchanie lub ssanie powietrza z dużą prędkością.
+<NEWLINE>
+Dmuchawiec chmur może przyciągać lub odpychać dowolne przedmioty lub moby. Może również zostać ustawiony na wystrzał użytkownika w górę, co działa lepiej, gdy trzymasz również balon. Dmuchawiec chmur używa Butelki chmury jako paliwa, więc upewnij się, że masz ich pod dostatkiem.

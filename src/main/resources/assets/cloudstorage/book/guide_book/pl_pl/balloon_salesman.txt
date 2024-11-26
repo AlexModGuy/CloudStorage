@@ -1,0 +1,17 @@
+<NEWLINE>
+<NEWLINE>
+<NEWLINE>
+W swoim dziwacznym zainteresowaniu balonami i chmurami nie jesteś sam... oczywiście.
+W wioskach na całym świecie można znaleźć Sprzedawców balonów i ich wiernie towarzyszące Stoiska z balonami. 
+A jeśli nie można znaleźć Stoiska z Balonami, zawsze można je wytworzyć.
+<NEWLINE>
+<NEWLINE>
+Podobnie jak płotki, Balony można przypiąć do Stoisk z balonami w celach wystawowych. Na balonie można użyć nici, aby wydłużyć jego sznurek.
+<NEWLINE>
+Stoiska z balonami mają jeszcze jedno zastosowanie. Można umieścić Balon w ich górnym slocie, aby zobaczyć statystyki dotyczące chmury skrzyni 
+oraz dokładny kolor Balonu. Jeśli w dolnym slocie umieści się drugi Balon, można skopiować kolor pierwszego na drugi. Może to ułatwić proces tworzenia kolorowych i złożonych chmur skrzyń.
+<NEWLINE>
+Osadnik, który kręci się wokół tych stoisk, handluje Balonami, między innymi. Jednym z tych przedmiotów jest Czapka ze śmigłem, które kręci się szybciej w zależności od tego, czy jest pogodny dzień czy pada deszcz. Innym jest Wata cukrowa, szybki przysmak zrobiony z Bloku chmury i cukru.
+<NEWLINE>
+Czasami ci osadnicy mogą sprzedawać mapę do Podniebnej świątyni lub Dużego Balonu. Te struktury zawierają spawnery i Skrzynie chmury z Balonami łupu. W przeciwieństwie do normalnych Balonów, Balony łupu nie są możliwe do wytworzenia, a gdy zostaną umieszczone w Skrzyni chmury, mogą nagrodzić cię unikalnymi przedmiotami. Nie mogą być używane do przesyłania przedmiotów ani barwione, jednakże.
+Te struktury mogą być niebezpieczne ze względu na swoją wysokość, i prawdopodobnie ten, kto je zbudował, mógł tam również ułożyć pułapki...

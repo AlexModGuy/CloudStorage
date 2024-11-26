@@ -1,0 +1,19 @@
+<NEWLINE>
+<NEWLINE>
+<NEWLINE>
+<NEWLINE>
+<NEWLINE>
+Dmuchatory to wrogie duchy chmur, które można spotkać na lub powyżej wysokości chmur.
+<NEWLINE>
+W czasie ataku dmuchatory zazwyczaj próbują zdmuchnąć swoje cele, ku swojej zgubie.
+Z tego powodu najlepiej używać broni dystansowej przeciwko dmuchatorom, ponieważ zbliżenie się do nich może być trudne.
+<NEWLINE>
+Jeśli duży dmuchator zostanie pokonany, może rozdzielić się na kilka mniejszych dmuchatorów, aby kontynuować walkę. Jeśli najmniejszy z nich zostanie zabity, mogą upuścić pojedynczy Blok chmury.
+<NEWLINE>
+Dmuchatory są również wrogie wobec owiec. Plotka głosi, że są zazdrosne o ich puszystą wełnę. Małe dmuchatory można również złapać w butelkę, można jej użyć do wyższego skoku.
+<NEWLINE>
+Jeśli zostaną schwytane w deszczu lub burzy z piorunami, dmuchatory przekształcą się w ciemniejszą wersję, która już nie łagodnie dmucha powietrzem w kierunku swoich celów. Te burzowe dmuchatory zamiast tego wystrzeliwują
+pioruny w kierunku swoich wrogów, a walka przeciwko całym grupom z nich może być bardzo trudna. Małe dmuchatory upuszczają wtedy Blok statycznej chmury.
+<NEWLINE>
+Bloki chmury mają kilka unikalnych właściwości. Można przez nie przechodzić, a byty zatoną w nich, chociaż nie przebiją się przez nie. Bloki chmury również łagodzą upadki i mogą wzmocnić skok.
+Statyczne właściwości Bloku statycznej chmury można przenieść na Balon i z powrotem, używając Balonu na bloku.
