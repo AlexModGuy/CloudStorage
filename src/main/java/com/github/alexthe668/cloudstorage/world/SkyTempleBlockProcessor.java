@@ -1,5 +1,6 @@
 package com.github.alexthe668.cloudstorage.world;
 
+import com.github.alexthe668.cloudstorage.api.SupportedColors;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
@@ -25,25 +26,6 @@ public class SkyTempleBlockProcessor extends StructureProcessor {
     private DyeColor woolColor1;
     private DyeColor woolColor2;
 
-    private static final Map<DyeColor, Block> DYE_TO_BLOCK = Util.make(Maps.newEnumMap(DyeColor.class), (p_29841_) -> {
-        p_29841_.put(DyeColor.WHITE, Blocks.WHITE_WOOL);
-        p_29841_.put(DyeColor.ORANGE, Blocks.ORANGE_WOOL);
-        p_29841_.put(DyeColor.MAGENTA, Blocks.MAGENTA_WOOL);
-        p_29841_.put(DyeColor.LIGHT_BLUE, Blocks.LIGHT_BLUE_WOOL);
-        p_29841_.put(DyeColor.YELLOW, Blocks.YELLOW_WOOL);
-        p_29841_.put(DyeColor.LIME, Blocks.LIME_WOOL);
-        p_29841_.put(DyeColor.PINK, Blocks.PINK_WOOL);
-        p_29841_.put(DyeColor.GRAY, Blocks.GRAY_WOOL);
-        p_29841_.put(DyeColor.LIGHT_GRAY, Blocks.LIGHT_GRAY_WOOL);
-        p_29841_.put(DyeColor.CYAN, Blocks.CYAN_WOOL);
-        p_29841_.put(DyeColor.PURPLE, Blocks.PURPLE_WOOL);
-        p_29841_.put(DyeColor.BLUE, Blocks.BLUE_WOOL);
-        p_29841_.put(DyeColor.BROWN, Blocks.BROWN_WOOL);
-        p_29841_.put(DyeColor.GREEN, Blocks.GREEN_WOOL);
-        p_29841_.put(DyeColor.RED, Blocks.RED_WOOL);
-        p_29841_.put(DyeColor.BLACK, Blocks.BLACK_WOOL);
-    });
-
 
     public SkyTempleBlockProcessor(WoodType woodType, DyeColor woolColor1, DyeColor woolColor2) {
         this.woodType = woodType;
@@ -59,9 +41,11 @@ public class SkyTempleBlockProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos pos1, BlockPos pos2, StructureTemplate.StructureBlockInfo info1, StructureTemplate.StructureBlockInfo info2, StructurePlaceSettings settings) {
         RandomSource random = settings.getRandom(info2.pos());
         if(info2.state().getBlock() == Blocks.WHITE_WOOL){
-            return new StructureTemplate.StructureBlockInfo(info2.pos(), DYE_TO_BLOCK.get(woolColor1).defaultBlockState(), info2.nbt());
+            Block wool = SupportedColors.getWool(woolColor1).orElse(Blocks.WHITE_WOOL);
+            return new StructureTemplate.StructureBlockInfo(info2.pos(), wool.defaultBlockState(), info2.nbt());
         }else if(info2.state().getBlock() == Blocks.RED_WOOL){
-            return new StructureTemplate.StructureBlockInfo(info2.pos(), DYE_TO_BLOCK.get(woolColor2).defaultBlockState(), info2.nbt());
+            Block wool = SupportedColors.getWool(woolColor2).orElse(Blocks.RED_WOOL);
+            return new StructureTemplate.StructureBlockInfo(info2.pos(), wool.defaultBlockState(), info2.nbt());
         }else if(info2.state().getBlock() instanceof SlabBlock && info2.state().is(BlockTags.WOODEN_SLABS)){
             return new StructureTemplate.StructureBlockInfo(info2.pos(), getWoodSlab(info2.state()), info2.nbt());
         }else if(info2.state().getBlock() instanceof FenceBlock){

@@ -1,6 +1,7 @@
 package com.github.alexthe668.cloudstorage.world;
 
 import com.github.alexthe668.cloudstorage.CloudStorage;
+import com.github.alexthe668.cloudstorage.api.SupportedColors;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.block.CloudChestBlockEntity;
 import com.github.alexthe668.cloudstorage.entity.BalloonEntity;
@@ -35,6 +36,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnorePr
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -146,8 +148,9 @@ public class SkyTempleStructure extends Structure {
                 default:
                     woodType = WoodType.OAK;
             }
-            DyeColor dyecolor1 = Util.getRandom(DyeColor.values(), random);
-            DyeColor dyecolor2 = Util.getRandom(DyeColor.values(), random);
+            List<DyeColor> colors = SupportedColors.supported().toList();
+            DyeColor dyecolor1 = Util.getRandom(colors, random);
+            DyeColor dyecolor2 = Util.getRandom(colors, random);
             settings.addProcessor(new SkyTempleBlockProcessor(woodType, dyecolor1, dyecolor2));
             return settings;
         }
