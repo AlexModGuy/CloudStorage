@@ -1,5 +1,6 @@
 package com.github.alexthe668.cloudstorage;
 
+import com.github.alexthe668.cloudstorage.api.SupportedColors;
 import com.github.alexthe668.cloudstorage.block.CSBlockEntityRegistry;
 import com.github.alexthe668.cloudstorage.block.CSBlockRegistry;
 import com.github.alexthe668.cloudstorage.block.CSPOIRegistry;
@@ -73,6 +74,7 @@ public class CloudStorage
         bus.addListener(this::setup);
         final ModLoadingContext modLoadingContext = ModLoadingContext.get();
         modLoadingContext.registerConfig(ModConfig.Type.COMMON, CONFIG_SPEC, "cloud-storage.toml");
+        SupportedColors.registerVanillaColors();
         CSBlockRegistry.DEF_REG.register(bus);
         CSItemRegistry.DEF_REG.register(bus);
         CSEntityRegistry.DEF_REG.register(bus);
